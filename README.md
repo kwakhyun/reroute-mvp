@@ -9,7 +9,7 @@
 ![REROUTE 공개 케이스 스터디](./public/portfolio/walkthrough-frames/01-case-study-hero.png)
 
 - [제품 케이스 스터디](./docs/portfolio-overview.md)
-- [배포된 제품 데모](https://reroute-mvp.vercel.app)
+- [배포된 제품 데모](https://reroute-mvp-pied.vercel.app)
 - [4분 제품 워크스루](./public/portfolio/reroute-walkthrough.mp4)
 - [합성 검증 보고서](./public/reports/validation-simulation.html)
 - [검증 및 품질 보고서](./verification-report.md)
