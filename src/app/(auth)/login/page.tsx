@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: "로그인" };
 export default async function LoginPage() {
   const user = await getCurrentUser();
   if (user) {
-    redirect("/");
+    redirect("/projects");
   }
 
   return (
@@ -32,7 +32,7 @@ export default async function LoginPage() {
           <LoginForm />
           {process.env.DEMO_MODE === "true" ? (
             <form action={demoLoginAction} className="demo-login-form">
-              <button className="button button-ghost" type="submit">포트폴리오 데모 바로 열기</button>
+              <button className="button button-ghost" type="submit">샘플 작업 공간을 초기화하고 열기</button>
             </form>
           ) : null}
         </div>

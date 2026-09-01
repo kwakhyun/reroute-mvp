@@ -12,6 +12,7 @@ env:
   DATABASE_URL: file:./data/ci.db
   SESSION_PEPPER: ci-only-session-pepper-with-more-than-32-characters
   DEMO_MODE: "true"
+  DEMO_RESET_ON_LOGIN: "false"
   ALLOW_FILE_DATABASE: "true"
   TRUST_PROXY_HEADERS: "false"
 
@@ -24,6 +25,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - run: npm run analysis:verify
       - run: npm ci
       - run: npm audit --audit-level=moderate
       - run: npm run lint
@@ -31,6 +33,7 @@ jobs:
       - run: npm run test:coverage
       - run: npm run db:migrate
       - run: npm run db:seed
+      - run: npm run test:demo-reset
       - run: npm run build
 
   browser-journey:

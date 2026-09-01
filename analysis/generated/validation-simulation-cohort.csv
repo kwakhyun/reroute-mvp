@@ -1,0 +1,16 @@
+record_type,synthetic_id,role_or_project,company_size,timing,dashboard_viewed,bids_opened,recalculation_opened,confirmation_opened,pilot_interest,paid_pilot
+synthetic_user,SYN-U01,총무,100–299명,3개월 내 이전,1,1,1,0,,
+synthetic_user,SYN-U02,자산관리,300–999명,2개월 내 통폐합,1,0,0,0,,
+synthetic_user,SYN-U03,경영지원,100–299명,3개월 내 리뉴얼,1,1,0,1,,
+synthetic_user,SYN-U04,총무,"1,000명 이상",1개월 내 이전,1,0,0,0,,
+synthetic_user,SYN-U05,ESG 운영,300–999명,3개월 내 이전,1,1,1,0,,
+synthetic_user,SYN-U06,자산관리,100–299명,2개월 내 폐점,1,1,0,1,,
+synthetic_user,SYN-U07,재무기획,"1,000명 이상",2개월 내 통폐합,1,0,0,0,,
+synthetic_user,SYN-U08,총무,300–999명,1개월 내 이전,1,1,1,0,,
+synthetic_user,SYN-U09,경영지원,100–299명,3개월 내 폐점,1,1,0,0,,
+synthetic_user,SYN-U10,자산관리,300–999명,2개월 내 이전,1,1,1,1,,
+synthetic_company,SYN-C01,오피스 이전,100–299명,3개월 이내,,,,,0,0
+synthetic_company,SYN-C02,거점 통폐합,300–999명,3개월 이내,,,,,1,0
+synthetic_company,SYN-C03,오피스 이전,"1,000명 이상",3개월 이내,,,,,1,0
+synthetic_company,SYN-C04,폐점,100–299명,3개월 이내,,,,,1,1
+synthetic_company,SYN-C05,리뉴얼,300–999명,3개월 이내,,,,,0,0

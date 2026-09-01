@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { eq } from "drizzle-orm";
+import { pathToFileURL } from "node:url";
+import { eq, inArray, sql } from "drizzle-orm";
 import { DEMO_PROJECT_ID } from "../src/lib/constants";
 import { hashPassword } from "../src/server/auth/password";
 import { db } from "../src/server/db/connection";
@@ -57,46 +58,118 @@ const bidSeed: CandidateBid[] = [
   { id: "bid-d-employee", assetGroupId: "asset-tables", isPartnerVerified: true, partnerId: "partner-employee-market", quantity: 28, cashRecovery: 230, costSavings: 0, reuseQuantity: 28, performanceLabel: "재사용", performanceRate: 100, pickupDate: at(13) },
 ];
 
-async function clearDatabase() {
-  await db.delete(settlements);
-  await db.delete(pickupOperations);
-  await db.delete(analyticsEvents);
-  await db.delete(auditLogs);
-  await db.delete(mutationReceipts);
-  await db.delete(matchAllocations);
-  await db.delete(matchPlans);
-  await db.delete(bids);
-  await db.delete(assetGroups);
-  await db.delete(partners);
-  await db.delete(loginAttempts);
-  await db.delete(sessions);
-  await db.delete(organizationMemberships);
-  await db.delete(projects);
-  await db.delete(users);
-  await db.delete(organizations);
+type SeedOptions = { full?: boolean };
+type SeedTransaction = Parameters<Parameters<typeof db.transaction>[0]>[0];
+
+async function clearDatabase(tx: SeedTransaction) {
+  await tx.delete(settlements);
+  await tx.delete(pickupOperations);
+  await tx.delete(analyticsEvents);
+  await tx.delete(auditLogs);
+  await tx.delete(mutationReceipts);
+  await tx.delete(matchAllocations);
+  await tx.delete(matchPlans);
+  await tx.delete(bids);
+  await tx.delete(assetGroups);
+  await tx.delete(partners);
+  await tx.delete(loginAttempts);
+  await tx.delete(sessions);
+  await tx.delete(organizationMemberships);
+  await tx.delete(projects);
+  await tx.delete(users);
+  await tx.delete(organizations);
 }
 
-async function main() {
-  await clearDatabase();
+async function clearDemoWorkspace(tx: SeedTransaction) {
+  const demoUsers = ["user-approver", "user-manager", "user-viewer"];
+  const demoProjects = await tx
+    .select({ id: projects.id })
+    .from(projects)
+    .where(eq(projects.organizationId, "org-reroute-demo"));
+  const projectIds = demoProjects.map((project) => project.id);
 
-  const passwordHash = await hashPassword(DEMO_ACCOUNTS.approver.password);
-  await db.insert(users).values([
+  if (projectIds.length > 0) {
+    const plans = await tx
+      .select({ id: matchPlans.id })
+      .from(matchPlans)
+      .where(inArray(matchPlans.projectId, projectIds));
+    const planIds = plans.map((plan) => plan.id);
+    await tx.delete(settlements).where(inArray(settlements.projectId, projectIds));
+    await tx.delete(pickupOperations).where(inArray(pickupOperations.projectId, projectIds));
+    await tx.delete(analyticsEvents).where(inArray(analyticsEvents.projectId, projectIds));
+    if (planIds.length > 0) {
+      await tx.delete(matchAllocations).where(inArray(matchAllocations.matchPlanId, planIds));
+    }
+    await tx.delete(matchPlans).where(inArray(matchPlans.projectId, projectIds));
+    await tx.delete(bids).where(inArray(bids.projectId, projectIds));
+    await tx.delete(assetGroups).where(inArray(assetGroups.projectId, projectIds));
+    await tx.delete(projects).where(inArray(projects.id, projectIds));
+  }
+
+  await tx.delete(mutationReceipts).where(inArray(mutationReceipts.userId, demoUsers));
+  await tx.delete(auditLogs).where(inArray(auditLogs.actorUserId, demoUsers));
+  await tx.delete(partners).where(inArray(partners.id, partnerSeed.map((partner) => partner.id)));
+}
+
+async function upsertDemoIdentity(tx: SeedTransaction, passwordHash: string) {
+  const userRows = [
     { id: "user-approver", email: DEMO_ACCOUNTS.approver.email, name: "김지현", passwordHash, role: "APPROVER", team: "자산관리팀" },
     { id: "user-manager", email: DEMO_ACCOUNTS.manager.email, name: "박서준", passwordHash, role: "MANAGER", team: "자산운영팀" },
     { id: "user-viewer", email: DEMO_ACCOUNTS.viewer.email, name: "이하늘", passwordHash, role: "VIEWER", team: "경영기획팀" },
-  ]);
+  ] as const;
+  for (const user of userRows) {
+    await tx
+      .insert(users)
+      .values(user)
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          email: sql`excluded.email`,
+          name: sql`excluded.name`,
+          passwordHash: sql`excluded.password_hash`,
+          role: sql`excluded.role`,
+          team: sql`excluded.team`,
+        },
+      });
+  }
 
-  await db.insert(organizations).values([
-    { id: "org-reroute-demo", name: "REROUTE 데모 조직" },
+  for (const organization of [
+    { id: "org-reroute-demo", name: "REROUTE 샘플 조직" },
     { id: "org-foreign", name: "접근 격리 검증 조직" },
-  ]);
-  await db.insert(organizationMemberships).values([
+  ]) {
+    await tx
+      .insert(organizations)
+      .values(organization)
+      .onConflictDoUpdate({ target: organizations.id, set: { name: sql`excluded.name` } });
+  }
+  for (const membership of [
     { id: "membership-approver", organizationId: "org-reroute-demo", userId: "user-approver", role: "APPROVER" },
     { id: "membership-manager", organizationId: "org-reroute-demo", userId: "user-manager", role: "MANAGER" },
     { id: "membership-viewer", organizationId: "org-reroute-demo", userId: "user-viewer", role: "VIEWER" },
-  ]);
+  ] as const) {
+    await tx
+      .insert(organizationMemberships)
+      .values(membership)
+      .onConflictDoUpdate({
+        target: organizationMemberships.id,
+        set: {
+          organizationId: sql`excluded.organization_id`,
+          userId: sql`excluded.user_id`,
+          role: sql`excluded.role`,
+        },
+      });
+  }
+}
 
-  await db.insert(projects).values({
+async function seedDemo(tx: SeedTransaction, passwordHash: string, options: SeedOptions) {
+  if (options.full) {
+    await clearDatabase(tx);
+  } else {
+    await clearDemoWorkspace(tx);
+  }
+  await upsertDemoIdentity(tx, passwordHash);
+
+  await tx.insert(projects).values({
     id: DEMO_PROJECT_ID,
     organizationId: "org-reroute-demo",
     name: "성수 오피스 이전",
@@ -109,36 +182,39 @@ async function main() {
     maximumPickupRounds: 3,
     updatedAt: new Date("2026-09-01T10:30:00+09:00"),
   });
-  await db.insert(projects).values({
-    id: "project-foreign-audit",
-    organizationId: "org-foreign",
-    name: "격리된 인수 프로젝트",
-    batchLabel: "비공개 자산 1개",
-    location: "비공개",
-    status: "DRAFT",
-    assetCount: 1,
-    minimumCashRecovery: 0,
-    minimumReuseRate: 0,
-    maximumPickupRounds: 1,
-    updatedAt: new Date("2026-09-01T09:00:00+09:00"),
-  });
+  await tx
+    .insert(projects)
+    .values({
+      id: "project-foreign-audit",
+      organizationId: "org-foreign",
+      name: "격리된 인수 프로젝트",
+      batchLabel: "비공개 자산 1개",
+      location: "비공개",
+      status: "DRAFT",
+      assetCount: 1,
+      minimumCashRecovery: 0,
+      minimumReuseRate: 0,
+      maximumPickupRounds: 1,
+      updatedAt: new Date("2026-09-01T09:00:00+09:00"),
+    })
+    .onConflictDoNothing();
 
-  await db.insert(assetGroups).values([
+  await tx.insert(assetGroups).values([
     { id: "asset-chairs", projectId: DEMO_PROJECT_ID, name: "회의용 의자", category: "CHAIR", displayOrder: 1, quantity: 96, conditionGrade: "B", conditionLabel: "양호", minimumRecovery: 600, imagePath: "/assets/meeting-chair.png" },
     { id: "asset-monitor-arms", projectId: DEMO_PROJECT_ID, name: "모니터 암", category: "MONITOR_ARM", displayOrder: 2, quantity: 48, conditionGrade: "B+", conditionLabel: "양호", minimumRecovery: 480, imagePath: "/assets/monitor-arm.png" },
     { id: "asset-drawers", projectId: DEMO_PROJECT_ID, name: "이동 서랍", category: "PEDESTAL", displayOrder: 3, quantity: 42, conditionGrade: "B", conditionLabel: "양호", minimumRecovery: 420, imagePath: "/assets/mobile-pedestal.png" },
     { id: "asset-tables", projectId: DEMO_PROJECT_ID, name: "라운지 테이블", category: "TABLE", displayOrder: 4, quantity: 28, conditionGrade: "C+", conditionLabel: "보통", minimumRecovery: 240, imagePath: "/assets/lounge-table.png" },
   ]);
 
-  await db.insert(partners).values(partnerSeed.map((partner) => ({
+  await tx.insert(partners).values(partnerSeed.map((partner, index) => ({
     ...partner,
     isVerified: true,
-    verificationReference: `demo-evidence:${partner.id}`,
+    verificationReference: `SAMPLE-EVIDENCE-${String(index + 1).padStart(3, "0")}`,
     verifiedAt: at(1),
     verifiedBy: "user-approver",
     verificationExpiresAt: new Date("2027-09-01T12:00:00+09:00"),
   })));
-  await db.insert(bids).values(
+  await tx.insert(bids).values(
     bidSeed.map((bid, index) => ({
       ...bid,
       slot: ["asset-chairs", "asset-monitor-arms", "asset-drawers", "asset-tables"].indexOf(bid.assetGroupId) >= 0
@@ -166,7 +242,7 @@ async function main() {
   );
   const planId = "plan-initial-recommendation";
 
-  await db.insert(matchPlans).values({
+  await tx.insert(matchPlans).values({
     id: planId,
     projectId: DEMO_PROJECT_ID,
     status: "DRAFT",
@@ -179,7 +255,7 @@ async function main() {
     criteriaPassed: recommendation.criteriaPassed,
   });
 
-  await db.insert(matchAllocations).values(
+  await tx.insert(matchAllocations).values(
     recommendation.bids.map((bid) => ({
       id: randomUUID(),
       matchPlanId: planId,
@@ -194,7 +270,7 @@ async function main() {
     })),
   );
 
-  await db.insert(auditLogs).values({
+  await tx.insert(auditLogs).values({
     id: randomUUID(),
     actorUserId: "user-approver",
     action: "PROJECT_SEEDED",
@@ -203,11 +279,39 @@ async function main() {
     metadataJson: JSON.stringify({ planId, bidCount: bidSeed.length }),
   });
 
-  const [project] = await db.select().from(projects).where(eq(projects.id, DEMO_PROJECT_ID));
-  console.info(`Seeded ${project.name} with ${bidSeed.length} bids.`);
+  const [project] = await tx.select().from(projects).where(eq(projects.id, DEMO_PROJECT_ID));
+  if (!project) {
+    throw new Error("샘플 프로젝트 시드를 확인할 수 없습니다.");
+  }
+  return project;
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+const globalForDemoReset = globalThis as unknown as {
+  rerouteDemoReset?: Promise<void>;
+};
+
+export async function resetDemoDatabase(options: SeedOptions = {}) {
+  if (globalForDemoReset.rerouteDemoReset) {
+    return globalForDemoReset.rerouteDemoReset;
+  }
+
+  const reset = (async () => {
+    const passwordHash = await hashPassword(DEMO_ACCOUNTS.approver.password);
+    const project = await db.transaction((tx) => seedDemo(tx, passwordHash, options));
+    console.info(`Seeded ${project.name} with ${bidSeed.length} bids.`);
+  })();
+  globalForDemoReset.rerouteDemoReset = reset;
+  try {
+    await reset;
+  } finally {
+    delete globalForDemoReset.rerouteDemoReset;
+  }
+}
+
+const isDirectRun = Boolean(process.argv[1]) && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (isDirectRun) {
+  resetDemoDatabase({ full: true }).catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

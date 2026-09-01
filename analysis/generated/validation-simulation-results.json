@@ -1,0 +1,843 @@
+{
+  "artifact_type": "synthetic_validation_simulation",
+  "synthetic": true,
+  "generated_on": "2026-09-01",
+  "timezone": "Asia/Seoul",
+  "seed": 20260901,
+  "base": {
+    "scenario": "base",
+    "label": "기준",
+    "iterations": 50000,
+    "summary": {
+      "dashboard_viewed": {
+        "mean_count": 10.0,
+        "median_count": 10,
+        "median_rate": 100.0,
+        "p05_count": 10,
+        "p95_count": 10
+      },
+      "bids_opened": {
+        "mean_count": 6.8,
+        "median_count": 7,
+        "median_rate": 70.0,
+        "p05_count": 4,
+        "p95_count": 9
+      },
+      "recalculation_opened": {
+        "mean_count": 3.75,
+        "median_count": 4,
+        "median_rate": 40.0,
+        "p05_count": 1,
+        "p95_count": 7
+      },
+      "confirmation_opened": {
+        "mean_count": 2.86,
+        "median_count": 3,
+        "median_rate": 30.0,
+        "p05_count": 0,
+        "p95_count": 6
+      },
+      "pilot_interest": {
+        "mean_count": 2.92,
+        "median_count": 3,
+        "median_rate": 60.0,
+        "p05_count": 1,
+        "p95_count": 5
+      },
+      "paid_pilot": {
+        "mean_count": 1.33,
+        "median_count": 1,
+        "median_rate": 20.0,
+        "p05_count": 0,
+        "p95_count": 3
+      }
+    },
+    "pass_probabilities": {
+      "bids_opened": 77.7,
+      "recalculation_opened": 75.2,
+      "confirmation_opened": 78.4,
+      "pilot_interest": 63.5,
+      "paid_pilot": 39.3,
+      "all_criteria": 18.8,
+      "investment_rule": 30.9
+    },
+    "representative": {
+      "counts": {
+        "dashboard_viewed": 10,
+        "bids_opened": 7,
+        "recalculation_opened": 4,
+        "confirmation_opened": 3,
+        "pilot_interest": 3,
+        "paid_pilot": 1
+      },
+      "users": [
+        {
+          "participant_id": "SYN-U01",
+          "role": "총무",
+          "company_size": "100–299명",
+          "timing": "3개월 내 이전",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": true,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U02",
+          "role": "자산관리",
+          "company_size": "300–999명",
+          "timing": "2개월 내 통폐합",
+          "dashboard_viewed": true,
+          "bids_opened": false,
+          "recalculation_opened": false,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U03",
+          "role": "경영지원",
+          "company_size": "100–299명",
+          "timing": "3개월 내 리뉴얼",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": false,
+          "confirmation_opened": true
+        },
+        {
+          "participant_id": "SYN-U04",
+          "role": "총무",
+          "company_size": "1,000명 이상",
+          "timing": "1개월 내 이전",
+          "dashboard_viewed": true,
+          "bids_opened": false,
+          "recalculation_opened": false,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U05",
+          "role": "ESG 운영",
+          "company_size": "300–999명",
+          "timing": "3개월 내 이전",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": true,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U06",
+          "role": "자산관리",
+          "company_size": "100–299명",
+          "timing": "2개월 내 폐점",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": false,
+          "confirmation_opened": true
+        },
+        {
+          "participant_id": "SYN-U07",
+          "role": "재무기획",
+          "company_size": "1,000명 이상",
+          "timing": "2개월 내 통폐합",
+          "dashboard_viewed": true,
+          "bids_opened": false,
+          "recalculation_opened": false,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U08",
+          "role": "총무",
+          "company_size": "300–999명",
+          "timing": "1개월 내 이전",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": true,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U09",
+          "role": "경영지원",
+          "company_size": "100–299명",
+          "timing": "3개월 내 폐점",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": false,
+          "confirmation_opened": false
+        },
+        {
+          "participant_id": "SYN-U10",
+          "role": "자산관리",
+          "company_size": "300–999명",
+          "timing": "2개월 내 이전",
+          "dashboard_viewed": true,
+          "bids_opened": true,
+          "recalculation_opened": true,
+          "confirmation_opened": true
+        }
+      ],
+      "companies": [
+        {
+          "company_id": "SYN-C01",
+          "company_size": "100–299명",
+          "project_type": "오피스 이전",
+          "pilot_interest": false,
+          "paid_pilot": false
+        },
+        {
+          "company_id": "SYN-C02",
+          "company_size": "300–999명",
+          "project_type": "거점 통폐합",
+          "pilot_interest": true,
+          "paid_pilot": false
+        },
+        {
+          "company_id": "SYN-C03",
+          "company_size": "1,000명 이상",
+          "project_type": "오피스 이전",
+          "pilot_interest": true,
+          "paid_pilot": false
+        },
+        {
+          "company_id": "SYN-C04",
+          "company_size": "100–299명",
+          "project_type": "폐점",
+          "pilot_interest": true,
+          "paid_pilot": true
+        },
+        {
+          "company_id": "SYN-C05",
+          "company_size": "300–999명",
+          "project_type": "리뉴얼",
+          "pilot_interest": false,
+          "paid_pilot": false
+        }
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "scenario": "conservative",
+      "label": "보수",
+      "iterations": 20000,
+      "summary": {
+        "dashboard_viewed": {
+          "mean_count": 10.0,
+          "median_count": 10,
+          "median_rate": 100.0,
+          "p05_count": 10,
+          "p95_count": 10
+        },
+        "bids_opened": {
+          "mean_count": 5.46,
+          "median_count": 5,
+          "median_rate": 50.0,
+          "p05_count": 2,
+          "p95_count": 8
+        },
+        "recalculation_opened": {
+          "mean_count": 2.18,
+          "median_count": 2,
+          "median_rate": 20.0,
+          "p05_count": 0,
+          "p95_count": 5
+        },
+        "confirmation_opened": {
+          "mean_count": 1.62,
+          "median_count": 1,
+          "median_rate": 10.0,
+          "p05_count": 0,
+          "p95_count": 4
+        },
+        "pilot_interest": {
+          "mean_count": 2.1,
+          "median_count": 2,
+          "median_rate": 40.0,
+          "p05_count": 0,
+          "p95_count": 4
+        },
+        "paid_pilot": {
+          "mean_count": 0.57,
+          "median_count": 0,
+          "median_rate": 0.0,
+          "p05_count": 0,
+          "p95_count": 2
+        }
+      },
+      "pass_probabilities": {
+        "bids_opened": 49.9,
+        "recalculation_opened": 38.0,
+        "confirmation_opened": 47.6,
+        "pilot_interest": 37.1,
+        "paid_pilot": 12.0,
+        "all_criteria": 1.6,
+        "investment_rule": 5.7
+      },
+      "representative": {
+        "counts": {
+          "dashboard_viewed": 10,
+          "bids_opened": 7,
+          "recalculation_opened": 4,
+          "confirmation_opened": 3,
+          "pilot_interest": 3,
+          "paid_pilot": 1
+        },
+        "users": [
+          {
+            "participant_id": "SYN-U01",
+            "role": "총무",
+            "company_size": "100–299명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U02",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U03",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 리뉴얼",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U04",
+            "role": "총무",
+            "company_size": "1,000명 이상",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U05",
+            "role": "ESG 운영",
+            "company_size": "300–999명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U06",
+            "role": "자산관리",
+            "company_size": "100–299명",
+            "timing": "2개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U07",
+            "role": "재무기획",
+            "company_size": "1,000명 이상",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U08",
+            "role": "총무",
+            "company_size": "300–999명",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U09",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U10",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          }
+        ],
+        "companies": [
+          {
+            "company_id": "SYN-C01",
+            "company_size": "100–299명",
+            "project_type": "오피스 이전",
+            "pilot_interest": false,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C02",
+            "company_size": "300–999명",
+            "project_type": "거점 통폐합",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C03",
+            "company_size": "1,000명 이상",
+            "project_type": "오피스 이전",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C04",
+            "company_size": "100–299명",
+            "project_type": "폐점",
+            "pilot_interest": true,
+            "paid_pilot": true
+          },
+          {
+            "company_id": "SYN-C05",
+            "company_size": "300–999명",
+            "project_type": "리뉴얼",
+            "pilot_interest": false,
+            "paid_pilot": false
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "base",
+      "label": "기준",
+      "iterations": 50000,
+      "summary": {
+        "dashboard_viewed": {
+          "mean_count": 10.0,
+          "median_count": 10,
+          "median_rate": 100.0,
+          "p05_count": 10,
+          "p95_count": 10
+        },
+        "bids_opened": {
+          "mean_count": 6.8,
+          "median_count": 7,
+          "median_rate": 70.0,
+          "p05_count": 4,
+          "p95_count": 9
+        },
+        "recalculation_opened": {
+          "mean_count": 3.75,
+          "median_count": 4,
+          "median_rate": 40.0,
+          "p05_count": 1,
+          "p95_count": 7
+        },
+        "confirmation_opened": {
+          "mean_count": 2.86,
+          "median_count": 3,
+          "median_rate": 30.0,
+          "p05_count": 0,
+          "p95_count": 6
+        },
+        "pilot_interest": {
+          "mean_count": 2.92,
+          "median_count": 3,
+          "median_rate": 60.0,
+          "p05_count": 1,
+          "p95_count": 5
+        },
+        "paid_pilot": {
+          "mean_count": 1.33,
+          "median_count": 1,
+          "median_rate": 20.0,
+          "p05_count": 0,
+          "p95_count": 3
+        }
+      },
+      "pass_probabilities": {
+        "bids_opened": 77.7,
+        "recalculation_opened": 75.2,
+        "confirmation_opened": 78.4,
+        "pilot_interest": 63.5,
+        "paid_pilot": 39.3,
+        "all_criteria": 18.8,
+        "investment_rule": 30.9
+      },
+      "representative": {
+        "counts": {
+          "dashboard_viewed": 10,
+          "bids_opened": 7,
+          "recalculation_opened": 4,
+          "confirmation_opened": 3,
+          "pilot_interest": 3,
+          "paid_pilot": 1
+        },
+        "users": [
+          {
+            "participant_id": "SYN-U01",
+            "role": "총무",
+            "company_size": "100–299명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U02",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U03",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 리뉴얼",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U04",
+            "role": "총무",
+            "company_size": "1,000명 이상",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U05",
+            "role": "ESG 운영",
+            "company_size": "300–999명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U06",
+            "role": "자산관리",
+            "company_size": "100–299명",
+            "timing": "2개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U07",
+            "role": "재무기획",
+            "company_size": "1,000명 이상",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U08",
+            "role": "총무",
+            "company_size": "300–999명",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U09",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U10",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": true
+          }
+        ],
+        "companies": [
+          {
+            "company_id": "SYN-C01",
+            "company_size": "100–299명",
+            "project_type": "오피스 이전",
+            "pilot_interest": false,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C02",
+            "company_size": "300–999명",
+            "project_type": "거점 통폐합",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C03",
+            "company_size": "1,000명 이상",
+            "project_type": "오피스 이전",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C04",
+            "company_size": "100–299명",
+            "project_type": "폐점",
+            "pilot_interest": true,
+            "paid_pilot": true
+          },
+          {
+            "company_id": "SYN-C05",
+            "company_size": "300–999명",
+            "project_type": "리뉴얼",
+            "pilot_interest": false,
+            "paid_pilot": false
+          }
+        ]
+      }
+    },
+    {
+      "scenario": "optimistic",
+      "label": "낙관",
+      "iterations": 20000,
+      "summary": {
+        "dashboard_viewed": {
+          "mean_count": 10.0,
+          "median_count": 10,
+          "median_rate": 100.0,
+          "p05_count": 10,
+          "p95_count": 10
+        },
+        "bids_opened": {
+          "mean_count": 7.87,
+          "median_count": 8,
+          "median_rate": 80.0,
+          "p05_count": 5,
+          "p95_count": 10
+        },
+        "recalculation_opened": {
+          "mean_count": 5.36,
+          "median_count": 5,
+          "median_rate": 50.0,
+          "p05_count": 2,
+          "p95_count": 8
+        },
+        "confirmation_opened": {
+          "mean_count": 4.34,
+          "median_count": 4,
+          "median_rate": 40.0,
+          "p05_count": 1,
+          "p95_count": 7
+        },
+        "pilot_interest": {
+          "mean_count": 3.58,
+          "median_count": 4,
+          "median_rate": 80.0,
+          "p05_count": 2,
+          "p95_count": 5
+        },
+        "paid_pilot": {
+          "mean_count": 2.05,
+          "median_count": 2,
+          "median_rate": 40.0,
+          "p05_count": 0,
+          "p95_count": 4
+        }
+      },
+      "pass_probabilities": {
+        "bids_opened": 92.9,
+        "recalculation_opened": 94.0,
+        "confirmation_opened": 94.7,
+        "pilot_interest": 82.9,
+        "paid_pilot": 65.4,
+        "all_criteria": 52.3,
+        "investment_rule": 62.1
+      },
+      "representative": {
+        "counts": {
+          "dashboard_viewed": 10,
+          "bids_opened": 7,
+          "recalculation_opened": 4,
+          "confirmation_opened": 3,
+          "pilot_interest": 3,
+          "paid_pilot": 1
+        },
+        "users": [
+          {
+            "participant_id": "SYN-U01",
+            "role": "총무",
+            "company_size": "100–299명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U02",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U03",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 리뉴얼",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U04",
+            "role": "총무",
+            "company_size": "1,000명 이상",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U05",
+            "role": "ESG 운영",
+            "company_size": "300–999명",
+            "timing": "3개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U06",
+            "role": "자산관리",
+            "company_size": "100–299명",
+            "timing": "2개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U07",
+            "role": "재무기획",
+            "company_size": "1,000명 이상",
+            "timing": "2개월 내 통폐합",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": false,
+            "confirmation_opened": true
+          },
+          {
+            "participant_id": "SYN-U08",
+            "role": "총무",
+            "company_size": "300–999명",
+            "timing": "1개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U09",
+            "role": "경영지원",
+            "company_size": "100–299명",
+            "timing": "3개월 내 폐점",
+            "dashboard_viewed": true,
+            "bids_opened": true,
+            "recalculation_opened": true,
+            "confirmation_opened": false
+          },
+          {
+            "participant_id": "SYN-U10",
+            "role": "자산관리",
+            "company_size": "300–999명",
+            "timing": "2개월 내 이전",
+            "dashboard_viewed": true,
+            "bids_opened": false,
+            "recalculation_opened": false,
+            "confirmation_opened": false
+          }
+        ],
+        "companies": [
+          {
+            "company_id": "SYN-C01",
+            "company_size": "100–299명",
+            "project_type": "오피스 이전",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C02",
+            "company_size": "300–999명",
+            "project_type": "거점 통폐합",
+            "pilot_interest": false,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C03",
+            "company_size": "1,000명 이상",
+            "project_type": "오피스 이전",
+            "pilot_interest": true,
+            "paid_pilot": false
+          },
+          {
+            "company_id": "SYN-C04",
+            "company_size": "100–299명",
+            "project_type": "폐점",
+            "pilot_interest": true,
+            "paid_pilot": true
+          },
+          {
+            "company_id": "SYN-C05",
+            "company_size": "300–999명",
+            "project_type": "리뉴얼",
+            "pilot_interest": false,
+            "paid_pilot": false
+          }
+        ]
+      }
+    }
+  ],
+  "decision": {
+    "recommendation": "LIMITED_PILOT",
+    "dedicated_investment": "HOLD",
+    "reason": "행동 기준은 방향성을 보이지만 유료 파일럿 기준과 전체 기준 동시 충족 확률이 낮음"
+  },
+  "required_disclaimer": "합성 시뮬레이션이며 실제 고객 검증 결과가 아님"
+}

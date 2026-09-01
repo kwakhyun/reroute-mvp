@@ -7,9 +7,34 @@ test.describe.configure({ mode: "serial" });
 
 async function demoLogin(page: Page) {
   await page.goto("/login");
-  await page.getByRole("button", { name: "포트폴리오 데모 바로 열기" }).click();
+  await page.getByRole("button", { name: "샘플 작업 공간을 초기화하고 열기" }).click();
   await expect(page).toHaveURL("/projects");
 }
+
+async function fetchJsonFromPage(page: Page, url: string) {
+  return page.evaluate(async (requestUrl) => {
+    const response = await fetch(requestUrl);
+    return { status: response.status, body: await response.json() };
+  }, url);
+}
+
+test("공개 케이스 스터디가 가설과 합성 검증 한계를 명확히 보여준다", async ({ page, request }) => {
+  await page.context().clearCookies();
+  await page.goto("/");
+  await expect(page.getByRole("heading", { name: "폐기 예정 자산을 의사결정 가능한 제안으로." })).toBeVisible();
+  await expect(page.getByText("실제 고객 검증 전 단계", { exact: true })).toBeVisible();
+  await expect(page.getByText("아래 수치는 실제 고객 조사나 운영 로그가 아닙니다.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: /기여도 100%/ })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
+  const report = await request.get("/reports/validation-simulation.html");
+  expect(report.status()).toBe(200);
+  expect(await report.text()).toContain("REROUTE 합성 파일럿 검증 시뮬레이션");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await expect(page.getByRole("button", { name: "초기화된 제품 데모 열기" }).first()).toBeVisible();
+});
 
 test("준비 상태와 보호 경계를 검증한다", async ({ page, request }) => {
   const health = await request.get("/api/health");
@@ -29,10 +54,14 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
   expect(scriptNonces.length).toBeGreaterThan(0);
   expect(scriptNonces.every(Boolean)).toBe(true);
 
-  await page.getByRole("button", { name: "포트폴리오 데모 바로 열기" }).click();
-  const foreignPage = await page.goto("/projects/project-foreign-audit/matching");
-  expect(foreignPage?.status()).toBe(404);
+  await page.getByRole("button", { name: "샘플 작업 공간을 초기화하고 열기" }).click();
+  await expect(page).toHaveURL("/projects");
+  const foreignApi = await fetchJsonFromPage(page, "/api/v1/projects/project-foreign-audit/summary");
+  expect(foreignApi).toEqual({ status: 404, body: { error: "not_found" } });
+
+  await page.goto("/projects/project-foreign-audit/matching");
   await expect(page.getByRole("heading", { name: "요청한 화면을 찾을 수 없습니다." })).toBeVisible();
+  await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toBeAttached();
 });
 
 test("시드 매칭안의 회수 하한과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
@@ -53,9 +82,9 @@ test("시드 매칭안의 회수 하한과 배정 근거를 읽기 전용으로 
     await expect(proposal.getByText(asset, { exact: true })).toBeVisible();
   }
 
-  const summaryResponse = await page.request.get(`/api/v1${demoProjectPath}/summary`);
-  expect(summaryResponse.status()).toBe(200);
-  const payload = await summaryResponse.json();
+  const summaryResponse = await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`);
+  expect(summaryResponse.status).toBe(200);
+  const payload = summaryResponse.body;
   expect(payload.data.bidCount).toBe(11);
   expect(payload.data.allocations).toHaveLength(4);
   expect(payload.data.allocations.every((allocation: { assetGroupId?: string; assetGroupName?: string }) => allocation.assetGroupId && allocation.assetGroupName)).toBe(true);
@@ -81,14 +110,15 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   await expect(page.getByRole("heading", { name: projectName })).toBeVisible();
   const projectId = new URL(page.url()).pathname.split("/")[2];
 
-  const createdSummary = await page.request.get(`/api/v1/projects/${projectId}/summary`);
-  const createdPayload = await createdSummary.json();
+  const createdSummary = await fetchJsonFromPage(page, `/api/v1/projects/${projectId}/summary`);
+  expect(createdSummary.status).toBe(200);
+  const createdPayload = createdSummary.body;
   expect(createdPayload.data.project.minimumCashRecovery).toBe(1740);
   expect(createdPayload.data.bidCount).toBe(0);
   expect(createdPayload.data.plan).toBeNull();
   const assets = createdPayload.data.assets as Array<{ id: string; name: string; quantity: number; minimumRecovery: number }>;
 
-  await page.getByRole("link", { name: "입찰" }).click();
+  await page.getByRole("link", { name: "입찰", exact: true }).click();
   await expect(page.getByRole("heading", { name: "입찰 0건" })).toBeVisible();
   const bidHeader = [
     "assetGroupId", "assetGroupName", "partnerName", "partnerType", "verificationLabel",
@@ -120,7 +150,7 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   await expect(page.getByText("입찰 4건을 검증 근거와 함께 가져왔습니다. 이제 매칭안을 계산할 수 있습니다.")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
 
-  await page.getByRole("link", { name: "매칭" }).click();
+  await page.getByRole("link", { name: "매칭", exact: true }).click();
   await expect(page.getByText("아직 계산된 매칭안이 없습니다.")).toBeVisible();
   await page.getByRole("button", { name: "조건 다시 계산" }).click();
   const recalculation = page.getByRole("dialog", { name: "매칭 조건 다시 계산" });
@@ -143,12 +173,12 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   await page.getByRole("link", { name: "수거 운영 보기" }).click();
   await expect(page.getByRole("heading", { name: "수거 운영 1회" })).toBeVisible();
   await expect(page.locator("article.pickup-round")).toHaveCount(1);
-  await page.getByRole("link", { name: "정산" }).click();
-  await expect(page.getByText("결제사 미연동", { exact: true })).toBeVisible();
+  await page.getByRole("link", { name: "정산", exact: true }).click();
+  await expect(page.locator("strong.settlement-state-label")).toHaveText("결제사 미연동");
 
-  const audit = await page.request.get(`/api/v1/projects/${projectId}/audit`);
-  expect(audit.status()).toBe(200);
-  const auditPayload = await audit.json();
+  const audit = await fetchJsonFromPage(page, `/api/v1/projects/${projectId}/audit`);
+  expect(audit.status).toBe(200);
+  const auditPayload = audit.body;
   expect(auditPayload.data.map((entry: { action: string }) => entry.action)).toEqual(
     expect.arrayContaining(["PROJECT_CREATED", "BIDS_IMPORTED", "MATCH_PLAN_RECALCULATED", "MATCH_PLAN_CONFIRMED"]),
   );

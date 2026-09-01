@@ -1,5 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const useProductionBuild = process.env.PLAYWRIGHT_USE_PRODUCTION === "true";
+
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
@@ -16,9 +18,13 @@ export default defineConfig({
   ],
   webServer: {
     command:
-      process.env.PLAYWRIGHT_USE_PRODUCTION === "true"
+      useProductionBuild
         ? "npm run start"
         : "npm run dev -- --hostname 127.0.0.1 --port 3000",
+    env: {
+      ...process.env,
+      ...(useProductionBuild ? { ALLOW_FILE_DATABASE: "true" } : {}),
+    },
     url: "http://127.0.0.1:3000/api/health",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,

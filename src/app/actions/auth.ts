@@ -11,6 +11,7 @@ import { db } from "@/server/db/client";
 import { auditLogs, loginAttempts, users } from "@/server/db/schema";
 import { DEMO_ACCOUNTS } from "@/server/demo-data";
 import { getRequestIpHash, hashSensitiveIdentifier } from "@/server/security/request";
+import { resetDemoDatabase } from "../../../scripts/seed";
 
 export type LoginState = { error?: string };
 
@@ -104,6 +105,9 @@ export async function logoutAction() {
 export async function demoLoginAction() {
   if (process.env.DEMO_MODE !== "true") {
     throw new Error("Demo login is disabled");
+  }
+  if (process.env.DEMO_RESET_ON_LOGIN === "true") {
+    await resetDemoDatabase();
   }
   const [user] = await db.select().from(users).where(eq(users.email, DEMO_ACCOUNTS.approver.email)).limit(1);
   if (!user) {
