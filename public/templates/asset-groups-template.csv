@@ -1,0 +1,5 @@
+name,category,quantity,conditionGrade,conditionLabel,minimumRecovery,imagePath
+회의용 의자,CHAIR,96,B,양호,600,/assets/meeting-chair.png
+모니터 암,MONITOR_ARM,48,B+,양호,480,/assets/monitor-arm.png
+이동 서랍,PEDESTAL,42,B,양호,420,/assets/mobile-pedestal.png
+라운지 테이블,TABLE,28,C+,보통,240,/assets/lounge-table.png

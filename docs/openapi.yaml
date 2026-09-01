@@ -1,0 +1,140 @@
+openapi: 3.1.0
+info:
+  title: REROUTE MVP API
+  version: 0.1.0
+servers:
+  - url: http://localhost:3000
+paths:
+  /api/health:
+    get:
+      summary: 애플리케이션과 DB 상태 확인
+      responses:
+        "200":
+          description: 마이그레이션, 핵심 테이블, 무결성 트리거가 준비됨
+        "503":
+          description: DB 연결 또는 필수 스키마 준비 실패
+  /api/v1/projects/{projectId}/summary:
+    get:
+      summary: 프로젝트와 최신 매칭안 조회
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      responses:
+        "200":
+          description: 프로젝트 요약
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
+  /api/v1/projects/{projectId}/audit:
+    get:
+      summary: 프로젝트 감사 로그 조회
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: 감사 로그
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: 운영자 또는 확정권자 권한 필요
+        "404":
+          description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
+  /api/v1/projects/{projectId}/bids/export:
+    get:
+      summary: 입찰 CSV 내려받기
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      responses:
+        "200":
+          description: UTF-8 BOM이 포함된 CSV
+          content:
+            text/csv: {}
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
+  /api/v1/projects/{projectId}/bids/template:
+    get:
+      summary: 현재 프로젝트 자산 ID가 포함된 입찰 CSV 템플릿 내려받기
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: "#/components/parameters/ProjectId"
+      responses:
+        "200":
+          description: UTF-8 BOM이 포함된 CSV 템플릿
+          content:
+            text/csv: {}
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          description: 확정권자 권한 필요
+        "404":
+          description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
+  /api/analytics/events:
+    post:
+      summary: MVP 퍼널 이벤트 기록
+      security:
+        - sessionCookie: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, projectId]
+              properties:
+                name:
+                  type: string
+                  enum: [dashboard_viewed, bids_opened, recalculation_opened, confirmation_opened]
+                projectId:
+                  type: string
+                properties:
+                  type: object
+                  additionalProperties:
+                    type: [string, number, boolean, "null"]
+      responses:
+        "204":
+          description: 기록 완료
+        "400":
+          description: 잘못된 요청
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "404":
+          description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: reroute_session
+  parameters:
+    ProjectId:
+      name: projectId
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: 로그인 필요
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                const: unauthorized

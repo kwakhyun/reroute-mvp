@@ -1,0 +1,3 @@
+export const MAX_PROJECT_CASH_RECOVERY = 500_000_000;
+export const MAX_BID_CASH_VALUE = MAX_PROJECT_CASH_RECOVERY;
+export const SEOUL_TIME_ZONE = "Asia/Seoul";

@@ -1,0 +1,28 @@
+import { IdentificationBadge, ShieldCheck, Truck } from "@phosphor-icons/react/dist/ssr";
+
+const trustItems = [
+  { title: "수요처 운영자 확인", body: "검증 근거·시각·만료일 기록", icon: IdentificationBadge },
+  { title: "외부 정산 상태 대조", body: "연동 전에는 수동 확인값 기록", icon: ShieldCheck },
+  { title: "검수 기반 지급 확인", body: "회차별 검수 완료 후 대조", icon: Truck },
+];
+
+export function TrustStrip() {
+  return (
+    <section className="card trust-strip" aria-label="거래 검증 정책">
+      {trustItems.map((item) => {
+        const Icon = item.icon;
+        return (
+          <div className="trust-item" key={item.title}>
+            <span className="trust-icon">
+              <Icon aria-hidden="true" size={29} weight="thin" />
+            </span>
+            <div>
+              <strong>{item.title}</strong>
+              <span>{item.body}</span>
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  );
+}
