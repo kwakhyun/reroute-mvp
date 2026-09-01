@@ -5,7 +5,7 @@
   "type": "module",
   "description": "REROUTE circular office asset matching marketplace MVP",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.21.0 <25"
   },
   "scripts": {
     "dev": "next dev",

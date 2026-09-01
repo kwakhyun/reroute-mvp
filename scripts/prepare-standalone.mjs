@@ -1,6 +1,11 @@
 import { cp, mkdir } from "node:fs/promises";
 import path from "node:path";
 
+if (process.env.VERCEL === "1") {
+  console.info("Skipped standalone asset copy on Vercel.");
+  process.exit(0);
+}
+
 const root = process.cwd();
 const standalone = path.join(root, ".next", "standalone");
 
