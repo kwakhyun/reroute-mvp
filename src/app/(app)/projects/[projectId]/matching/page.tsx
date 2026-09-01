@@ -29,8 +29,8 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
         <ProjectHeader batchLabel={project.batchLabel} name={project.name} status={project.status} updatedAt={project.updatedAt} />
         <div className="content-empty-state">
           <h2>아직 계산된 매칭안이 없습니다.</h2>
-          <p>{dashboard.bidCount > 0 ? "모든 자산군에 검증된 입찰이 있는지 확인한 뒤 조건을 계산해 주세요." : "자산 배치는 준비되었습니다. 검증된 파트너 입찰이 접수되면 추천안을 계산할 수 있습니다."}</p>
-          <a className="button button-secondary" href={`/projects/${projectId}/assets`}>자산 배치 확인</a>
+          <p>{dashboard.bidCount > 0 ? "모든 자산군에 검증을 마친 입찰이 있는지 확인한 뒤 매칭안을 계산해 주세요." : "자산 목록은 준비되었습니다. 검증을 마친 수요처의 입찰을 가져오면 추천안을 계산할 수 있습니다."}</p>
+          <a className="button button-secondary" href={`/projects/${projectId}/assets`}>자산 목록 확인</a>
         </div>
         <MatchingActions
           bidCount={dashboard.bidCount}

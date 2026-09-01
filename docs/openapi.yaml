@@ -47,7 +47,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          description: 운영자 또는 확정권자 권한 필요
+          description: 운영자 또는 승인자 권한 필요
         "404":
           description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
   /api/v1/projects/{projectId}/bids/export:
@@ -81,7 +81,7 @@ paths:
         "401":
           $ref: "#/components/responses/Unauthorized"
         "403":
-          description: 확정권자 권한 필요
+          description: 승인자 권한 필요
         "404":
           description: 프로젝트가 없거나 현재 조직 멤버십으로 접근할 수 없음
   /api/analytics/events:

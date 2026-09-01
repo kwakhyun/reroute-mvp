@@ -207,7 +207,7 @@ def main() -> None:
     sources = [
         make_source(
             "criteria_source",
-            "기준 시나리오 성공 확률",
+            "성공 기준 충족 확률",
             criteria_query,
             "고정 시드 합성 시뮬레이션의 개별 성공 기준별 충족 확률을 재현합니다.",
         ),
@@ -255,11 +255,11 @@ def main() -> None:
                 },
                 {
                     "id": "investment_rule_card",
-                    "description": "확정 의도 2명과 유료 파일럿 2개사를 동시에 충족한 비율",
+                    "description": "확정 의도 2명 이상과 유료 파일럿 2개사 이상을 동시에 충족한 비율",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
-                        {"label": "전담 투자 규칙 충족", "field": "investment_rule_probability", "format": "percent"}
+                        {"label": "전담 개발 투자 기준 충족", "field": "investment_rule_probability", "format": "percent"}
                     ],
                 },
                 {
@@ -319,11 +319,11 @@ def main() -> None:
                     "type": "markdown",
                     "sourceId": "summary_source",
                     "body": (
-                        "## Executive Summary\n\n"
+                        "## 핵심 요약\n\n"
                         "> **중요:** 실제 고객 조사나 운영 데이터가 아닙니다. 고정 시드로 생성한 합성 시뮬레이션입니다.\n\n"
                         f"- **제한된 실제 파일럿은 진행할 가치가 있습니다.** 기준 시나리오에서 5개 성공 기준을 모두 충족할 추정 확률은 {probabilities['all_criteria']:.1f}%입니다.\n"
                         f"- **전담 개발 투자는 보류해야 합니다.** 확정 의도와 유료 파일럿 규칙을 함께 충족할 추정 확률은 {probabilities['investment_rule']:.1f}%이고, 대표 합성 코호트의 유료 파일럿은 {representative['paid_pilot']}/5개사로 목표 2개사에 미달했습니다.\n"
-                        "- **다음 검증은 가격과 구매 권한에 집중합니다.** 실제 5개사의 지불 의사와 계약 주체를 확인하기 전까지 본 결과는 가설로만 사용합니다."
+                        "- **다음 검증은 가격과 구매 권한에 집중합니다.** 실제 5개사의 지불 의사와 계약 주체를 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다."
                     ),
                 },
                 {"id": "decision_metrics", "type": "metric-strip", "cardIds": ["all_criteria_card", "investment_rule_card", "paid_pilot_card"]},
@@ -334,7 +334,7 @@ def main() -> None:
                     "body": (
                         "## 방법\n\n"
                         "100인 이상 기업의 이전, 통폐합, 폐점 상황을 가정한 합성 사용자 10명과 합성 기업 5개사를 대상으로 했습니다. "
-                        "각 전환 확률을 베타 분포에서 다시 뽑아 표본 오차와 가정 오차를 함께 반영했고, 기준 시나리오는 50,000회, 민감도 시나리오는 각 20,000회 반복했습니다."
+                        "각 반복에서 전환 확률을 베타 분포로 새로 추출해 표본 오차와 가정 오차를 함께 반영했습니다. 기준 시나리오는 50,000회, 민감도 시나리오는 각각 20,000회 반복했습니다."
                     ),
                 },
                 {"id": "criteria_chart", "type": "chart", "chartId": "criteria_probability_chart", "layout": "full"},
@@ -351,8 +351,8 @@ def main() -> None:
                     "body": (
                         "## 권장 다음 단계\n\n"
                         "1. 5개사 이내의 제한된 실제 파일럿을 진행합니다.\n"
-                        "2. 화면 반응보다 지불 의사, 계약 주체, 운영 실패 가드레일을 먼저 확인합니다.\n"
-                        "3. 유료 파일럿 2개사와 확정 의도율 20%를 함께 충족할 때만 전담 개발 투자를 재판단합니다."
+                        "2. 화면 반응보다 지불 의사, 계약 주체와 운영 중단 기준을 먼저 확인합니다.\n"
+                        "3. 유료 파일럿 2개사와 확정 의도율 20%를 함께 충족할 때만 전담 개발 투자를 다시 판단합니다."
                     ),
                 },
                 {

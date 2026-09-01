@@ -131,7 +131,7 @@ export function Sidebar({ user }: SidebarProps) {
         <div className="sidebar-brand">
           <Link href="/projects" onClick={() => setOpen(false)}>
             <strong>REROUTE</strong>
-            <span>PORTFOLIO CONCEPT</span>
+            <span>풀스택 MVP</span>
           </Link>
           <button aria-label="메뉴 닫기" className="sidebar-close" onClick={() => setOpen(false)} ref={closeButtonRef} type="button">
             <X aria-hidden="true" size={22} />

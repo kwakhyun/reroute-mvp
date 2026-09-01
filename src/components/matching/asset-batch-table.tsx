@@ -18,9 +18,9 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
   return (
     <div className="asset-column">
       <section className="card data-card asset-card" aria-labelledby="asset-batch-title">
-        <h2 id="asset-batch-title">배치 요약 (총 {formatNumber(totalQuantity)}개)</h2>
+        <h2 id="asset-batch-title">자산 요약 (총 {formatNumber(totalQuantity)}개)</h2>
         <p aria-hidden="true" className="table-scroll-hint">표를 좌우로 밀어 전체 항목을 확인하세요.</p>
-        <div aria-label="자산 배치 표" className="table-scroll" role="region" tabIndex={0}>
+        <div aria-label="자산 목록 표" className="table-scroll" role="region" tabIndex={0}>
           <table className="asset-table">
             <colgroup>
               <col className="asset-col-name" />
@@ -74,7 +74,7 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
           </table>
         </div>
       </section>
-      <p className="table-note">* 자산군별 회수 기준액의 합계가 배치 현금 회수 하한으로 적용됩니다.</p>
+      <p className="table-note">* 자산군별 최소 회수액을 합한 금액이 프로젝트의 현금 회수 하한으로 적용됩니다.</p>
     </div>
   );
 }

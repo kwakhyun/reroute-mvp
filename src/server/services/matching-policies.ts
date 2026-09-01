@@ -46,7 +46,7 @@ export function replayConfirmationReceipt(
     result.status !== "CONFIRMED" ||
     !result.planId
   ) {
-    throw new MatchingMutationError("이미 다른 요청에 사용된 요청 키입니다.");
+    throw new MatchingMutationError("이 요청 식별자는 이미 다른 작업에 사용되었습니다.");
   }
   return result;
 }

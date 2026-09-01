@@ -14,14 +14,25 @@ type ModalProps = {
 
 export function Modal({ open, title, description, onClose, children, size = "medium" }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const returnFocusRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
   const descriptionId = useId();
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      returnFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+      dialog.showModal();
+    }
     if (!open && dialog.open) dialog.close();
+
+    return () => {
+      const returnTarget = returnFocusRef.current;
+      queueMicrotask(() => {
+        if (returnTarget?.isConnected) returnTarget.focus();
+      });
+    };
   }, [open]);
 
   return (
@@ -29,7 +40,10 @@ export function Modal({ open, title, description, onClose, children, size = "med
       aria-describedby={description ? descriptionId : undefined}
       aria-labelledby={titleId}
       className={`modal modal-${size}`}
-      onCancel={onClose}
+      onCancel={(event) => {
+        event.preventDefault();
+        onClose();
+      }}
       onClose={onClose}
       ref={ref}
     >

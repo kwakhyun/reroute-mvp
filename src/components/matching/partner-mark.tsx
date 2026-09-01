@@ -12,7 +12,7 @@ export function PartnerMark({ type }: { type: PartnerType }) {
   const Icon = iconByType[type];
   return (
     <span className={`partner-mark partner-mark-${type.toLowerCase()}`} aria-hidden="true">
-      <Icon size={30} weight="regular" />
+      <Icon className="partner-mark-icon" size={30} weight="regular" />
     </span>
   );
 }

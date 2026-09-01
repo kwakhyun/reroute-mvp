@@ -17,7 +17,7 @@ export default async function ProjectsPage() {
       <ContentHeader
         action={canCreate ? <Link className="button button-primary" href="/projects/new"><Plus aria-hidden="true" size={18} /> 새 프로젝트</Link> : undefined}
         description="회수 목표, 입찰, 매칭안과 수거 운영 상태를 프로젝트 단위로 관리합니다."
-        eyebrow="PROJECTS"
+        eyebrow="작업 공간"
         title="프로젝트"
       />
       <div className="project-list">

@@ -49,7 +49,7 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
     <section className="card data-card proposal-card" aria-labelledby="proposal-title">
       <div className="proposal-heading">
         <h2 id="proposal-title">{props.confirmed ? "확정 매칭안" : "추천 매칭안"} (총 {formatNumber(props.totalQuantity)}개)</h2>
-        {props.confirmed ? <span className="status-badge status-confirmed">운영 인계 가능</span> : null}
+        {props.confirmed ? <span className="status-badge status-confirmed">수거 운영으로 인계 가능</span> : null}
       </div>
       <p aria-hidden="true" className="table-scroll-hint">표를 좌우로 밀어 전체 항목을 확인하세요.</p>
       <div aria-label="추천 매칭안 표" className="table-scroll" role="region" tabIndex={0}>
@@ -84,10 +84,10 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
                     <div>
                       <strong>{allocation.partnerName}</strong>
                       <span className={`verification-badge ${allocation.isVerified ? `verification-${allocation.partnerType.toLowerCase()}` : "verification-pending"}`}>
-                        {allocation.isVerified ? `운영자 확인 · ${allocation.verificationLabel}` : "검증 취소, 재계산 필요"}
+                        {allocation.isVerified ? `검증 완료: ${allocation.verificationLabel}` : "검증 취소, 재계산 필요"}
                       </span>
                       {allocation.isVerified && allocation.verificationReference ? (
-                        <small className="verification-evidence">근거 {allocation.verificationReference}</small>
+                        <small className="verification-evidence">검증 근거: {allocation.verificationReference}</small>
                       ) : null}
                     </div>
                   </div>

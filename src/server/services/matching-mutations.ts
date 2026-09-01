@@ -103,7 +103,7 @@ export async function recalculateMatchPlan(
       throw new MatchingMutationError("입찰 조합이 너무 많아 동기 계산 범위를 초과했습니다. 자산군별 후보를 줄인 뒤 다시 시도해 주세요.");
     }
     if (error instanceof MatchingIntegrityError) {
-      throw new MatchingMutationError("검증된 입찰이 모든 자산군을 완전하게 포함하는지 확인해 주세요.");
+      throw new MatchingMutationError("각 자산군에 전체 수량을 맡을 수 있는 검증된 입찰이 있는지 확인해 주세요.");
     }
     throw error;
   }
@@ -286,7 +286,7 @@ export async function confirmMatchPlan(
     })),
   );
   if (!allocationIsComplete) {
-    throw new MatchingMutationError("검증된 파트너가 모든 자산군을 포함한 매칭안만 확정할 수 있습니다.");
+    throw new MatchingMutationError("모든 자산군이 검증된 수요처에 배정된 매칭안만 확정할 수 있습니다.");
   }
 
   const now = new Date();

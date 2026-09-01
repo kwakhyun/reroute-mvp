@@ -9,7 +9,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts"],
+    include: ["src/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
@@ -19,6 +19,7 @@ export default defineConfig({
         "src/lib/csp.ts",
         "src/lib/csv.ts",
         "src/lib/date.ts",
+        "src/lib/operation-input.ts",
         "src/server/auth/access-policy.ts",
         "src/server/auth/login-rate-limit.ts",
         "src/server/auth/password.ts",

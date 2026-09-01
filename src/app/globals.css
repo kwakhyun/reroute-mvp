@@ -1003,6 +1003,21 @@ tfoot td {
   place-items: center;
 }
 
+.partner-mark-icon {
+  display: block;
+  flex: none;
+  transform-origin: center;
+}
+
+/* Phosphor 아이콘은 SVG 상자와 도형의 무게 중심이 달라 원 안에서 유형별로 광학 보정한다. */
+.partner-mark-business .partner-mark-icon {
+  transform: translate(1.5px, 1px);
+}
+
+.partner-mark-employee .partner-mark-icon {
+  transform: translate(0.5px, 0.5px);
+}
+
 .partner-mark-business {
   background: var(--blue-soft);
   color: var(--blue);
@@ -1766,7 +1781,7 @@ tfoot td {
   font-size: 11px;
 }
 
-.pickup-round-body li span {
+.pickup-round-body li > div span {
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -2974,6 +2989,10 @@ tfoot td {
   font-size: 11px;
 }
 
+.portfolio-mobile-index {
+  display: none;
+}
+
 .portfolio-section {
   width: min(100% - 64px, 1360px);
   margin: 0 auto;
@@ -3495,8 +3514,42 @@ tfoot td {
     grid-column: 1 / -1;
   }
 
+  .portfolio-mobile-index {
+    margin: 0 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid rgba(42, 33, 29, 0.16);
+    display: block;
+  }
+
+  .portfolio-mobile-index > span {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 750;
+  }
+
+  .portfolio-mobile-index > div {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  .portfolio-mobile-index a {
+    min-height: 38px;
+    padding: 0 7px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--portfolio-card);
+    color: var(--brand-strong);
+    font-size: 10px;
+    font-weight: 750;
+  }
+
   .portfolio-section {
-    padding: 92px 0;
+    padding: 68px 0;
   }
 
   .portfolio-hypothesis-grid,
@@ -3511,8 +3564,8 @@ tfoot td {
   }
 
   .portfolio-hypothesis-grid article {
-    min-height: 300px;
-    padding: 30px 25px;
+    min-height: 250px;
+    padding: 26px 23px;
   }
 
   .portfolio-flow-section,
@@ -3526,6 +3579,8 @@ tfoot td {
   }
 
   .portfolio-flow-list li {
+    min-height: 112px;
+    padding-block: 22px;
     grid-template-columns: 48px 1fr;
   }
 
@@ -3539,7 +3594,8 @@ tfoot td {
   }
 
   .portfolio-validation-cards article {
-    min-height: 220px;
+    min-height: 188px;
+    padding: 25px;
   }
 
   .portfolio-decision-panel {
@@ -3555,11 +3611,21 @@ tfoot td {
 
   .portfolio-architecture-grid {
     margin-top: 48px;
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 
   .portfolio-architecture-grid article {
-    min-height: 130px;
+    min-height: 146px;
+    padding: 20px 17px;
+  }
+
+  .portfolio-architecture-grid span {
+    font-size: 17px;
+  }
+
+  .portfolio-architecture-grid p {
+    margin-top: 18px;
+    font-size: 11px;
   }
 
   .portfolio-ownership-card {
@@ -3572,7 +3638,7 @@ tfoot td {
   }
 
   .portfolio-final-cta {
-    min-height: 530px;
+    min-height: 430px;
     padding-inline: 18px;
   }
 

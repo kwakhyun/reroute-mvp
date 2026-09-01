@@ -56,7 +56,7 @@ function RecalculationDialog({
 
   return (
     <Modal
-      description={`회수 목표와 운영 제약을 바꾸면 ${bidCount}건의 검증된 입찰을 다시 평가합니다.`}
+      description={`회수 목표와 운영 조건을 바꾸면 검증을 마친 입찰 ${bidCount}건을 다시 평가합니다.`}
       onClose={onClose}
       open
       title="매칭 조건 다시 계산"
@@ -114,7 +114,7 @@ function ConfirmationDialog({
 
   return (
     <Modal
-      description="확정 후에는 배정과 금액이 잠기며 수거 운영 단계로 인계됩니다."
+      description="확정하면 자산 배정과 금액을 더 이상 바꿀 수 없으며, 결과가 수거 운영으로 넘어갑니다."
       onClose={onClose}
       open
       size="small"
@@ -147,7 +147,7 @@ function ConfirmationDialog({
               ))}
             </ul>
           </div>
-          <p className="confirm-notice"><Info aria-hidden="true" size={18} /> 확정 후 정산 연동 상태를 별도로 확인합니다. 현재 단계에서는 자동 입금을 실행하지 않습니다.</p>
+          <p className="confirm-notice"><Info aria-hidden="true" size={18} /> 확정 후에는 외부 결제사의 정산 상태를 별도로 확인합니다. 이 단계에서는 입금을 자동으로 처리하지 않습니다.</p>
           <form action={action}>
             <input name="projectId" type="hidden" value={projectId} />
             <input name="idempotencyKey" type="hidden" value={idempotencyKey} />
@@ -155,7 +155,7 @@ function ConfirmationDialog({
             <div className="modal-actions">
               <button className="button button-ghost" onClick={onClose} type="button">취소</button>
               <button className="button button-primary" disabled={pending || !idempotencyKey} type="submit">
-                {pending ? "확정 중…" : "확정하고 운영 인계"}
+                {pending ? "확정 중…" : "확정하고 수거 운영으로 넘기기"}
               </button>
             </div>
           </form>

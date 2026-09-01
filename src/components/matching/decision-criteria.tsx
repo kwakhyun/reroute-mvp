@@ -21,7 +21,7 @@ export function DecisionCriteria(props: DecisionCriteriaProps) {
       passed: props.reuseRate >= props.minimumReuseRate,
     },
     {
-      label: `수거 ${props.maximumPickupRounds}회 이내면 승인`,
+      label: `수거 ${props.maximumPickupRounds}회 이하`,
       passed: props.pickupRounds <= props.maximumPickupRounds,
     },
   ];

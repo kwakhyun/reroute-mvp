@@ -28,7 +28,7 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
           </a>
         }
         backHref={`/projects/${projectId}/matching`}
-        description="접수된 제안의 금액, 비용 절감, 검증 상태와 수거 가능일을 비교합니다. 검증 대기 파트너는 매칭에서 제외됩니다."
+        description="입찰별 현금 회수액, 비용 절감액, 검증 상태와 수거 가능일을 비교합니다. 검증을 마치지 않은 수요처는 매칭에서 제외됩니다."
         eyebrow={dashboard.project.name}
         title={`입찰 ${bidRows.length}건`}
       />
@@ -60,7 +60,7 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
                     <td>
                       <div className="partner-cell">
                         <PartnerMark type={bid.partnerType} />
-                        <div><strong>{bid.partnerName}</strong><span className={`verification-badge ${bid.isVerified ? `verification-${bid.partnerType.toLowerCase()}` : "verification-pending"}`}>{bid.isVerified ? `운영자 확인 · ${bid.verificationLabel}` : "검증 대기, 매칭 제외"}</span>{bid.isVerified && bid.verificationReference ? <small className="verification-evidence">근거 {bid.verificationReference}</small> : null}</div>
+                        <div><strong>{bid.partnerName}</strong><span className={`verification-badge ${bid.isVerified ? `verification-${bid.partnerType.toLowerCase()}` : "verification-pending"}`}>{bid.isVerified ? `검증 완료: ${bid.verificationLabel}` : "검증 전, 매칭 제외"}</span>{bid.isVerified && bid.verificationReference ? <small className="verification-evidence">검증 근거: {bid.verificationReference}</small> : null}</div>
                       </div>
                     </td>
                     <td>{bid.assetGroupName}</td>

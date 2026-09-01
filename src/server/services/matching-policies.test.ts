@@ -35,7 +35,7 @@ describe("confirmation idempotency", () => {
 
   it("rejects cross-user and cross-project key reuse", () => {
     expect(() => replayConfirmationReceipt(receipt, "user-2", "project-1")).toThrow(MatchingMutationError);
-    expect(() => replayConfirmationReceipt(receipt, "user-1", "project-2")).toThrow("다른 요청");
+    expect(() => replayConfirmationReceipt(receipt, "user-1", "project-2")).toThrow("다른 작업");
   });
 });
 

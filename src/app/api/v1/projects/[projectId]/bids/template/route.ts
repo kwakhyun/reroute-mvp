@@ -28,10 +28,10 @@ export async function GET(
         [
           asset.id,
           asset.name,
-          `REPLACE: 수요처 ${index + 1}`,
+          `입력 필요: 수요처 ${index + 1}`,
           "BUSINESS",
           "사업자 확인",
-          "REPLACE_WITH_EVIDENCE_REFERENCE",
+          "입력 필요: 검증 근거",
           "",
           asset.quantity,
           0,

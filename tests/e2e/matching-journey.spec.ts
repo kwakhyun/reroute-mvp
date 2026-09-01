@@ -7,7 +7,7 @@ test.describe.configure({ mode: "serial" });
 
 async function demoLogin(page: Page) {
   await page.goto("/login");
-  await page.getByRole("button", { name: "샘플 작업 공간을 초기화하고 열기" }).click();
+  await page.getByRole("button", { name: "샘플 데이터로 데모 열기" }).click();
   await expect(page).toHaveURL("/projects");
 }
 
@@ -21,7 +21,7 @@ async function fetchJsonFromPage(page: Page, url: string) {
 test("공개 케이스 스터디가 가설과 합성 검증 한계를 명확히 보여준다", async ({ page, request }) => {
   await page.context().clearCookies();
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "폐기 예정 자산을 의사결정 가능한 제안으로." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "폐기 예정 자산을 결정에 바로 쓸 수 있는 제안으로." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전 단계", { exact: true })).toBeVisible();
   await expect(page.getByText("아래 수치는 실제 고객 조사나 운영 로그가 아닙니다.")).toBeVisible();
   await expect(page.getByRole("heading", { name: /기여도 100%/ })).toBeVisible();
@@ -33,7 +33,7 @@ test("공개 케이스 스터디가 가설과 합성 검증 한계를 명확히 
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await expect(page.getByRole("button", { name: "초기화된 제품 데모 열기" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "샘플 데이터로 제품 데모 열기" }).first()).toBeVisible();
 });
 
 test("준비 상태와 보호 경계를 검증한다", async ({ page, request }) => {
@@ -54,7 +54,7 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
   expect(scriptNonces.length).toBeGreaterThan(0);
   expect(scriptNonces.every(Boolean)).toBe(true);
 
-  await page.getByRole("button", { name: "샘플 작업 공간을 초기화하고 열기" }).click();
+  await page.getByRole("button", { name: "샘플 데이터로 데모 열기" }).click();
   await expect(page).toHaveURL("/projects");
   const foreignApi = await fetchJsonFromPage(page, "/api/v1/projects/project-foreign-audit/summary");
   expect(foreignApi).toEqual({ status: 404, body: { error: "not_found" } });
@@ -146,18 +146,23 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
     mimeType: "text/csv",
     buffer: Buffer.from(`\uFEFF${bidHeader}\n${bidRows.join("\n")}`),
   });
-  await page.getByRole("button", { name: "검증 후 교체" }).click();
-  await expect(page.getByText("입찰 4건을 검증 근거와 함께 가져왔습니다. 이제 매칭안을 계산할 수 있습니다.")).toBeVisible();
+  await page.getByRole("button", { name: "검증하고 가져오기" }).click();
+  await expect(page.getByText("검증 근거가 포함된 입찰 4건을 가져왔습니다. 이제 매칭안을 계산할 수 있습니다.")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
 
   await page.getByRole("link", { name: "매칭", exact: true }).click();
   await expect(page.getByText("아직 계산된 매칭안이 없습니다.")).toBeVisible();
-  await page.getByRole("button", { name: "조건 다시 계산" }).click();
+  const recalculateTrigger = page.getByRole("button", { name: "조건 다시 계산" });
+  await recalculateTrigger.click();
+  await page.getByRole("dialog", { name: "매칭 조건 다시 계산" }).getByRole("button", { name: "취소" }).click();
+  await expect(recalculateTrigger).toBeFocused();
+  await recalculateTrigger.click();
   const recalculation = page.getByRole("dialog", { name: "매칭 조건 다시 계산" });
   await expect(recalculation.getByLabel("최소 현금 회수액")).toHaveValue("1740");
   await recalculation.getByRole("button", { name: "새 조건으로 계산" }).click();
   await expect(recalculation.getByText("새 매칭안을 계산했습니다.")).toBeVisible();
   await recalculation.getByRole("button", { name: "결과 확인" }).click();
+  await expect(recalculateTrigger).toBeFocused();
 
   const result = page.getByRole("region", { name: "추천 매칭안 결과" });
   await expect(result).toContainText("1,740");
@@ -166,20 +171,44 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   const confirmation = page.getByRole("dialog", { name: "이 매칭안을 확정할까요?" });
   await expect(confirmation.getByText("자산군 배정 4건")).toBeVisible();
   for (const asset of assets) await expect(confirmation.getByText(asset.name, { exact: true })).toBeVisible();
-  await confirmation.getByRole("button", { name: "확정하고 운영 인계" }).click();
+  await confirmation.getByRole("button", { name: "확정하고 수거 운영으로 넘기기" }).click();
   await expect(confirmation.getByText("매칭안이 확정되었습니다.", { exact: true })).toBeVisible();
   await confirmation.getByRole("button", { name: "확정 결과 보기" }).click();
 
   await page.getByRole("link", { name: "수거 운영 보기" }).click();
   await expect(page.getByRole("heading", { name: "수거 운영 1회" })).toBeVisible();
-  await expect(page.locator("article.pickup-round")).toHaveCount(1);
+  const pickupRound = page.locator("article.pickup-round");
+  await expect(pickupRound).toHaveCount(1);
+  await pickupRound.getByLabel("상태").selectOption("READY");
+  await pickupRound.getByRole("button", { name: "운영 정보 저장" }).click();
+  await expect(pickupRound.getByLabel("수거지")).toBeFocused();
+  await pickupRound.getByLabel("수거지").fill("경기 성남시 분당구 판교로 242");
+  await pickupRound.getByLabel("시간대").fill("09:00–11:00");
+  await pickupRound.getByLabel("차량").fill("경기 12가 3456");
+  await pickupRound.getByLabel("담당자").fill("김운영");
+  await pickupRound.getByRole("button", { name: "운영 정보 저장" }).click();
+  await expect(pickupRound.getByText("수거 운영 상태를 저장했습니다.")).toBeVisible();
+  await expect(pickupRound.locator(".status-badge")).toHaveText("준비 완료");
+  await expect(pickupRound.getByLabel("상태")).toHaveValue("READY");
   await page.getByRole("link", { name: "정산", exact: true }).click();
   await expect(page.locator("strong.settlement-state-label")).toHaveText("결제사 미연동");
+  await page.getByLabel("확인 상태").selectOption("PENDING");
+  await page.getByRole("button", { name: "확인 결과 저장" }).click();
+  await expect(page.getByText("결제사에서 확인한 정산 상태를 저장했습니다.")).toBeVisible();
+  await expect(page.locator("strong.settlement-state-label")).toHaveText("입금 확인 중");
+  await expect(page.getByLabel("확인 상태")).toHaveValue("PENDING");
 
   const audit = await fetchJsonFromPage(page, `/api/v1/projects/${projectId}/audit`);
   expect(audit.status).toBe(200);
   const auditPayload = audit.body;
   expect(auditPayload.data.map((entry: { action: string }) => entry.action)).toEqual(
-    expect.arrayContaining(["PROJECT_CREATED", "BIDS_IMPORTED", "MATCH_PLAN_RECALCULATED", "MATCH_PLAN_CONFIRMED"]),
+    expect.arrayContaining([
+      "PROJECT_CREATED",
+      "BIDS_IMPORTED",
+      "MATCH_PLAN_RECALCULATED",
+      "MATCH_PLAN_CONFIRMED",
+      "PICKUP_OPERATION_UPDATED",
+      "SETTLEMENT_STATUS_UPDATED",
+    ]),
   );
 });

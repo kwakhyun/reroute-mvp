@@ -11,7 +11,7 @@ type KpiSummaryProps = {
 export function KpiSummary({ cashRecovery, costSavings, netImpact, reuseRate, confirmed }: KpiSummaryProps) {
   const items = [
     { label: "현금 회수액", value: formatNumber(cashRecovery), unit: "만 원", accent: true },
-    { label: "폐기비·운반비 절감", value: formatNumber(costSavings), unit: "만 원", accent: false },
+    { label: "폐기비와 운반비 절감", value: formatNumber(costSavings), unit: "만 원", accent: false },
     { label: "순경제효과", value: formatNumber(netImpact), unit: "만 원", accent: true },
     { label: "재사용률", value: reuseRate.toFixed(1), unit: "%", accent: true },
   ];

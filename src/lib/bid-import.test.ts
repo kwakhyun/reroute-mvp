@@ -6,7 +6,7 @@ const header = BID_IMPORT_HEADERS.join(",");
 const row = [
   "asset-1",
   "회의용 의자",
-  "파트너 A",
+  "수요처 A",
   "BUSINESS",
   "사업자 확인",
   "biz-2026-001",
@@ -29,8 +29,8 @@ describe("parseBidCsv", () => {
   });
 
   it("supports commas inside quoted partner names", () => {
-    const quoted = row.replace("파트너 A", '"파트너, A"');
-    expect(parseBidCsv(`${header}\n${quoted}`)[0]?.partnerName).toBe("파트너, A");
+    const quoted = row.replace("수요처 A", '"수요처, A"');
+    expect(parseBidCsv(`${header}\n${quoted}`)[0]?.partnerName).toBe("수요처, A");
   });
 
   it("rejects partial quantities and impossible dates", () => {

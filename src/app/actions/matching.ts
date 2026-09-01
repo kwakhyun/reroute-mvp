@@ -49,8 +49,8 @@ export async function recalculateAction(
     return {
       status: "success",
       message: result.criteriaPassed
-        ? `자산 회수 기준액을 포함한 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 하한으로 승인 가능한 매칭안을 계산했습니다.`
-        : `현금 회수 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 하한을 기준으로 가장 적합한 안을 찾았지만 일부 기준을 충족하지 못했습니다.`,
+        ? `자산군별 최소 회수액을 반영해 현금 회수 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 충족하는 매칭안을 계산했습니다.`
+        : `현금 회수 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 기준으로 가장 적합한 매칭안을 찾았지만, 일부 조건은 충족하지 못했습니다.`,
     };
   } catch (error) {
     if (error instanceof MatchingMutationError || error instanceof AuthenticationError || error instanceof AuthorizationError) {
