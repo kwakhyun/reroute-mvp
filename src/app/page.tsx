@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import dashboardImage from "../../artifacts/audit-2026-09-01-round3/final-matching-desktop-1440x1024.png";
 import { demoLoginAction } from "@/app/actions/auth";
 
 export const metadata: Metadata = {
@@ -116,8 +115,10 @@ export default function HomePage() {
             <p>app.reroute / matching</p>
           </div>
           <Image
-            src={dashboardImage}
+            src="/portfolio/walkthrough-frames/02-matching.png"
             alt="현금 회수액, 폐기비 절감, 재사용률과 자산별 배분을 표시한 REROUTE 추천 매칭안 화면"
+            width={1440}
+            height={1024}
             priority
             sizes="(max-width: 900px) 94vw, 58vw"
           />
