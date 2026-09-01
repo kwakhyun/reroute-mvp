@@ -38,7 +38,7 @@
 10. 수거와 정산 상태를 연속 저장해 요약과 선택값이 계속 일치하는지 확인하고, 두 탭에서 같은 수거 건을 수정했을 때 늦은 저장이 최신 값을 덮어쓰지 않는지 검증했습니다.
 11. 준비 완료 이후에는 수거지, 시간대, 차량과 담당자가 모두 필요하며, 모달을 닫은 뒤 실행 버튼으로 포커스가 돌아오는지 확인했습니다.
 
-CI용 Playwright 전체 여정은 [tests/e2e/matching-journey.spec.ts](./tests/e2e/matching-journey.spec.ts)에 포함했습니다. 재시도할 때마다 고유한 프로젝트를 만들고 준비 상태, 익명 접근, CSP, 404, 샘플 추천안, 입찰 가져오기, 재계산, 확정, 수거, 정산과 감사 로그를 검증합니다. 같은 검증 묶음은 [GitHub Actions 실행](https://github.com/kwakhyun/reroute-mvp/actions/runs/33494714440)의 초기화된 환경에서도 통과했습니다.
+CI용 Playwright 전체 여정은 [tests/e2e/matching-journey.spec.ts](./tests/e2e/matching-journey.spec.ts)에 포함했습니다. 재시도할 때마다 고유한 프로젝트를 만들고 준비 상태, 익명 접근, CSP, 404, 샘플 추천안, 입찰 가져오기, 재계산, 확정, 수거, 정산과 감사 로그를 검증합니다. 같은 검증 묶음은 [GitHub Actions 실행](https://github.com/kwakhyun/reroute-mvp/actions/runs/33507330868)의 초기화된 환경에서도 통과했습니다.
 
 ## 판정과 잔여 경계
 
