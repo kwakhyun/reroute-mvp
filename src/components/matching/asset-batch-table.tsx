@@ -33,7 +33,7 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
               <th scope="col">자산</th>
               <th scope="col">수량</th>
               <th scope="col">상태</th>
-              <th scope="col">회수 기준액</th>
+              <th scope="col">최소 매각 금액</th>
             </tr>
           </thead>
           <tbody>
@@ -74,7 +74,7 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
           </table>
         </div>
       </section>
-      <p className="table-note">* 자산군별 최소 회수액을 합한 금액이 프로젝트의 현금 회수 하한으로 적용됩니다.</p>
+      <p className="table-note">* 각 항목의 최소 매각 금액을 합산해 프로젝트의 최소 금액으로 사용합니다.</p>
     </div>
   );
 }

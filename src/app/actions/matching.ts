@@ -49,8 +49,8 @@ export async function recalculateAction(
     return {
       status: "success",
       message: result.criteriaPassed
-        ? `자산군별 최소 회수액을 반영해 현금 회수 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 충족하는 매칭안을 계산했습니다.`
-        : `현금 회수 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 기준으로 가장 적합한 매칭안을 찾았지만, 일부 조건은 충족하지 못했습니다.`,
+        ? `자산 항목별 최소 매각 금액을 반영해 매각 대금 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 충족하는 배분안을 계산했습니다.`
+        : `매각 대금 ${result.effectiveMinimumCashRecovery.toLocaleString("ko-KR")}만 원 이상을 기준으로 가장 적합한 배분안을 찾았지만, 일부 조건은 충족하지 못했습니다.`,
     };
   } catch (error) {
     if (error instanceof MatchingMutationError || error instanceof AuthenticationError || error instanceof AuthorizationError) {
@@ -60,7 +60,7 @@ export async function recalculateAction(
       projectId: parsed.data.projectId,
       errorName: error instanceof Error ? error.name : "UnknownError",
     });
-    return { status: "error", message: "매칭안을 다시 계산하지 못했습니다. 잠시 후 다시 시도해 주세요." };
+    return { status: "error", message: "배분안을 다시 계산하지 못했습니다. 잠시 후 다시 시도해 주세요." };
   }
 }
 
@@ -80,7 +80,7 @@ export async function confirmMatchAction(
     ]);
     await confirmMatchPlan(parsed.data.projectId, parsed.data.idempotencyKey, { id: access.user.id, ipHash });
     revalidatePath(`/projects/${parsed.data.projectId}/matching`);
-    return { status: "success", message: "매칭안이 확정되었습니다. 수거 운영 단계로 이동할 수 있습니다." };
+    return { status: "success", message: "배분안이 확정되었습니다. 이제 수거 일정을 등록할 수 있습니다." };
   } catch (error) {
     if (error instanceof MatchingMutationError || error instanceof AuthenticationError || error instanceof AuthorizationError) {
       return { status: "error", message: error.message };
@@ -89,6 +89,6 @@ export async function confirmMatchAction(
       projectId: parsed.data.projectId,
       errorName: error instanceof Error ? error.name : "UnknownError",
     });
-    return { status: "error", message: "매칭안을 확정하지 못했습니다. 잠시 후 다시 시도해 주세요." };
+    return { status: "error", message: "배분안을 확정하지 못했습니다. 잠시 후 다시 시도해 주세요." };
   }
 }

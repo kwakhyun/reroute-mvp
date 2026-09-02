@@ -2849,6 +2849,7 @@ tfoot td {
   font-weight: 690;
   letter-spacing: -0.065em;
   line-height: 1.04;
+  word-break: keep-all;
 }
 
 .portfolio-hero h1 em {

@@ -15,7 +15,7 @@ paths:
           description: DB 연결 또는 필수 스키마 준비 실패
   /api/v1/projects/{projectId}/summary:
     get:
-      summary: 프로젝트와 최신 매칭안 조회
+      summary: 프로젝트와 최신 배분안 조회
       security:
         - sessionCookie: []
       parameters:

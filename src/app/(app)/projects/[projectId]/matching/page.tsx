@@ -12,7 +12,7 @@ import { getMatchingDashboard } from "@/server/services/dashboard";
 import { projectPageData } from "../project-page-data";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "추천 매칭안" };
+export const metadata: Metadata = { title: "추천 배분안" };
 
 export default async function MatchingPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
@@ -28,8 +28,8 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
       <div className="dashboard-page">
         <ProjectHeader batchLabel={project.batchLabel} name={project.name} status={project.status} updatedAt={project.updatedAt} />
         <div className="content-empty-state">
-          <h2>아직 계산된 매칭안이 없습니다.</h2>
-          <p>{dashboard.bidCount > 0 ? "모든 자산군에 검증을 마친 입찰이 있는지 확인한 뒤 매칭안을 계산해 주세요." : "자산 목록은 준비되었습니다. 검증을 마친 수요처의 입찰을 가져오면 추천안을 계산할 수 있습니다."}</p>
+          <h2>아직 계산된 배분안이 없습니다.</h2>
+          <p>{dashboard.bidCount > 0 ? "모든 자산 항목에 필요한 확인 절차를 마친 인수처의 입찰이 있는지 살펴본 뒤 배분안을 계산해 주세요." : "자산 목록은 준비되었습니다. 필요한 확인 절차를 마친 인수처의 입찰을 가져오면 배분안을 계산할 수 있습니다."}</p>
           <a className="button button-secondary" href={`/projects/${projectId}/assets`}>자산 목록 확인</a>
         </div>
         <MatchingActions

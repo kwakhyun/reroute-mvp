@@ -21,7 +21,7 @@ export function SettlementStatusForm({ projectId, settlement, version }: Settlem
 
   return (
     <form action={action} className="card settlement-control">
-      <div><span className="eyebrow">수동 확인</span><h2>외부 정산 상태 확인</h2><p>결제사 관리 화면에서 직접 확인한 결과만 기록합니다. 이 화면에서는 자금을 이체하지 않습니다.</p></div>
+      <div><span className="eyebrow">수동 확인</span><h2>결제사 처리 상태 기록</h2><p>결제사 관리 화면에서 직접 확인한 입금과 지급 결과만 기록합니다.</p></div>
       <input name="projectId" type="hidden" value={projectId} />
       <input name="settlementId" type="hidden" value={settlement.id} />
       <SettlementStatusFields key={version} pending={pending} settlement={settlement} version={version} />

@@ -52,7 +52,7 @@ export function parseAssetCsv(source: string): ImportedAssetRow[] {
     throw new AssetImportError(`CSV 헤더는 ${ASSET_IMPORT_HEADERS.join(",")} 순서여야 합니다.`);
   }
   if (body.length === 0) throw new AssetImportError("자산 데이터를 한 행 이상 입력해 주세요.");
-  if (body.length > ASSET_IMPORT_MAX_ROWS) throw new AssetImportError(`자산군은 최대 ${ASSET_IMPORT_MAX_ROWS}개까지 가져올 수 있습니다.`);
+  if (body.length > ASSET_IMPORT_MAX_ROWS) throw new AssetImportError(`자산 항목은 최대 ${ASSET_IMPORT_MAX_ROWS}개까지 가져올 수 있습니다.`);
 
   return body.map((values, rowIndex) => {
     if (values.length !== headers.length) throw new AssetImportError(`${rowIndex + 2}행의 열 개수가 올바르지 않습니다.`);

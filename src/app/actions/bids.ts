@@ -92,15 +92,15 @@ export async function importBidsAction(
       if (!asset || asset.name !== row.assetGroupName || asset.quantity !== row.quantity) {
         return {
           status: "error",
-          message: `자산군 ${row.assetGroupName}의 ID, 이름, 전체 수량이 현재 프로젝트와 일치하지 않습니다.`,
+          message: `자산 항목 ${row.assetGroupName}의 ID, 이름, 전체 수량이 현재 프로젝트와 일치하지 않습니다.`,
         };
       }
       const hasPlaceholder = (value: string) => /^(?:REPLACE(?:_|:)|입력 필요:)/i.test(value);
       if (hasPlaceholder(row.verificationReference) || hasPlaceholder(row.partnerName)) {
-        return { status: "error", message: "템플릿의 수요처와 검증 근거를 실제 확인 내용으로 바꿔 주세요." };
+        return { status: "error", message: "템플릿의 인수처와 확인 자료를 실제 확인한 내용으로 바꿔 주세요." };
       }
       if (row.verificationExpiresAt && toSeoulDateKey(row.verificationExpiresAt) < toSeoulDateKey(new Date())) {
-        return { status: "error", message: `${row.partnerName}의 검증 근거가 만료되었습니다.` };
+        return { status: "error", message: `${row.partnerName}의 인수처 확인 자료가 만료되었습니다.` };
       }
       const pair = `${row.assetGroupId}:${row.verificationReference}`;
       if (assetPartnerPairs.has(pair)) {
@@ -114,14 +114,14 @@ export async function importBidsAction(
         existingEvidence &&
         (existingEvidence.partnerName !== row.partnerName || existingEvidence.partnerType !== row.partnerType)
       ) {
-        return { status: "error", message: `검증 근거 ${row.verificationReference}가 서로 다른 수요처에 사용되었습니다.` };
+        return { status: "error", message: `확인 자료 ${row.verificationReference}가 서로 다른 인수처에 사용되었습니다.` };
       }
       partnerEvidence.set(row.verificationReference, row);
     }
 
     if (covered.size !== assets.length) {
       const missing = assets.filter((asset) => !covered.has(asset.id)).map((asset) => asset.name);
-      return { status: "error", message: `각 자산군에 입찰이 하나 이상 필요합니다. 입찰이 없는 자산군: ${missing.join(", ")}` };
+      return { status: "error", message: `각 자산 항목에 입찰이 하나 이상 필요합니다. 입찰이 없는 자산 항목: ${missing.join(", ")}` };
     }
 
     const now = new Date();
@@ -220,7 +220,7 @@ export async function importBidsAction(
 
     revalidatePath(`/projects/${parsed.data.projectId}/bids`);
     revalidatePath(`/projects/${parsed.data.projectId}/matching`);
-    return { status: "success", message: `검증 근거가 포함된 입찰 ${imported.length.toLocaleString("ko-KR")}건을 가져왔습니다. 이제 매칭안을 계산할 수 있습니다.` };
+    return { status: "success", message: `확인 자료가 포함된 인수처 입찰 ${imported.length.toLocaleString("ko-KR")}건을 가져왔습니다. 이제 배분안을 계산할 수 있습니다.` };
   } catch (error) {
     if (error instanceof AuthenticationError || error instanceof AuthorizationError) {
       return { status: "error", message: error.message };

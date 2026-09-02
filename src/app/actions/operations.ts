@@ -75,11 +75,11 @@ export async function updatePickupOperationAction(
     });
     revalidatePath(`/projects/${parsed.data.projectId}/pickups`);
     revalidatePath(`/projects/${parsed.data.projectId}/settlements`);
-    return { status: "success", message: "수거 운영 상태를 저장했습니다." };
+    return { status: "success", message: "수거 진행 상태를 저장했습니다." };
   } catch (error) {
     if (knownActionError(error)) return { status: "error", message: error.message };
     await logger.error("pickup_operation_update_failed", { projectId: parsed.data.projectId, errorName: error instanceof Error ? error.name : "UnknownError" });
-    return { status: "error", message: "수거 운영 상태를 저장하지 못했습니다." };
+    return { status: "error", message: "수거 진행 상태를 저장하지 못했습니다." };
   }
 }
 
@@ -117,7 +117,7 @@ export async function updateSettlementAction(
             .from(pickupOperations)
             .where(eq(pickupOperations.projectId, parsed.data.projectId)),
         ]);
-        if (!plan[0]) throw new OperationTransitionError("확정된 매칭안을 찾을 수 없습니다.");
+        if (!plan[0]) throw new OperationTransitionError("확정된 배분안을 찾을 수 없습니다.");
         assertReleaseReady(plan[0].pickupRounds, pickupRows.map((row) => row.status));
       }
       const updated = await tx

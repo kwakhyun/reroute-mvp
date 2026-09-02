@@ -56,7 +56,7 @@ function RecalculationDialog({
 
   return (
     <Modal
-      description={`회수 목표와 운영 조건을 바꾸면 검증을 마친 입찰 ${bidCount}건을 다시 평가합니다.`}
+      description={`최소 매각 금액이나 운영 조건을 바꾸면 확인이 끝난 입찰 ${bidCount}건을 다시 계산합니다.`}
       onClose={onClose}
       open
       title="매칭 조건 다시 계산"
@@ -64,14 +64,14 @@ function RecalculationDialog({
       {state.status === "success" ? (
         <div className="modal-result">
           <CheckCircle aria-hidden="true" size={34} weight="fill" />
-          <strong>새 매칭안을 계산했습니다.</strong>
+          <strong>새 배분안을 계산했습니다.</strong>
           <p>{state.message}</p>
-          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "매칭안을 다시 계산했습니다.")} type="button">결과 확인</button>
+          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "배분안을 다시 계산했습니다.")} type="button">결과 확인</button>
         </div>
       ) : (
         <form action={action} className="modal-form">
           <input name="projectId" type="hidden" value={projectId} />
-          <label htmlFor="minimumCashRecovery">최소 현금 회수액</label>
+          <label htmlFor="minimumCashRecovery">최소 매각 금액</label>
           <div className="unit-input">
             <input defaultValue={criteria.minimumCashRecovery} id="minimumCashRecovery" max={MAX_PROJECT_CASH_RECOVERY} min="0" name="minimumCashRecovery" required step="10" type="number" />
             <span>만 원</span>
@@ -114,29 +114,29 @@ function ConfirmationDialog({
 
   return (
     <Modal
-      description="확정하면 자산 배정과 금액을 더 이상 바꿀 수 없으며, 결과가 수거 운영으로 넘어갑니다."
+      description="확정하면 자산 배정과 금액을 더 이상 바꿀 수 없으며, 수거 일정을 등록할 수 있습니다."
       onClose={onClose}
       open
       size="small"
-      title="이 매칭안을 확정할까요?"
+      title="이 배분안을 확정할까요?"
     >
       {state.status === "success" ? (
         <div className="modal-result">
           <CheckCircle aria-hidden="true" size={34} weight="fill" />
-          <strong>매칭안이 확정되었습니다.</strong>
+          <strong>배분안이 확정되었습니다.</strong>
           <p>{state.message}</p>
-          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "매칭안이 확정되었습니다.")} type="button">확정 결과 보기</button>
+          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "배분안이 확정되었습니다.")} type="button">확정 결과 보기</button>
         </div>
       ) : (
         <>
           <div className="confirm-summary">
-            <div><span>현금 회수</span><strong>{formatNumber(result.cashRecovery)}만 원</strong></div>
-            <div><span>비용 절감</span><strong>{formatNumber(result.costSavings)}만 원</strong></div>
-            <div><span>순경제효과</span><strong>{formatNumber(result.netImpact)}만 원</strong></div>
+            <div><span>매각 대금</span><strong>{formatNumber(result.cashRecovery)}만 원</strong></div>
+            <div><span>비용 절감액</span><strong>{formatNumber(result.costSavings)}만 원</strong></div>
+            <div><span>매각 대금과 비용 절감액 합계</span><strong>{formatNumber(result.netImpact)}만 원</strong></div>
             <div><span>재사용률</span><strong>{result.reuseRate.toFixed(1)}%</strong></div>
           </div>
           <div className="confirm-allocation-summary">
-            <strong>자산군 배정 {result.allocations.length}건</strong>
+            <strong>자산 항목 {result.allocations.length}개 배정</strong>
             <ul>
               {result.allocations.map((allocation) => (
                 <li key={allocation.id}>
@@ -155,7 +155,7 @@ function ConfirmationDialog({
             <div className="modal-actions">
               <button className="button button-ghost" onClick={onClose} type="button">취소</button>
               <button className="button button-primary" disabled={pending || !idempotencyKey} type="submit">
-                {pending ? "확정 중…" : "확정하고 수거 운영으로 넘기기"}
+                {pending ? "확정 중…" : "확정하고 수거 일정 만들기"}
               </button>
             </div>
           </form>
@@ -210,7 +210,7 @@ export function MatchingActions(props: MatchingActionsProps) {
           </button>
           {props.confirmed ? (
             <Link className="button button-primary primary-action" href={`/projects/${props.projectId}/pickups`}>
-              수거 운영 보기 <ArrowRight aria-hidden="true" size={18} />
+              수거 일정 보기 <ArrowRight aria-hidden="true" size={18} />
             </Link>
           ) : (
             <button
@@ -220,7 +220,7 @@ export function MatchingActions(props: MatchingActionsProps) {
               title={!props.canConfirm ? "확정 권한이 필요합니다." : undefined}
               type="button"
             >
-              {props.canConfirm ? "매칭안 확정" : "확정 권한 요청"}
+              {props.canConfirm ? "배분안 확정" : "확정 권한 요청"}
             </button>
           )}
         </div>

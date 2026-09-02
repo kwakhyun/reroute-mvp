@@ -78,9 +78,9 @@ def main() -> None:
     markdown = (ROOT / "docs/validation-simulation.md").read_text(encoding="utf-8")
     artifact = (ROOT / "analysis/validation-report-artifact.json").read_text(encoding="utf-8")
     html = (ROOT / "public/reports/validation-simulation.html").read_text(encoding="utf-8")
-    assert "실제 고객 인터뷰나 운영 로그가 아닙니다" in markdown
+    assert "실제 고객 인터뷰나 운영 기록이 아닙니다" in markdown
     assert "\"status\": \"fixture\"" in artifact
-    assert "REROUTE 합성 파일럿" in html
+    assert "REROUTE 가상 데이터 분석 보고서" in html
     assert DISCLAIMER in json.loads((ROOT / "analysis/generated/validation-simulation-results.json").read_text())["required_disclaimer"]
 
     print(json.dumps({

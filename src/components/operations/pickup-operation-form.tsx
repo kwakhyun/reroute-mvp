@@ -37,7 +37,7 @@ function PickupOperationFields({ operation, pending, version }: Pick<PickupOpera
       <label><span>시간대</span><input defaultValue={operation.timeWindow ?? ""} maxLength={120} name="timeWindow" placeholder="예: 09:00–11:00" required={detailsRequired} /></label>
       <label><span>차량</span><input defaultValue={operation.vehicleLabel ?? ""} maxLength={120} name="vehicleLabel" placeholder="예: 서울 12가 3456" required={detailsRequired} /></label>
       <label><span>담당자</span><input defaultValue={operation.operatorName ?? ""} maxLength={120} name="operatorName" placeholder="예: 김운영" required={detailsRequired} /></label>
-      <button className="button button-secondary operation-save" disabled={pending} type="submit"><FloppyDisk aria-hidden="true" size={17} /> {pending ? "저장 중…" : "운영 정보 저장"}</button>
+      <button className="button button-secondary operation-save" disabled={pending} type="submit"><FloppyDisk aria-hidden="true" size={17} /> {pending ? "저장 중…" : "수거 정보 저장"}</button>
     </>
   );
 }

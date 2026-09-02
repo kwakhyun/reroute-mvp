@@ -20,7 +20,7 @@ export function BidImportForm({ projectId }: { projectId: string }) {
         <span className="section-icon"><FileCsv aria-hidden="true" size={24} /></span>
         <div>
           <h2 id="bid-import-title">입찰 일괄 가져오기</h2>
-          <p>기존 입찰 목록을 새 CSV 내용으로 교체합니다. 수요처별 검증 근거를 입력하고, 각 자산군의 전체 수량을 인수하는 제안을 하나 이상 포함해 주세요.</p>
+          <p>기존 입찰 목록을 새 CSV 내용으로 교체합니다. 인수처별 확인 자료를 입력하고, 각 자산 항목의 전체 수량을 인수할 입찰을 하나 이상 포함해 주세요.</p>
         </div>
       </div>
       <form action={action}>
@@ -31,10 +31,10 @@ export function BidImportForm({ projectId }: { projectId: string }) {
         </label>
         <div className="bid-import-actions">
           <a className="button button-secondary" download href={`/api/v1/projects/${projectId}/bids/template`}>
-            <DownloadSimple aria-hidden="true" size={17} /> 현재 자산 템플릿
+            <DownloadSimple aria-hidden="true" size={17} /> 입찰 CSV 템플릿
           </a>
           <button className="button button-primary" disabled={pending} type="submit">
-            <ArrowClockwise aria-hidden="true" size={17} /> {pending ? "검증하는 중…" : "검증하고 가져오기"}
+            <ArrowClockwise aria-hidden="true" size={17} /> {pending ? "CSV 확인 중…" : "CSV 확인 후 가져오기"}
           </button>
         </div>
       </form>

@@ -28,10 +28,10 @@ export async function GET(
         [
           asset.id,
           asset.name,
-          `입력 필요: 수요처 ${index + 1}`,
+          `입력 필요: 인수처 ${index + 1}`,
           "BUSINESS",
           "사업자 확인",
-          "입력 필요: 검증 근거",
+          "입력 필요: 인수처 확인 자료",
           "",
           asset.quantity,
           0,

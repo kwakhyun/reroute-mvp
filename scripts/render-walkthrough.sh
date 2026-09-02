@@ -32,7 +32,7 @@ FRAMES=(
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/04-pickups.png"
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/05-settlement.png"
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/06-isolation.png"
-  "$PROJECT_ROOT/public/portfolio/walkthrough-frames/07-synthetic-decision.png"
+  "$PROJECT_ROOT/public/portfolio/walkthrough-frames/07-validation.png"
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/10-report.png"
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/08-engineering.png"
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/09-ownership.png"

@@ -48,11 +48,11 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
   return (
     <section className="card data-card proposal-card" aria-labelledby="proposal-title">
       <div className="proposal-heading">
-        <h2 id="proposal-title">{props.confirmed ? "확정 매칭안" : "추천 매칭안"} (총 {formatNumber(props.totalQuantity)}개)</h2>
-        {props.confirmed ? <span className="status-badge status-confirmed">수거 운영으로 인계 가능</span> : null}
+        <h2 id="proposal-title">{props.confirmed ? "확정 배분안" : "추천 배분안"} (총 {formatNumber(props.totalQuantity)}개)</h2>
+        {props.confirmed ? <span className="status-badge status-confirmed">수거 일정 등록 가능</span> : null}
       </div>
       <p aria-hidden="true" className="table-scroll-hint">표를 좌우로 밀어 전체 항목을 확인하세요.</p>
-      <div aria-label="추천 매칭안 표" className="table-scroll" role="region" tabIndex={0}>
+      <div aria-label="자산 배분안 표" className="table-scroll" role="region" tabIndex={0}>
         <table className="proposal-table">
           <colgroup>
             <col className="proposal-col-asset" />
@@ -65,11 +65,11 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
           </colgroup>
           <thead>
             <tr>
-              <th scope="col">자산군</th>
-              <th scope="col">수요처</th>
+              <th scope="col">자산 항목</th>
+              <th scope="col">인수처</th>
               <th scope="col">수량</th>
-              <th scope="col">현금 회수</th>
-              <th scope="col">비용 절감</th>
+              <th scope="col">매각 대금</th>
+              <th scope="col">비용 절감액</th>
               <th scope="col">성과 지표</th>
               <th scope="col">수거 일정</th>
             </tr>
@@ -84,10 +84,10 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
                     <div>
                       <strong>{allocation.partnerName}</strong>
                       <span className={`verification-badge ${allocation.isVerified ? `verification-${allocation.partnerType.toLowerCase()}` : "verification-pending"}`}>
-                        {allocation.isVerified ? `검증 완료: ${allocation.verificationLabel}` : "검증 취소, 재계산 필요"}
+                        {allocation.isVerified ? `${allocation.verificationLabel} 완료` : "인수처 확인 후 다시 계산하세요"}
                       </span>
                       {allocation.isVerified && allocation.verificationReference ? (
-                        <small className="verification-evidence">검증 근거: {allocation.verificationReference}</small>
+                        <small className="verification-evidence">확인 자료: {allocation.verificationReference}</small>
                       ) : null}
                     </div>
                   </div>
@@ -110,7 +110,7 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
           <tfoot>
             <tr>
               <th scope="row">합계</th>
-              <td>{allocations.length}개 자산군 배정</td>
+              <td>자산 항목 {allocations.length}개 배정</td>
               <td className="numeric-cell">{formatNumber(props.totalQuantity)}개</td>
               <td className="numeric-cell total-accent">{formatNumber(props.cashRecovery)}만 원</td>
               <td className="numeric-cell total-accent">{formatNumber(props.costSavings)}만 원</td>

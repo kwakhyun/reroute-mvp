@@ -18,18 +18,18 @@ async function fetchJsonFromPage(page: Page, url: string) {
   }, url);
 }
 
-test("공개 케이스 스터디가 가설과 합성 검증 한계를 명확히 보여준다", async ({ page, request }) => {
+test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계를 명확히 보여준다", async ({ page, request }) => {
   await page.context().clearCookies();
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "폐기 예정 자산을 결정에 바로 쓸 수 있는 제안으로." })).toBeVisible();
-  await expect(page.getByText("실제 고객 검증 전 단계", { exact: true })).toBeVisible();
-  await expect(page.getByText("아래 수치는 실제 고객 조사나 운영 로그가 아닙니다.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "사무 자산을 어떻게 처분할지 한눈에 비교합니다." })).toBeVisible();
+  await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
+  await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 기록이 아닙니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /기여도 100%/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   const report = await request.get("/reports/validation-simulation.html");
   expect(report.status()).toBe(200);
-  expect(await report.text()).toContain("REROUTE 합성 파일럿 검증 시뮬레이션");
+  expect(await report.text()).toContain("REROUTE 가상 데이터 분석 보고서");
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
@@ -64,20 +64,20 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
   await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toBeAttached();
 });
 
-test("시드 매칭안의 회수 하한과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
+test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
   await demoLogin(page);
   await page.goto(`${demoProjectPath}/matching`);
   await expect(page.getByRole("heading", { name: "성수 오피스 이전" })).toBeVisible();
 
-  const summary = page.getByRole("region", { name: "추천 매칭안 결과" });
+  const summary = page.getByRole("region", { name: "추천 결과" });
   await expect(summary).toContainText("1,840");
   await expect(summary).toContainText("300");
   await expect(summary).toContainText("2,140");
   await expect(summary).toContainText("86.9");
-  await expect(page.getByText("현금 회수 1,740만 원 이상")).toBeVisible();
+  await expect(page.getByText("매각 대금 1,740만 원 이상")).toBeVisible();
 
-  const proposal = page.getByRole("region", { name: "추천 매칭안 표" });
-  await expect(proposal.getByRole("columnheader", { name: "자산군" })).toBeVisible();
+  const proposal = page.getByRole("region", { name: "자산 배분안 표" });
+  await expect(proposal.getByRole("columnheader", { name: "자산 항목" })).toBeVisible();
   for (const asset of ["회의용 의자", "모니터 암", "이동 서랍", "라운지 테이블"]) {
     await expect(proposal.getByText(asset, { exact: true })).toBeVisible();
   }
@@ -90,7 +90,7 @@ test("시드 매칭안의 회수 하한과 배정 근거를 읽기 전용으로 
   expect(payload.data.allocations.every((allocation: { assetGroupId?: string; assetGroupName?: string }) => allocation.assetGroupId && allocation.assetGroupName)).toBe(true);
 
   await page.getByRole("link", { name: "입찰 11건 보기" }).click();
-  await expect(page.getByRole("heading", { name: "입찰 11건" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "인수처 입찰 11건" })).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(11);
   await expect(page.locator("tr.bid-selected")).toHaveCount(4);
   const downloadPromise = page.waitForEvent("download");
@@ -98,7 +98,7 @@ test("시드 매칭안의 회수 하한과 배정 근거를 읽기 전용으로 
   expect((await downloadPromise).suggestedFilename()).toBe("project-seongsu-relocation-bids.csv");
 });
 
-test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까지 독립적으로 완주한다", async ({ page }, testInfo) => {
+test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까지 독립적으로 완주한다", async ({ page }, testInfo) => {
   await demoLogin(page);
   await page.getByRole("link", { name: "새 프로젝트" }).click();
   const projectName = `판교 연구소 이전 ${Date.now()}-${testInfo.retry}`;
@@ -119,7 +119,7 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   const assets = createdPayload.data.assets as Array<{ id: string; name: string; quantity: number; minimumRecovery: number }>;
 
   await page.getByRole("link", { name: "입찰", exact: true }).click();
-  await expect(page.getByRole("heading", { name: "입찰 0건" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "인수처 입찰 0건" })).toBeVisible();
   const bidHeader = [
     "assetGroupId", "assetGroupName", "partnerName", "partnerType", "verificationLabel",
     "verificationReference", "verificationExpiresOn", "quantity", "cashRecovery", "costSavings",
@@ -128,7 +128,7 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
   const bidRows = assets.map((asset, index) => [
     asset.id,
     asset.name,
-    `파일럿 수요처 ${index + 1}`,
+    `파일럿 인수처 ${index + 1}`,
     "BUSINESS",
     "사업자 서류 확인",
     `e2e-evidence-${projectId}-${index + 1}`,
@@ -146,48 +146,48 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 운영 인계까�
     mimeType: "text/csv",
     buffer: Buffer.from(`\uFEFF${bidHeader}\n${bidRows.join("\n")}`),
   });
-  await page.getByRole("button", { name: "검증하고 가져오기" }).click();
-  await expect(page.getByText("검증 근거가 포함된 입찰 4건을 가져왔습니다. 이제 매칭안을 계산할 수 있습니다.")).toBeVisible();
+  await page.getByRole("button", { name: "CSV 확인 후 가져오기" }).click();
+  await expect(page.getByText("확인 자료가 포함된 인수처 입찰 4건을 가져왔습니다. 이제 배분안을 계산할 수 있습니다.")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
 
   await page.getByRole("link", { name: "매칭", exact: true }).click();
-  await expect(page.getByText("아직 계산된 매칭안이 없습니다.")).toBeVisible();
+  await expect(page.getByText("아직 계산된 배분안이 없습니다.")).toBeVisible();
   const recalculateTrigger = page.getByRole("button", { name: "조건 다시 계산" });
   await recalculateTrigger.click();
   await page.getByRole("dialog", { name: "매칭 조건 다시 계산" }).getByRole("button", { name: "취소" }).click();
   await expect(recalculateTrigger).toBeFocused();
   await recalculateTrigger.click();
   const recalculation = page.getByRole("dialog", { name: "매칭 조건 다시 계산" });
-  await expect(recalculation.getByLabel("최소 현금 회수액")).toHaveValue("1740");
+  await expect(recalculation.getByLabel("최소 매각 금액")).toHaveValue("1740");
   await recalculation.getByRole("button", { name: "새 조건으로 계산" }).click();
-  await expect(recalculation.getByText("새 매칭안을 계산했습니다.")).toBeVisible();
+  await expect(recalculation.getByText("새 배분안을 계산했습니다.")).toBeVisible();
   await recalculation.getByRole("button", { name: "결과 확인" }).click();
   await expect(recalculateTrigger).toBeFocused();
 
-  const result = page.getByRole("region", { name: "추천 매칭안 결과" });
+  const result = page.getByRole("region", { name: "추천 결과" });
   await expect(result).toContainText("1,740");
   await expect(result).toContainText("100.0");
-  await page.getByRole("button", { name: "매칭안 확정" }).click();
-  const confirmation = page.getByRole("dialog", { name: "이 매칭안을 확정할까요?" });
-  await expect(confirmation.getByText("자산군 배정 4건")).toBeVisible();
+  await page.getByRole("button", { name: "배분안 확정" }).click();
+  const confirmation = page.getByRole("dialog", { name: "이 배분안을 확정할까요?" });
+  await expect(confirmation.getByText("자산 항목 4개 배정")).toBeVisible();
   for (const asset of assets) await expect(confirmation.getByText(asset.name, { exact: true })).toBeVisible();
-  await confirmation.getByRole("button", { name: "확정하고 수거 운영으로 넘기기" }).click();
-  await expect(confirmation.getByText("매칭안이 확정되었습니다.", { exact: true })).toBeVisible();
+  await confirmation.getByRole("button", { name: "확정하고 수거 일정 만들기" }).click();
+  await expect(confirmation.getByText("배분안이 확정되었습니다.", { exact: true })).toBeVisible();
   await confirmation.getByRole("button", { name: "확정 결과 보기" }).click();
 
-  await page.getByRole("link", { name: "수거 운영 보기" }).click();
-  await expect(page.getByRole("heading", { name: "수거 운영 1회" })).toBeVisible();
+  await page.getByRole("link", { name: "수거 일정 보기" }).click();
+  await expect(page.getByRole("heading", { name: "수거 일정 1회" })).toBeVisible();
   const pickupRound = page.locator("article.pickup-round");
   await expect(pickupRound).toHaveCount(1);
   await pickupRound.getByLabel("상태").selectOption("READY");
-  await pickupRound.getByRole("button", { name: "운영 정보 저장" }).click();
+  await pickupRound.getByRole("button", { name: "수거 정보 저장" }).click();
   await expect(pickupRound.getByLabel("수거지")).toBeFocused();
   await pickupRound.getByLabel("수거지").fill("경기 성남시 분당구 판교로 242");
   await pickupRound.getByLabel("시간대").fill("09:00–11:00");
   await pickupRound.getByLabel("차량").fill("경기 12가 3456");
   await pickupRound.getByLabel("담당자").fill("김운영");
-  await pickupRound.getByRole("button", { name: "운영 정보 저장" }).click();
-  await expect(pickupRound.getByText("수거 운영 상태를 저장했습니다.")).toBeVisible();
+  await pickupRound.getByRole("button", { name: "수거 정보 저장" }).click();
+  await expect(pickupRound.getByText("수거 진행 상태를 저장했습니다.")).toBeVisible();
   await expect(pickupRound.locator(".status-badge")).toHaveText("준비 완료");
   await expect(pickupRound.getByLabel("상태")).toHaveValue("READY");
   await page.getByRole("link", { name: "정산", exact: true }).click();

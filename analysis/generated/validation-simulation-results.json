@@ -837,7 +837,7 @@
   "decision": {
     "recommendation": "LIMITED_PILOT",
     "dedicated_investment": "HOLD",
-    "reason": "행동 기준은 방향성을 보이지만 유료 파일럿 기준과 전체 기준 동시 충족 확률이 낮음"
+    "reason": "화면 행동 기준은 통과했지만 유료 파일럿 기준과 전체 기준을 함께 충족할 확률이 낮음"
   },
-  "required_disclaimer": "합성 시뮬레이션이며 실제 고객 검증 결과가 아님"
+  "required_disclaimer": "가상 데이터 분석이며 실제 고객 검증 결과가 아님"
 }

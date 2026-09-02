@@ -35,9 +35,9 @@ export default async function PickupsPage({ params }: { params: Promise<{ projec
 
   return (
     <div className="section-page">
-      <ContentHeader backHref={`/projects/${projectId}/matching`} description="추천 일정에 실제 수거 정보와 진행 상태를 회차별로 기록합니다." eyebrow={dashboard.project.name} title={`수거 운영 ${dashboard.plan.pickupRounds}회`} />
+      <ContentHeader backHref={`/projects/${projectId}/matching`} description="배분안에 정한 날짜별로 수거 장소, 담당자와 진행 상태를 기록합니다." eyebrow={dashboard.project.name} title={`수거 일정 ${dashboard.plan.pickupRounds}회`} />
       {!confirmed ? (
-        <div className="notice-banner"><CalendarCheck aria-hidden="true" size={20} /><span><strong>현재는 추천 일정입니다.</strong> 매칭안을 확정하면 담당자와 실제 수거 정보를 기록할 수 있습니다.</span></div>
+        <div className="notice-banner"><CalendarCheck aria-hidden="true" size={20} /><span><strong>아직 확정되지 않은 일정입니다.</strong> 배분안을 확정하면 수거 장소와 담당자 정보를 기록할 수 있습니다.</span></div>
       ) : null}
       <div className="pickup-timeline">
         {[...groups.entries()].map(([date, allocations], index) => {
@@ -52,7 +52,7 @@ export default async function PickupsPage({ params }: { params: Promise<{ projec
                 ) : null}
                 <ul>
                   {allocations.map((allocation) => (
-                    <li key={allocation.id}><PartnerMark type={allocation.partnerType} /><div><strong>{allocation.partnerName}</strong><span>{allocation.isVerified ? `수요처 검증: ${allocation.verificationLabel}` : "수요처 검증 취소"}</span></div><b>{formatNumber(allocation.quantity)}개</b></li>
+                    <li key={allocation.id}><PartnerMark type={allocation.partnerType} /><div><strong>{allocation.partnerName}</strong><span>{allocation.isVerified ? `${allocation.verificationLabel} 완료` : "인수처 확인 필요"}</span></div><b>{formatNumber(allocation.quantity)}개</b></li>
                   ))}
                 </ul>
                 {operation && canEdit ? <PickupOperationForm operation={operation} projectId={projectId} version={operation.updatedAt} /> : null}

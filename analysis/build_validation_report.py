@@ -16,11 +16,11 @@ GENERATED_AT = "2026-09-01T09:00:00+09:00"
 
 
 METRIC_LABELS = {
-    "bids_opened": ("입찰 근거 확인", "6/10명 이상"),
+    "bids_opened": ("인수처 확인 자료 검토", "6/10명 이상"),
     "recalculation_opened": ("조건 탐색", "3/10명 이상"),
-    "confirmation_opened": ("확정 의도", "2/10명 이상"),
-    "pilot_interest": ("파일럿 의향", "3/5개사 이상"),
-    "paid_pilot": ("유료 파일럿", "2/5개사 이상"),
+    "confirmation_opened": ("배분안 확정 화면 진입", "2/10명 이상"),
+    "pilot_interest": ("파일럿 참여 의향", "기업 5곳 중 3곳 이상"),
+    "paid_pilot": ("유료 파일럿", "기업 5곳 중 2곳 이상"),
     "all_criteria": ("모든 기준 동시 충족", "5개 기준 모두 충족"),
 }
 
@@ -111,7 +111,7 @@ def make_source(source_id: str, label: str, query: str, description: str) -> dic
             ],
             "metric_definitions": {
                 "criterion_probability": "몬테카를로 반복 중 각 성공 기준을 충족한 횟수 / 전체 반복 횟수",
-                "investment_rule_probability": "확정 의도 2명 이상과 유료 파일럿 2개사 이상을 동시에 충족한 비율",
+                "investment_rule_probability": "확정 화면을 연 사용자 2명 이상과 유료 파일럿 참여 기업 2곳 이상을 동시에 충족한 비율",
             },
             "executed_at": GENERATED_AT,
         },
@@ -209,7 +209,7 @@ def main() -> None:
             "criteria_source",
             "성공 기준 충족 확률",
             criteria_query,
-            "고정 시드 합성 시뮬레이션의 개별 성공 기준별 충족 확률을 재현합니다.",
+            "같은 난수 초기값으로 반복한 가상 데이터의 기준별 충족 확률을 재현합니다.",
         ),
         make_source(
             "sensitivity_source",
@@ -219,9 +219,9 @@ def main() -> None:
         ),
         make_source(
             "summary_source",
-            "의사결정 요약",
+            "개발 인력 투입 판단",
             summary_query,
-            "전체 기준, 투자 규칙, 유료 파일럿 중앙값을 재현합니다.",
+            "전체 기준, 개발 인력 투입 기준, 유료 파일럿 참여 기업 수 중앙값을 재현합니다.",
         ),
         {
             "id": "simulation_code",
@@ -230,7 +230,7 @@ def main() -> None:
         },
         {
             "id": "cohort_source",
-            "label": "대표 합성 코호트",
+            "label": "예시 결과",
             "path": "analysis/generated/validation-simulation-cohort.csv",
         },
     ]
@@ -240,13 +240,13 @@ def main() -> None:
         "manifest": {
             "version": 1,
             "surface": "report",
-            "title": "REROUTE 합성 파일럿 검증 시뮬레이션",
-            "description": "실제 고객 검증 전에 제품 의사결정 규칙을 점검한 고정 시드 합성 시뮬레이션 보고서",
+            "title": "REROUTE 가상 데이터 분석 보고서",
+            "description": "실제 고객 파일럿 전에 제품의 성공 기준과 개발 인력 투입 기준을 점검한 보고서",
             "generatedAt": GENERATED_AT,
             "cards": [
                 {
                     "id": "all_criteria_card",
-                    "description": "5개 성공 기준을 한 반복에서 모두 충족한 비율",
+                    "description": "다섯 가지 성공 기준을 한 번의 시뮬레이션에서 모두 충족한 비율",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
@@ -255,20 +255,20 @@ def main() -> None:
                 },
                 {
                     "id": "investment_rule_card",
-                    "description": "확정 의도 2명 이상과 유료 파일럿 2개사 이상을 동시에 충족한 비율",
+                    "description": "확정 화면을 연 사용자 2명 이상과 유료 파일럿 참여 기업 2곳 이상을 동시에 충족한 비율",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
-                        {"label": "전담 개발 투자 기준 충족", "field": "investment_rule_probability", "format": "percent"}
+                        {"label": "전담 개발 인력 투입 기준 충족", "field": "investment_rule_probability", "format": "percent"}
                     ],
                 },
                 {
                     "id": "paid_pilot_card",
-                    "description": "기준 시나리오 대표 합성 코호트의 5개사 중 유료 파일럿 중앙값",
+                    "description": "기준 시나리오에서 유료 파일럿으로 전환한 기업 수의 중앙값",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
-                        {"label": "유료 파일럿 중앙값", "field": "paid_pilot_median", "format": "number"},
+                        {"label": "유료 파일럿 참여 기업 수 중앙값", "field": "paid_pilot_median", "format": "number"},
                         {"label": "목표", "field": "paid_pilot_target", "format": "number"},
                     ],
                 },
@@ -303,7 +303,7 @@ def main() -> None:
                     "columns": [
                         {"field": "label", "label": "시나리오", "type": "text"},
                         {"field": "all_criteria_probability", "label": "모든 기준 충족", "format": "percent"},
-                        {"field": "investment_rule_probability", "label": "투자 규칙 충족", "format": "percent"},
+                        {"field": "investment_rule_probability", "label": "개발 인력 투입 기준 충족", "format": "percent"},
                         {"field": "iterations", "label": "반복 횟수", "format": "number"},
                     ],
                 }
@@ -313,17 +313,17 @@ def main() -> None:
                 for source in sources
             ],
             "blocks": [
-                {"id": "title", "type": "markdown", "body": "# REROUTE 합성 파일럿 검증 시뮬레이션"},
+                {"id": "title", "type": "markdown", "body": "# REROUTE 가상 데이터 분석 보고서"},
                 {
                     "id": "executive_summary",
                     "type": "markdown",
                     "sourceId": "summary_source",
                     "body": (
                         "## 핵심 요약\n\n"
-                        "> **중요:** 실제 고객 조사나 운영 데이터가 아닙니다. 고정 시드로 생성한 합성 시뮬레이션입니다.\n\n"
-                        f"- **제한된 실제 파일럿은 진행할 가치가 있습니다.** 기준 시나리오에서 5개 성공 기준을 모두 충족할 추정 확률은 {probabilities['all_criteria']:.1f}%입니다.\n"
-                        f"- **전담 개발 투자는 보류해야 합니다.** 확정 의도와 유료 파일럿 규칙을 함께 충족할 추정 확률은 {probabilities['investment_rule']:.1f}%이고, 대표 합성 코호트의 유료 파일럿은 {representative['paid_pilot']}/5개사로 목표 2개사에 미달했습니다.\n"
-                        "- **다음 검증은 가격과 구매 권한에 집중합니다.** 실제 5개사의 지불 의사와 계약 주체를 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다."
+                        "> **중요:** 실제 고객 조사나 운영 기록이 아닙니다. 같은 결과를 재현할 수 있도록 난수 초기값을 고정해 만든 가상 데이터입니다.\n\n"
+                        f"- **소규모 실제 파일럿은 진행할 가치가 있습니다.** 기준 시나리오에서 5개 성공 기준을 모두 충족할 추정 확률은 {probabilities['all_criteria']:.1f}%입니다.\n"
+                        f"- **전담 개발 인력 투입은 보류해야 합니다.** 배분안 확정 화면 진입과 유료 파일럿 기준을 함께 충족할 추정 확률은 {probabilities['investment_rule']:.1f}%입니다. 예시 결과에서 유료 파일럿에 참여한 기업은 5곳 중 {representative['paid_pilot']}곳으로 목표인 2곳에 미치지 못했습니다.\n"
+                        "- **다음 단계에서는 실제 지불 의향과 구매 결정권자를 확인합니다.** 실제 기업 5곳의 지불 의사와 계약 주체를 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다."
                     ),
                 },
                 {"id": "decision_metrics", "type": "metric-strip", "cardIds": ["all_criteria_card", "investment_rule_card", "paid_pilot_card"]},
@@ -333,7 +333,7 @@ def main() -> None:
                     "sourceId": "simulation_code",
                     "body": (
                         "## 방법\n\n"
-                        "100인 이상 기업의 이전, 통폐합, 폐점 상황을 가정한 합성 사용자 10명과 합성 기업 5개사를 대상으로 했습니다. "
+                        "100인 이상 기업의 이전, 통폐합, 폐점 상황을 가정한 가상 사용자 10명과 가상 기업 5곳을 대상으로 했습니다. "
                         "각 반복에서 전환 확률을 베타 분포로 새로 추출해 표본 오차와 가정 오차를 함께 반영했습니다. 기준 시나리오는 50,000회, 민감도 시나리오는 각각 20,000회 반복했습니다."
                     ),
                 },
@@ -342,7 +342,7 @@ def main() -> None:
                     "id": "sensitivity_heading",
                     "type": "markdown",
                     "sourceId": "sensitivity_source",
-                    "body": "## 가정이 달라져도 투자 결론은 신중해야 합니다\n\n낙관 시나리오에서도 전담 투자는 실측 근거 없이 결정할 수 없습니다. 보수 시나리오에서는 모든 기준 충족 가능성이 급격히 낮아집니다.",
+                    "body": "## 가정이 달라져도 개발 인력 투입은 신중해야 합니다\n\n낙관 시나리오에서도 실제 고객 근거 없이 전담 개발 인력을 투입할 수 없습니다. 보수 시나리오에서는 모든 기준을 충족할 가능성이 크게 낮아집니다.",
                 },
                 {"id": "sensitivity", "type": "table", "tableId": "sensitivity_table"},
                 {
@@ -350,9 +350,9 @@ def main() -> None:
                     "type": "markdown",
                     "body": (
                         "## 권장 다음 단계\n\n"
-                        "1. 5개사 이내의 제한된 실제 파일럿을 진행합니다.\n"
+                        "1. 기업 5곳 이내에서 소규모 실제 파일럿을 진행합니다.\n"
                         "2. 화면 반응보다 지불 의사, 계약 주체와 운영 중단 기준을 먼저 확인합니다.\n"
-                        "3. 유료 파일럿 2개사와 확정 의도율 20%를 함께 충족할 때만 전담 개발 투자를 다시 판단합니다."
+                        "3. 유료 파일럿에 참여한 기업이 2곳 이상이고 배분안 확정 화면 진입률이 20% 이상일 때만 전담 개발 인력 투입을 다시 판단합니다."
                     ),
                 },
                 {
@@ -361,9 +361,9 @@ def main() -> None:
                     "body": (
                         "## 한계와 사용 금지 범위\n\n"
                         "- 실제 사용자 행동, 인터뷰, 계약, 매출을 관측하지 않았습니다.\n"
-                        "- 분포의 사전 가정은 실측치가 아니며 결과에 직접 영향을 줍니다.\n"
+                        "- 분포의 사전 가정은 실제 관측값이 아니며 결과에 직접 영향을 줍니다.\n"
                         "- 인과 효과나 시장 수요를 증명하지 않습니다.\n"
-                        "- 본 결과를 사용자 테스트 완료, 파일럿 진행, 유료 고객 확보로 표현하면 안 됩니다."
+                        "- 이 결과를 사용자 테스트 완료, 파일럿 진행, 유료 고객 확보로 표현하면 안 됩니다."
                     ),
                 },
             ],

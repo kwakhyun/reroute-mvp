@@ -9,24 +9,24 @@ export const metadata: Metadata = {
     default: "REROUTE",
     template: "%s · REROUTE",
   },
-  description: "기업 유휴 자산의 회수 가치를 높이는 순환 자산 매칭 마켓플레이스",
+  description: "기업이 처분할 사무 자산의 매각 대금, 비용 절감액과 재사용률을 함께 비교하는 B2B 매칭 서비스",
   openGraph: {
-    title: "REROUTE · B2B 순환 자산 매칭 MVP",
-    description: "가설 설계부터 풀스택 구현과 투자 판단까지 정리한 독립 제품 케이스 스터디",
+    title: "REROUTE · B2B 사무 자산 처분 MVP",
+    description: "문제 정의부터 풀스택 구현과 개발 인력 투입 결정까지 정리한 개인 제품 개발 사례",
     type: "website",
     images: [
       {
         url: "/portfolio/walkthrough-frames/01-case-study-hero.png",
         width: 1280,
         height: 720,
-        alt: "REROUTE B2B 순환 자산 매칭 MVP 공개 케이스 스터디",
+        alt: "REROUTE B2B 사무 자산 처분 MVP 제품 개발 사례",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "REROUTE · B2B 순환 자산 매칭 MVP",
-    description: "가설 설계부터 풀스택 구현과 투자 판단까지 정리한 독립 제품 케이스 스터디",
+    title: "REROUTE · B2B 사무 자산 처분 MVP",
+    description: "문제 정의부터 풀스택 구현과 개발 인력 투입 결정까지 정리한 개인 제품 개발 사례",
     images: ["/portfolio/walkthrough-frames/01-case-study-hero.png"],
   },
 };

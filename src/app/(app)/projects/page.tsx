@@ -16,7 +16,7 @@ export default async function ProjectsPage() {
     <div className="section-page">
       <ContentHeader
         action={canCreate ? <Link className="button button-primary" href="/projects/new"><Plus aria-hidden="true" size={18} /> 새 프로젝트</Link> : undefined}
-        description="회수 목표, 입찰, 매칭안과 수거 운영 상태를 프로젝트 단위로 관리합니다."
+        description="자산 목록, 입찰, 배분안과 수거 진행 상태를 프로젝트별로 관리합니다."
         eyebrow="작업 공간"
         title="프로젝트"
       />
@@ -33,13 +33,13 @@ export default async function ProjectsPage() {
             <p>{project.location} · {project.batchLabel}</p>
             <dl className="project-card-metrics">
               <div><dt><Package aria-hidden="true" size={16} /> 자산</dt><dd>{formatNumber(project.assetCount)}개</dd></div>
-              <div><dt><ChartLineUp aria-hidden="true" size={16} /> 순경제효과</dt><dd>{project.plan ? `${formatNumber(project.plan.netImpact)}만 원` : "계산 전"}</dd></div>
+              <div><dt><ChartLineUp aria-hidden="true" size={16} /> 매각 대금과 비용 절감액 합계</dt><dd>{project.plan ? `${formatNumber(project.plan.netImpact)}만 원` : "계산 전"}</dd></div>
               <div><dt>재사용률</dt><dd>{project.plan ? `${project.plan.reuseRate.toFixed(1)}%` : "—"}</dd></div>
             </dl>
             <div className="project-card-footer">
               <span>업데이트 {formatUpdatedAt(project.updatedAt)}</span>
               <Link href={`/projects/${project.id}/matching`}>
-                매칭안 보기 <ArrowRight aria-hidden="true" size={17} />
+                배분안 보기 <ArrowRight aria-hidden="true" size={17} />
               </Link>
             </div>
           </article>
@@ -49,7 +49,7 @@ export default async function ProjectsPage() {
         <div className="content-empty-state">
           <Buildings aria-hidden="true" size={36} />
           <h2>첫 프로젝트를 만들어 보세요.</h2>
-          <p>자산 CSV를 가져오면 회수 목표와 매칭 검증을 바로 시작할 수 있습니다.</p>
+          <p>자산 CSV를 가져오면 최소 매각 금액을 정하고 인수처를 찾을 수 있습니다.</p>
           {canCreate ? <Link className="button button-primary" href="/projects/new">프로젝트 만들기</Link> : null}
         </div>
       ) : null}

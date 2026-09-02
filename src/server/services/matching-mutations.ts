@@ -100,10 +100,10 @@ export async function recalculateMatchPlan(
     );
   } catch (error) {
     if (error instanceof MatchingCapacityError || error instanceof MatchingTimeoutError) {
-      throw new MatchingMutationError("입찰 조합이 너무 많아 동기 계산 범위를 초과했습니다. 자산군별 후보를 줄인 뒤 다시 시도해 주세요.");
+      throw new MatchingMutationError("입찰 조합이 너무 많아 동기 계산 범위를 초과했습니다. 자산 항목별 후보를 줄인 뒤 다시 시도해 주세요.");
     }
     if (error instanceof MatchingIntegrityError) {
-      throw new MatchingMutationError("각 자산군에 전체 수량을 맡을 수 있는 검증된 입찰이 있는지 확인해 주세요.");
+      throw new MatchingMutationError("각 자산 항목의 전체 수량을 인수할 수 있고 확인도 끝난 입찰이 있는지 살펴봐 주세요.");
     }
     throw error;
   }
@@ -251,10 +251,10 @@ export async function confirmMatchPlan(
     if (confirmed) {
       return { projectId, planId: confirmed.id, status: "CONFIRMED" as const };
     }
-    throw new MatchingMutationError("확정할 매칭안이 없습니다.");
+    throw new MatchingMutationError("확정할 배분안이 없습니다.");
   }
   if (!plan.criteriaPassed) {
-    throw new MatchingMutationError("의사결정 기준을 충족한 매칭안만 확정할 수 있습니다.");
+    throw new MatchingMutationError("확정 기준을 충족한 배분안만 확정할 수 있습니다.");
   }
 
   const [expectedGroups, allocationRows] = await Promise.all([
@@ -286,7 +286,7 @@ export async function confirmMatchPlan(
     })),
   );
   if (!allocationIsComplete) {
-    throw new MatchingMutationError("모든 자산군이 검증된 수요처에 배정된 매칭안만 확정할 수 있습니다.");
+    throw new MatchingMutationError("모든 자산 항목이 확인을 마친 인수처에 배정된 배분안만 확정할 수 있습니다.");
   }
 
   const now = new Date();
@@ -301,7 +301,7 @@ export async function confirmMatchPlan(
       .returning({ id: matchPlans.id });
 
       if (updated.length !== 1) {
-        throw new MatchingMutationError("다른 사용자가 먼저 매칭안을 변경하거나 확정했습니다.");
+        throw new MatchingMutationError("다른 사용자가 먼저 배분안을 변경하거나 확정했습니다.");
       }
 
       const projectUpdate = await tx
@@ -316,7 +316,7 @@ export async function confirmMatchPlan(
         )
         .returning({ id: projects.id });
       if (projectUpdate.length !== 1) {
-        throw new MatchingMutationError("다른 사용자가 프로젝트를 변경했습니다. 최신 매칭안을 확인해 주세요.");
+        throw new MatchingMutationError("다른 사용자가 프로젝트를 변경했습니다. 최신 배분안을 확인해 주세요.");
       }
 
     await tx.insert(mutationReceipts).values({
@@ -382,7 +382,7 @@ export async function confirmMatchPlan(
     }
     if (error instanceof MatchingMutationError) throw error;
     if (isDatabaseConflict(error)) {
-      throw new MatchingMutationError("매칭안이 동시에 변경되었습니다. 최신 화면에서 다시 확인해 주세요.");
+      throw new MatchingMutationError("배분안이 동시에 변경되었습니다. 최신 화면에서 다시 확인해 주세요.");
     }
     throw error;
   }

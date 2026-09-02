@@ -12,7 +12,7 @@ export async function GET(
     try {
     const { projectId } = await params;
     const rows = await getProjectBids(projectId);
-    const header = ["수요처", "자산군", "수량", "현금 회수", "비용 절감", "성과 지표", "성과율", "수거일"];
+    const header = ["인수처", "자산 항목", "수량", "매각 대금", "비용 절감액", "성과 지표", "성과율", "수거일"];
     const csv = [
       header.map(csvCell).join(","),
       ...rows.map((row) =>

@@ -13,7 +13,7 @@ type DecisionCriteriaProps = {
 export function DecisionCriteria(props: DecisionCriteriaProps) {
   const criteria = [
     {
-      label: `현금 회수 ${formatNumber(props.minimumCashRecovery)}만 원 이상`,
+      label: `매각 대금 ${formatNumber(props.minimumCashRecovery)}만 원 이상`,
       passed: props.cashRecovery >= props.minimumCashRecovery,
     },
     {
@@ -28,7 +28,7 @@ export function DecisionCriteria(props: DecisionCriteriaProps) {
 
   return (
     <section className="card criteria-card" aria-labelledby="criteria-title">
-      <h2 id="criteria-title">의사결정 기준</h2>
+      <h2 id="criteria-title">배분안 확정 기준</h2>
       <ul>
         {criteria.map((criterion) => {
           const Icon = criterion.passed ? CheckCircle : XCircle;

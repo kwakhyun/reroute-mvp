@@ -20,15 +20,15 @@ export default async function LoginPage() {
           <span>풀스택 MVP</span>
         </div>
         <div className="login-brand-copy">
-          <p>기업의 유휴 자산을 다시 사용할 수 있는 수요처와 연결합니다.</p>
-          <span>매칭부터 수거와 외부 정산 확인까지 한 흐름으로 관리하세요.</span>
+          <p>기업이 처분할 사무 자산을 다시 쓸 기업이나 기관과 연결합니다.</p>
+          <span>매칭부터 수거 일정과 외부 결제사 확인까지 한곳에서 관리하세요.</span>
         </div>
       </section>
       <section className="login-form-panel">
         <div className="login-form-wrap">
           <span className="eyebrow">작업 공간 로그인</span>
           <h1>REROUTE에 로그인</h1>
-          <p>성수 오피스 이전 프로젝트의 추천 매칭안을 확인할 수 있습니다.</p>
+          <p>성수 오피스 이전 프로젝트의 추천 배분안을 확인할 수 있습니다.</p>
           <LoginForm />
           {process.env.DEMO_MODE === "true" ? (
             <form action={demoLoginAction} className="demo-login-form">

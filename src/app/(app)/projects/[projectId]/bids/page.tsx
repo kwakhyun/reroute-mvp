@@ -28,9 +28,9 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
           </a>
         }
         backHref={`/projects/${projectId}/matching`}
-        description="입찰별 현금 회수액, 비용 절감액, 검증 상태와 수거 가능일을 비교합니다. 검증을 마치지 않은 수요처는 매칭에서 제외됩니다."
+        description="인수처별 매각 대금, 비용 절감액, 확인 상태와 수거 가능일을 비교합니다. 필요한 확인 절차를 마치지 않은 인수처는 배분 대상에서 제외됩니다."
         eyebrow={dashboard.project.name}
-        title={`입찰 ${bidRows.length}건`}
+        title={`인수처 입찰 ${bidRows.length}건`}
       />
       {dashboard.membershipRole === "APPROVER" && dashboard.project.status !== "CONFIRMED" ? (
         <BidImportForm projectId={projectId} />
@@ -41,12 +41,12 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
           <table className="bids-table">
             <thead>
               <tr>
-                <th scope="col">추천</th>
-                <th scope="col">수요처</th>
-                <th scope="col">자산군</th>
+                <th scope="col">배분안</th>
+                <th scope="col">인수처</th>
+                <th scope="col">자산 항목</th>
                 <th scope="col">수량</th>
-                <th scope="col">현금 회수</th>
-                <th scope="col">비용 절감</th>
+                <th scope="col">매각 대금</th>
+                <th scope="col">비용 절감액</th>
                 <th scope="col">성과</th>
                 <th scope="col">수거 가능일</th>
               </tr>
@@ -56,11 +56,11 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
                 const isSelected = selected.has(bid.id);
                 return (
                   <tr className={isSelected ? "bid-selected" : undefined} key={bid.id}>
-                    <td>{isSelected ? <span className="selected-mark"><CheckCircle aria-hidden="true" size={18} weight="fill" /> 선택</span> : <span className="muted-dash">—</span>}</td>
+                    <td>{isSelected ? <span className="selected-mark"><CheckCircle aria-hidden="true" size={18} weight="fill" /> 포함</span> : <span className="muted-dash">—</span>}</td>
                     <td>
                       <div className="partner-cell">
                         <PartnerMark type={bid.partnerType} />
-                        <div><strong>{bid.partnerName}</strong><span className={`verification-badge ${bid.isVerified ? `verification-${bid.partnerType.toLowerCase()}` : "verification-pending"}`}>{bid.isVerified ? `검증 완료: ${bid.verificationLabel}` : "검증 전, 매칭 제외"}</span>{bid.isVerified && bid.verificationReference ? <small className="verification-evidence">검증 근거: {bid.verificationReference}</small> : null}</div>
+                        <div><strong>{bid.partnerName}</strong><span className={`verification-badge ${bid.isVerified ? `verification-${bid.partnerType.toLowerCase()}` : "verification-pending"}`}>{bid.isVerified ? `${bid.verificationLabel} 완료` : "인수처 확인 필요, 배분 제외"}</span>{bid.isVerified && bid.verificationReference ? <small className="verification-evidence">확인 자료: {bid.verificationReference}</small> : null}</div>
                       </div>
                     </td>
                     <td>{bid.assetGroupName}</td>

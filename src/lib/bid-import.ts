@@ -99,7 +99,7 @@ export function parseBidCsv(source: string): ImportedBidRow[] {
       Object.fromEntries(headers.map((header, index) => [header.trim(), values[index]?.trim() ?? ""])),
     );
     if (!parsed.success) {
-      throw new BidImportError(`${rowIndex + 2}행의 값, 수량, 검증 근거 또는 날짜를 확인해 주세요.`);
+      throw new BidImportError(`${rowIndex + 2}행의 값, 수량, 인수처 확인 자료 또는 날짜를 확인해 주세요.`);
     }
     return parsed.data;
   });
