@@ -28,10 +28,11 @@ const navigation = [
 ] as const;
 
 type SidebarProps = {
+  defaultProject: { id: string; name: string } | null;
   user: { name: string; role: "VIEWER" | "MANAGER" | "APPROVER"; team: string };
 };
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ defaultProject, user }: SidebarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
@@ -40,7 +41,8 @@ export function Sidebar({ user }: SidebarProps) {
   const sidebarRef = useRef<HTMLElement>(null);
   const wasOpenRef = useRef(false);
   const matchedProjectId = pathname.match(/^\/projects\/([^/]+)/)?.[1] ?? null;
-  const projectId = matchedProjectId === "new" ? null : matchedProjectId;
+  const routeProjectId = matchedProjectId === "new" ? null : matchedProjectId;
+  const projectId = routeProjectId ?? defaultProject?.id ?? null;
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 900px)");
@@ -145,7 +147,12 @@ export function Sidebar({ user }: SidebarProps) {
             const Icon = item.icon;
             if (item.segment && !projectId) {
               return (
-                <span aria-disabled="true" className="sidebar-link sidebar-link-disabled" key={item.label}>
+                <span
+                  aria-disabled="true"
+                  className="sidebar-link sidebar-link-disabled"
+                  key={item.label}
+                  title="먼저 프로젝트를 만들어 주세요."
+                >
                   <Icon aria-hidden="true" size={28} weight="regular" />
                   <span>{item.label}</span>
                 </span>
@@ -153,6 +160,7 @@ export function Sidebar({ user }: SidebarProps) {
             }
             return (
               <Link
+                aria-label={item.segment && !routeProjectId && defaultProject ? `${defaultProject.name} 프로젝트의 ${item.label}` : undefined}
                 aria-current={active ? "page" : undefined}
                 className={`sidebar-link${active ? " sidebar-link-active" : ""}`}
                 href={href}

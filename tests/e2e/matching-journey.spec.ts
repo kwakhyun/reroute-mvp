@@ -64,6 +64,26 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
   await expect(page.locator('meta[name="robots"][content*="noindex"]').first()).toBeAttached();
 });
 
+test("프로젝트 목록에서도 최근 프로젝트의 하위 메뉴로 이동한다", async ({ page }) => {
+  await demoLogin(page);
+
+  const expectedRoutes = {
+    자산: `${demoProjectPath}/assets`,
+    매칭: `${demoProjectPath}/matching`,
+    입찰: `${demoProjectPath}/bids`,
+    수거: `${demoProjectPath}/pickups`,
+    정산: `${demoProjectPath}/settlements`,
+  };
+
+  for (const [label, href] of Object.entries(expectedRoutes)) {
+    await expect(page.getByRole("link", { name: `성수 오피스 이전 프로젝트의 ${label}` })).toHaveAttribute("href", href);
+  }
+
+  await page.getByRole("link", { name: "성수 오피스 이전 프로젝트의 자산" }).click();
+  await expect(page).toHaveURL(`${demoProjectPath}/assets`);
+  await expect(page.getByRole("heading", { name: "자산 목록" })).toBeVisible();
+});
+
 test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
   await demoLogin(page);
   await page.goto(`${demoProjectPath}/matching`);

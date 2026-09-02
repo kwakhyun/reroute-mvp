@@ -72,6 +72,24 @@ export async function getProjectList() {
   });
 }
 
+export async function getDefaultProjectNavigation() {
+  const user = await requireUser();
+  const [project] = await db
+    .select({ id: projects.id, name: projects.name })
+    .from(projects)
+    .innerJoin(
+      organizationMemberships,
+      and(
+        eq(organizationMemberships.organizationId, projects.organizationId),
+        eq(organizationMemberships.userId, user.id),
+      ),
+    )
+    .orderBy(desc(projects.updatedAt))
+    .limit(1);
+
+  return project ?? null;
+}
+
 export async function getProjectCreationOrganizations() {
   const user = await requireUser();
   return db

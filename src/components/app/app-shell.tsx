@@ -1,6 +1,7 @@
 import { Sidebar } from "./sidebar";
 
 type AppShellProps = {
+  defaultProject: { id: string; name: string } | null;
   user: {
     id: string;
     name: string;
@@ -11,11 +12,11 @@ type AppShellProps = {
   children: React.ReactNode;
 };
 
-export function AppShell({ user, children }: AppShellProps) {
+export function AppShell({ defaultProject, user, children }: AppShellProps) {
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
-      <Sidebar user={user} />
+      <Sidebar defaultProject={defaultProject} user={user} />
       <main className="app-content" id="main-content">
         {children}
       </main>
