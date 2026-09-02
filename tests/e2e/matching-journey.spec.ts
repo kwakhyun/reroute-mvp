@@ -89,7 +89,7 @@ test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기
   await page.goto(`${demoProjectPath}/matching`);
   await expect(page.getByRole("heading", { name: "성수 오피스 이전" })).toBeVisible();
 
-  const summary = page.getByRole("region", { name: "확정 결과" });
+  const summary = page.getByRole("region", { name: /^(추천|확정) 결과$/ });
   await expect(summary).toContainText("1,840");
   await expect(summary).toContainText("300");
   await expect(summary).toContainText("2,140");
