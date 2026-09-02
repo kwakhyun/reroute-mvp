@@ -145,7 +145,7 @@ export default function HomePage() {
         <div><strong>214</strong><span>샘플 자산</span></div>
         <div><strong>11</strong><span>샘플 입찰</span></div>
         <div><strong>16</strong><span>관계형 테이블</span></div>
-        <div><strong>5</strong><span>브라우저 E2E 시나리오</span></div>
+        <div><strong>6</strong><span>브라우저 E2E 시나리오</span></div>
         </section>
 
         <nav className="portfolio-mobile-index" aria-label="모바일 빠른 탐색">

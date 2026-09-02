@@ -125,7 +125,7 @@ npm audit --audit-level=moderate
 - Vitest 17개 파일, 57개 테스트 통과
 - 문장 88.33%, 분기 81.49%, 함수 96.82%, 라인 90.76% 커버리지
 - Playwright standalone 프로덕션 빌드 E2E 시나리오 6개 통과
-- 같은 입력으로 가상 데이터 분석 산출물 5개를 다시 생성해 결과 일치, 노트북 오류 0건
+- 같은 입력으로 가상 데이터 분석 산출물 6개를 다시 생성해 결과 일치, 노트북 오류 0건
 - `npm audit --audit-level=moderate` 취약점 0건
 
 `db:reset`은 안전장치에 따라 `./data` 아래의 로컬 DB만 초기화합니다. 프로덕션 모드에서 로컬 파일 DB를 사용하는 Playwright 실행 과정에만 `ALLOW_FILE_DATABASE=true`를 주입합니다.
