@@ -81,6 +81,9 @@ def main() -> None:
     assert "실제 고객 인터뷰나 운영 기록이 아닙니다" in markdown
     assert "\"status\": \"fixture\"" in artifact
     assert "REROUTE 가상 데이터 분석 보고서" in html
+    assert "실제 지불 의향과 구매 결정권자를 확인합니다" in html
+    assert "의향와" not in html
+    assert "예시 결과 결과" not in html
     assert DISCLAIMER in json.loads((ROOT / "analysis/generated/validation-simulation-results.json").read_text())["required_disclaimer"]
 
     print(json.dumps({
