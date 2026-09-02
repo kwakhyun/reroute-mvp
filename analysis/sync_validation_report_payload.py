@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import base64
 import gzip
+import io
 import re
 from pathlib import Path
 
@@ -26,6 +27,14 @@ FALLBACK_COPY = (
 )
 
 
+def compress_portably(payload: bytes) -> bytes:
+    """Create reproducible gzip bytes without exposing the host OS in the header."""
+    buffer = io.BytesIO()
+    with gzip.GzipFile(filename="", mode="wb", fileobj=buffer, mtime=0) as compressed:
+        compressed.write(payload)
+    return buffer.getvalue()
+
+
 def main() -> None:
     report = REPORT_PATH.read_text(encoding="utf-8")
     missing_fallback_copy = [text for text in FALLBACK_COPY if text not in report]
@@ -33,7 +42,7 @@ def main() -> None:
         raise RuntimeError(f"portable report fallback copy is stale: {missing_fallback_copy}")
 
     artifact_bytes = ARTIFACT_PATH.read_bytes()
-    encoded_payload = base64.b64encode(gzip.compress(artifact_bytes, mtime=0)).decode("ascii")
+    encoded_payload = base64.b64encode(compress_portably(artifact_bytes)).decode("ascii")
     updated_report, count = PAYLOAD_PATTERN.subn(
         lambda match: f"{match.group(1)}{encoded_payload}{match.group(3)}",
         report,

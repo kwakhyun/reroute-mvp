@@ -2251,6 +2251,10 @@ tfoot td {
     --sidebar-width: 0px;
   }
 
+  html:has(.app-shell) {
+    scroll-padding-top: 58px;
+  }
+
   .mobile-app-bar {
     position: sticky;
     top: 0;

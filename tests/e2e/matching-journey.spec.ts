@@ -101,6 +101,22 @@ test("프로젝트 목록에서도 최근 프로젝트의 하위 메뉴로 이�
   await expect(page.getByRole("heading", { name: "자산 목록" })).toBeVisible();
 });
 
+test("모바일 경로 전환 뒤 첫 제목이 상단 메뉴에 가리지 않는다", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await demoLogin(page);
+
+  await page.getByRole("link", { name: "배분안 보기", exact: true }).click();
+  await expect(page).toHaveURL(`${demoProjectPath}/matching`);
+  await expect(page.getByRole("heading", { name: "성수 오피스 이전" })).toBeVisible();
+
+  await expect.poll(() => page.evaluate(() => {
+    const appBar = document.querySelector<HTMLElement>(".mobile-app-bar");
+    const heading = document.querySelector<HTMLElement>("main h1");
+    if (!appBar || !heading) return -1;
+    return Math.round(heading.getBoundingClientRect().top - appBar.getBoundingClientRect().bottom);
+  })).toBeGreaterThanOrEqual(0);
+});
+
 test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
   await demoLogin(page);
   await page.goto(`${demoProjectPath}/matching`);

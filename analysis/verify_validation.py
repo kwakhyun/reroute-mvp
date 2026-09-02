@@ -89,7 +89,11 @@ def main() -> None:
         html,
     )
     assert payload_match, "portable artifact payload is missing"
-    embedded_artifact = json.loads(gzip.decompress(base64.b64decode(payload_match.group(1))))
+    compressed_payload = base64.b64decode(payload_match.group(1))
+    assert len(compressed_payload) >= 10, "portable artifact gzip payload is incomplete"
+    assert compressed_payload[:2] == b"\x1f\x8b", "portable artifact payload is not gzip"
+    assert compressed_payload[9] == 255, "portable artifact gzip header depends on the host OS"
+    embedded_artifact = json.loads(gzip.decompress(compressed_payload))
     assert embedded_artifact == json.loads(artifact), "portable artifact payload is stale"
     assert "실제 고객 인터뷰나 운영 기록이 아닙니다" in markdown
     assert "\"status\": \"fixture\"" in artifact

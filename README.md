@@ -124,7 +124,7 @@ npm audit --audit-level=moderate
 - ESLint 경고 0건, TypeScript 오류 0건
 - Vitest 17개 파일, 57개 테스트 통과
 - 문장 88.33%, 분기 81.49%, 함수 96.82%, 라인 90.76% 커버리지
-- Playwright standalone 프로덕션 빌드 E2E 시나리오 5개 통과
+- Playwright standalone 프로덕션 빌드 E2E 시나리오 6개 통과
 - 같은 입력으로 가상 데이터 분석 산출물 5개를 다시 생성해 결과 일치, 노트북 오류 0건
 - `npm audit --audit-level=moderate` 취약점 0건
 
