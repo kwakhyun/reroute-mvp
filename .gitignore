@@ -12,6 +12,9 @@
 /test-results
 /tmp
 
+# local portfolio exports
+/output/pdf/REROUTE_Fullstack_Portfolio.pdf
+
 # Python
 __pycache__/
 *.py[cod]
