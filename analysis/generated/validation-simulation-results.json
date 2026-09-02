@@ -835,9 +835,9 @@
     }
   ],
   "decision": {
-    "recommendation": "LIMITED_PILOT",
-    "dedicated_investment": "HOLD",
-    "reason": "화면 행동 기준은 통과했지만 유료 파일럿 기준과 전체 기준을 함께 충족할 확률이 낮음"
+    "recommendation": "CUSTOMER_VALIDATION_NEXT",
+    "follow_up_development": "REQUIRES_CUSTOMER_VALIDATION",
+    "reason": "개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았으며, 가상 데이터는 시장 수요의 근거가 아님"
   },
   "required_disclaimer": "가상 데이터 분석이며 실제 고객 검증 결과가 아님"
 }

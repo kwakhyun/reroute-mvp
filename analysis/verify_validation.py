@@ -65,8 +65,8 @@ def validate_rows() -> dict[str, int]:
     assert result["required_disclaimer"].endswith("실제 고객 검증 결과가 아님")
     assert len(users) == 10 and len(companies) == 5
     assert recomputed == result["base"]["representative"]["counts"]
-    assert result["decision"]["recommendation"] == "LIMITED_PILOT"
-    assert result["decision"]["dedicated_investment"] == "HOLD"
+    assert result["decision"]["recommendation"] == "CUSTOMER_VALIDATION_NEXT"
+    assert result["decision"]["follow_up_development"] == "REQUIRES_CUSTOMER_VALIDATION"
     return {"users": len(users), "companies": len(companies), **recomputed}
 
 
@@ -98,15 +98,16 @@ def main() -> None:
     assert "실제 고객 인터뷰나 운영 기록이 아닙니다" in markdown
     assert "\"status\": \"fixture\"" in artifact
     assert "REROUTE 가상 데이터 분석 보고서" in html
-    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in markdown
-    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in artifact
-    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in html
+    assert "다음 검증안은 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인하는 것입니다" in markdown
+    assert "다음 검증안은 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인하는 것입니다" in artifact
+    assert "다음 검증안은 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인하는 것입니다" in html
     assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in markdown
     assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in artifact
     assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in html
     assert "Tables:" not in html
-    assert "실제 파일럿에서는 지불 의향과 구매 결정권자를 확인합니다" in html
+    assert "개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았습니다" in html
     assert "의향와" not in html
+    assert "의향를" not in html
     duplicated_result_label = "\uc608\uc2dc \uacb0\uacfc \uacb0\uacfc"
     assert duplicated_result_label not in html
     assert DISCLAIMER in json.loads((ROOT / "analysis/generated/validation-simulation-results.json").read_text())["required_disclaimer"]

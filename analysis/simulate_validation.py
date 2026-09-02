@@ -298,13 +298,13 @@ def write_markdown(result: dict[str, Any]) -> None:
 
 ## 핵심 요약
 
-- **다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다.** 예시 결과에서는 인수처 확인 자료 검토 {representative_counts['bids_opened']}/10명, 조건 탐색 {representative_counts['recalculation_opened']}/10명, 배분안 확정 화면 진입 {representative_counts['confirmation_opened']}/10명으로 행동 기준을 통과했습니다.
-- **전담 개발 인력은 아직 투입하지 않습니다.** 예시 결과에서 유료 파일럿에 참여한 기업은 5곳 중 {representative_counts['paid_pilot']}곳으로 목표인 2곳에 미치지 못했습니다. 배분안 확정 화면 진입과 유료 파일럿 기준을 함께 충족할 추정 확률도 {probability['investment_rule']:.1f}%였습니다.
-- **다음 검증은 가격과 구매 권한에 집중합니다.** 실제 기업 5곳을 대상으로 지불 의사, 계약 주체와 운영 중단 기준을 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다.
+- **다음 검증안은 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인하는 것입니다.** 예시 결과에서는 인수처 확인 자료 검토 {representative_counts['bids_opened']}/10명, 조건 탐색 {representative_counts['recalculation_opened']}/10명, 배분안 확정 화면 진입 {representative_counts['confirmation_opened']}/10명으로 행동 기준을 통과했습니다.
+- **가상 데이터만으로 후속 개발 여부를 결정할 수 없습니다.** 예시 결과에서는 가상 기업 5곳 중 {representative_counts['paid_pilot']}곳에 유료 파일럿 참여 의향이 있다고 가정했습니다. 사전 기준인 2곳에는 미치지 못하며, 배분안 확정 화면 도달과 유료 파일럿 참여 의향 기준을 함께 충족할 추정 확률은 {probability['investment_rule']:.1f}%였습니다.
+- **개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았습니다.** 실제 사업 환경에서는 사업팀이 기업 5곳 이내에서 고객의 지불 의사와 계약 주체를 확인해야 합니다. 그전까지 이 결과는 검증 구조를 점검한 참고값으로만 사용합니다.
 
 ## 검증 질문
 
-배분안을 본 사용자가 확정 화면을 열고 유료 파일럿에 참여할 가능성이 있는지 살펴본 뒤, 소규모 실제 파일럿을 진행할지 판단합니다.
+실제 고객 검증에 앞서, 배분안을 본 사용자의 확정 화면 도달률과 기업의 유료 파일럿 참여 의향을 평가할 기준을 설계합니다.
 
 ## 방법과 모집단
 
@@ -325,7 +325,7 @@ def write_markdown(result: dict[str, Any]) -> None:
 | 조건 탐색 | {representative_counts['recalculation_opened']}/10명 | 3명 이상 | 통과 |
 | 배분안 확정 화면 진입 | {representative_counts['confirmation_opened']}/10명 | 2명 이상 | 통과 |
 | 파일럿 참여 의향 | 기업 5곳 중 {representative_counts['pilot_interest']}곳 | 3곳 이상 | 통과 |
-| 유료 파일럿 | 기업 5곳 중 {representative_counts['paid_pilot']}곳 | 2곳 이상 | 미달 |
+| 유료 파일럿 참여 의향(가정) | 가상 기업 5곳 중 {representative_counts['paid_pilot']}곳 | 2곳 이상 | 미달 |
 
 ## 불확실성 결과
 
@@ -335,21 +335,21 @@ def write_markdown(result: dict[str, Any]) -> None:
 | 조건 탐색률 30% 이상 | {probability['recalculation_opened']:.1f}% |
 | 배분안 확정 화면 진입률 20% 이상 | {probability['confirmation_opened']:.1f}% |
 | 파일럿에 참여하겠다고 답한 기업 5곳 중 3곳 이상 | {probability['pilot_interest']:.1f}% |
-| 유료 파일럿에 참여한 기업 5곳 중 2곳 이상 | {probability['paid_pilot']:.1f}% |
+| 가상 기업 5곳 중 2곳 이상에서 유료 파일럿 참여 의향이 나타날 확률 | {probability['paid_pilot']:.1f}% |
 | 모든 기준 동시 충족 | {probability['all_criteria']:.1f}% |
 
 ## 가정 민감도
 
-| 시나리오 | 모든 기준 충족 | 개발 인력 투입 기준 충족 |
+| 시나리오 | 모든 기준 충족 | 후속 개발 검토 기준 충족 |
 | --- | ---: | ---: |
 {scenario_rows}
 
 ## 현재 판단
 
-1. 전담 개발 인력 투입은 보류합니다.
-2. 기업 5곳 이내의 소규모 실제 파일럿을 진행합니다.
-3. 화면 행동보다 지불 의사와 구매 권한자를 먼저 확인합니다.
-4. 유료 파일럿에 참여한 기업이 2곳 이상이고 배분안 확정 화면 진입률이 20% 이상일 때만 개발팀 인계를 검토합니다.
+1. 가상 데이터만으로 후속 개발 여부를 판단하지 않습니다.
+2. 실제 사업 환경에서는 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 우선 확인합니다.
+3. 화면 행동보다 고객의 지불 의사와 구매 결정권자를 우선 확인합니다.
+4. 기업 5곳 중 2곳 이상에서 유료 파일럿 참여 의향을 확인하고, 테스트 사용자 중 20% 이상이 배분안 확정 화면에 도달하면 후속 개발을 검토합니다.
 
 ## 추가 질문
 
@@ -384,9 +384,9 @@ def main() -> None:
         "base": base,
         "scenarios": scenario_results,
         "decision": {
-            "recommendation": "LIMITED_PILOT",
-            "dedicated_investment": "HOLD",
-            "reason": "화면 행동 기준은 통과했지만 유료 파일럿 기준과 전체 기준을 함께 충족할 확률이 낮음",
+            "recommendation": "CUSTOMER_VALIDATION_NEXT",
+            "follow_up_development": "REQUIRES_CUSTOMER_VALIDATION",
+            "reason": "개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았으며, 가상 데이터는 시장 수요의 근거가 아님",
         },
         "required_disclaimer": "가상 데이터 분석이며 실제 고객 검증 결과가 아님",
     }

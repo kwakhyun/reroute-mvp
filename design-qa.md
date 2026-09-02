@@ -13,7 +13,7 @@
 - 2차 감사 후 최종 데스크톱: [artifacts/audit-2026-09-01-round3/final-matching-desktop-1440x1024.png](artifacts/audit-2026-09-01-round3/final-matching-desktop-1440x1024.png)
 - 2차 감사 후 최종 모바일: [artifacts/audit-2026-09-01-round3/final-matching-mobile-390x844.png](artifacts/audit-2026-09-01-round3/final-matching-mobile-390x844.png)
 - 공개 케이스 스터디 히어로: [public/portfolio/walkthrough-frames/01-case-study-hero.png](public/portfolio/walkthrough-frames/01-case-study-hero.png)
-- 가상 데이터 분석과 개발 인력 투입 결정: [public/portfolio/walkthrough-frames/07-validation.png](public/portfolio/walkthrough-frames/07-validation.png)
+- 가상 데이터 분석과 다음 검증안: [public/portfolio/walkthrough-frames/07-validation.png](public/portfolio/walkthrough-frames/07-validation.png)
 - 엔지니어링 범위: [public/portfolio/walkthrough-frames/08-engineering.png](public/portfolio/walkthrough-frames/08-engineering.png)
 - 기여도와 AI 책임 경계: [public/portfolio/walkthrough-frames/09-ownership.png](public/portfolio/walkthrough-frames/09-ownership.png)
 - 실행 가능한 분석 보고서: [public/portfolio/walkthrough-frames/10-report.png](public/portfolio/walkthrough-frames/10-report.png)
@@ -34,7 +34,7 @@
 8. 열린 모바일 메뉴를 모달 내비게이션으로 처리해 배경을 `inert`로 만들고, 포커스를 메뉴 안에 가둔 뒤 닫을 때 원래 버튼으로 복귀시켰다.
 9. 추천 배분안과 확정 화면에 자산 항목, 인수처, 수량, 인수처 확인 자료를 함께 표시해 같은 수량의 자산도 구분할 수 있게 했다.
 10. 계산 결과가 없는 신규 프로젝트에서도 입찰 가져오기와 재계산 행동이 이어지도록 빈 상태를 완성했다.
-11. 공개 첫 화면에 제품 가설, 구현 범위, 가상 데이터 분석의 한계, 개발 인력 투입 보류 결정, 기여도와 데모 시작 동선을 하나의 읽기 흐름으로 구성했다.
+11. 공개 첫 화면에 제품 가설, 구현 범위, 가상 데이터 분석의 한계, 다음 검증안, 기여도와 데모 시작 동선을 하나의 읽기 흐름으로 구성했다.
 12. 공개 케이스 스터디를 1440px와 390px에서 확인해 본문이 가로로 넘치지 않고 주요 버튼이 화면 밖으로 사라지지 않는지 검증했다.
 13. 실제 고객 결과와 가상 데이터 분석이 혼동되지 않도록 상태 배지, 경고 카드, 보고서 링크에서 같은 한계를 반복 표시했다.
 14. 권한 없는 동적 경로의 `noindex`와 루트 색인 메타 충돌을 제거했다.

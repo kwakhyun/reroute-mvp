@@ -25,7 +25,7 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
   await expect(page.getByRole("heading", { name: "사무 자산 처분안을 한눈에 비교하고 결정합니다." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
   await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
-  await expect(page.getByText("예시 결과의 유료 파일럿 참여", { exact: true })).toBeVisible();
+  await expect(page.getByText("예시 결과의 유료 파일럿 참여 의향", { exact: true })).toBeVisible();
   await expect(page.getByText(/데모를 열 때 샘플 작업 공간을 초기 상태로 되돌립니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /100% 직접 수행했습니다/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);

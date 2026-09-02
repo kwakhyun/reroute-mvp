@@ -6,7 +6,7 @@ import { demoLoginAction } from "@/app/actions/auth";
 export const metadata: Metadata = {
   title: "B2B 사무 자산 처분 MVP 사례",
   description:
-    "문제 정의, 풀스택 구현, 가상 데이터 분석, 개발 인력 투입 판단 과정을 정리한 REROUTE 제품 개발 사례",
+    "문제 정의, 풀스택 구현, 가상 데이터 분석, 후속 개발 검토 기준을 정리한 REROUTE 제품 개발 사례",
 };
 
 const flow = [
@@ -209,7 +209,7 @@ export default function HomePage() {
         <div className="portfolio-validation-header">
           <div>
             <span className="portfolio-section-index">03 / 판단 근거</span>
-            <h2>시뮬레이션 결과,<br />전담 개발 인력 투입을 보류했습니다.</h2>
+            <h2>시뮬레이션 결과,<br />실제 사업 환경에서 확인할 기준을 정리했습니다.</h2>
           </div>
           <div className="portfolio-synthetic-notice">
             <strong>가상 데이터로 판단 기준을 미리 점검했습니다.</strong>
@@ -226,24 +226,24 @@ export default function HomePage() {
             <p>다섯 가지 판단 기준을 모두 충족할 추정 확률</p>
           </article>
           <article>
-            <span>개발 인력 투입 기준 충족</span>
+            <span>후속 개발 검토 기준 충족</span>
             <strong>30.9%</strong>
-            <p>배분안 확정 단계 진입률과 유료 파일럿 참여 기업 수가 모두 기준을 넘을 추정 확률</p>
+            <p>가상 사용자 중 확정 단계에 도달한 인원과 유료 파일럿 참여 의향이 있다고 가정한 가상 기업 수가 모두 기준을 넘은 비율</p>
           </article>
           <article className="portfolio-validation-card-warning">
-            <span>예시 결과의 유료 파일럿 참여</span>
+            <span>예시 결과의 유료 파일럿 참여 의향</span>
             <strong>1곳 / 5곳</strong>
-            <p>가상 시나리오에서는 목표인 2곳보다 적었습니다. 실제 기업을 대상으로 비용을 지불할 의사와 구매 결정권자를 먼저 확인해야 합니다.</p>
+            <p>가상 기업 5곳 중 1곳에 유료 파일럿 참여 의향이 있다고 가정했습니다. 실제 고객의 지불 의사나 계약 결과가 아닙니다.</p>
           </article>
         </div>
 
         <div className="portfolio-decision-panel">
           <div>
-            <span>다음 판단</span>
-            <h3>소규모 파일럿은 진행하되 전담 개발 인력 투입은 보류합니다.</h3>
+            <span>실제 사업 환경을 가정한 검증안</span>
+            <h3>사업팀이 고객의 지불 의사와 계약 주체를 우선 확인하는 검증안을 설계했습니다.</h3>
           </div>
           <p>
-            기업 5곳을 대상으로 비용을 지불할 의사와 구매 결정권자를 확인합니다. 유료 파일럿 참여 기업이 2곳 이상이고 배분안 확정 단계에 진입한 사용자 비율이 20% 이상일 때 전담 개발 인력 투입을 다시 검토합니다.
+            개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았고, 계약도 체결하지 않았습니다. 실제 사업 환경에서 사업팀이 고객 검증을 진행한다면 기업 5곳 중 2곳 이상에서 유료 파일럿 참여 의향을 확인하고, 테스트 사용자 중 20% 이상이 배분안 확정 화면에 도달했을 때 후속 개발을 검토하도록 기준을 설정했습니다.
           </p>
           <a
             className="portfolio-inline-link"

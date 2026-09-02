@@ -5,7 +5,7 @@ WITH criteria(metric, label, probability, threshold, median_count, denominator) 
     ('recalculation_opened', '조건 탐색', 0.752, '3/10명 이상', 4, 10),
     ('confirmation_opened', '배분안 확정 화면 진입', 0.784, '2/10명 이상', 3, 10),
     ('pilot_interest', '파일럿 참여 의향', 0.635, '기업 5곳 중 3곳 이상', 3, 5),
-    ('paid_pilot', '유료 파일럿', 0.39299999999999996, '기업 5곳 중 2곳 이상', 1, 5),
+    ('paid_pilot', '유료 파일럿 참여 의향', 0.39299999999999996, '가상 기업 5곳 중 2곳 이상', 1, 5),
     ('all_criteria', '모든 기준 동시 충족', 0.188, '5개 기준 모두 충족', NULL, NULL)
 ),
 sensitivity(scenario, label, all_criteria_probability, investment_rule_probability, iterations) AS (

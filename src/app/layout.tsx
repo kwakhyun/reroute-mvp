@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: "기업이 처분할 사무 자산의 매각 대금, 폐기비와 운반비 절감액, 재사용률을 함께 비교하는 B2B 매칭 서비스",
   openGraph: {
     title: "REROUTE · B2B 사무 자산 처분 MVP",
-    description: "문제 정의부터 풀스택 구현과 개발 인력 투입 결정까지 정리한 개인 제품 개발 사례",
+    description: "문제 정의부터 풀스택 구현과 후속 개발 검토 기준까지 정리한 개인 제품 개발 사례",
     type: "website",
     images: [
       {
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "REROUTE · B2B 사무 자산 처분 MVP",
-    description: "문제 정의부터 풀스택 구현과 개발 인력 투입 결정까지 정리한 개인 제품 개발 사례",
+    description: "문제 정의부터 풀스택 구현과 후속 개발 검토 기준까지 정리한 개인 제품 개발 사례",
     images: ["/portfolio/walkthrough-frames/01-case-study-hero.png"],
   },
 };

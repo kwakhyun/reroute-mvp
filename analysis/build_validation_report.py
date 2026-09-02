@@ -20,7 +20,7 @@ METRIC_LABELS = {
     "recalculation_opened": ("조건 탐색", "3/10명 이상"),
     "confirmation_opened": ("배분안 확정 화면 진입", "2/10명 이상"),
     "pilot_interest": ("파일럿 참여 의향", "기업 5곳 중 3곳 이상"),
-    "paid_pilot": ("유료 파일럿", "기업 5곳 중 2곳 이상"),
+    "paid_pilot": ("유료 파일럿 참여 의향", "가상 기업 5곳 중 2곳 이상"),
     "all_criteria": ("모든 기준 동시 충족", "5개 기준 모두 충족"),
 }
 
@@ -111,7 +111,7 @@ def make_source(source_id: str, label: str, query: str, description: str) -> dic
             ],
             "metric_definitions": {
                 "criterion_probability": "몬테카를로 반복 중 각 성공 기준을 충족한 횟수 / 전체 반복 횟수",
-                "investment_rule_probability": "확정 화면을 연 사용자 2명 이상과 유료 파일럿 참여 기업 2곳 이상을 동시에 충족한 비율",
+                "investment_rule_probability": "가상 사용자 2명 이상이 확정 화면을 열고, 가상 기업 2곳 이상에서 유료 파일럿 참여 의향이 있다고 가정한 경우의 비율",
             },
             "executed_at": GENERATED_AT,
         },
@@ -219,9 +219,9 @@ def main() -> None:
         ),
         make_source(
             "summary_source",
-            "개발 인력 투입 판단",
+            "후속 개발 검토 근거",
             summary_query,
-            "전체 기준, 개발 인력 투입 기준, 유료 파일럿 참여 기업 수 중앙값을 재현합니다.",
+            "전체 기준과 후속 개발 검토 기준의 충족 확률, 유료 파일럿 참여 의향이 있다고 가정한 기업 수의 중앙값을 재현합니다.",
         ),
         {
             "id": "simulation_code",
@@ -241,7 +241,7 @@ def main() -> None:
             "version": 1,
             "surface": "report",
             "title": "REROUTE 가상 데이터 분석 보고서",
-            "description": "실제 고객 파일럿 전에 제품의 성공 기준과 개발 인력 투입 기준을 점검한 보고서",
+            "description": "실제 고객 검증 전에 제품의 성공 기준과 후속 개발 검토 기준을 점검한 보고서",
             "generatedAt": GENERATED_AT,
             "cards": [
                 {
@@ -255,20 +255,20 @@ def main() -> None:
                 },
                 {
                     "id": "investment_rule_card",
-                    "description": "확정 화면을 연 사용자 2명 이상과 유료 파일럿 참여 기업 2곳 이상을 동시에 충족한 비율",
+                    "description": "가상 사용자 2명 이상이 확정 화면을 열고, 가상 기업 2곳 이상에서 유료 파일럿 참여 의향이 있다고 가정한 경우의 비율",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
-                        {"label": "전담 개발 인력 투입 기준 충족", "field": "investment_rule_probability", "format": "percent"}
+                        {"label": "후속 개발 검토 기준 충족", "field": "investment_rule_probability", "format": "percent"}
                     ],
                 },
                 {
                     "id": "paid_pilot_card",
-                    "description": "기준 시나리오에서 유료 파일럿으로 전환한 기업 수의 중앙값",
+                    "description": "기준 시나리오에서 유료 파일럿 참여 의향이 있다고 가정한 가상 기업 수의 중앙값",
                     "dataset": "summary",
                     "sourceId": "summary_source",
                     "metrics": [
-                        {"label": "유료 파일럿 참여 기업 수 중앙값", "field": "paid_pilot_median", "format": "number"},
+                        {"label": "참여 의향 기업 수(중앙값)", "field": "paid_pilot_median", "format": "number"},
                         {"label": "목표", "field": "paid_pilot_target", "format": "number"},
                     ],
                 },
@@ -277,7 +277,7 @@ def main() -> None:
                 {
                     "id": "criteria_probability_chart",
                     "title": "기준별 충족 추정 확률",
-                    "subtitle": "유료 파일럿과 모든 기준 동시 충족이 가장 큰 불확실성입니다.",
+                    "subtitle": "유료 파일럿 참여 의향과 전체 기준 동시 충족 여부가 가장 불확실합니다.",
                     "type": "bar",
                     "dataset": "criteria",
                     "sourceId": "criteria_source",
@@ -303,7 +303,7 @@ def main() -> None:
                     "columns": [
                         {"field": "label", "label": "시나리오", "type": "text"},
                         {"field": "all_criteria_probability", "label": "모든 기준 충족", "format": "percent"},
-                        {"field": "investment_rule_probability", "label": "개발 인력 투입 기준 충족", "format": "percent"},
+                        {"field": "investment_rule_probability", "label": "후속 개발 검토 기준 충족", "format": "percent"},
                         {"field": "iterations", "label": "반복 횟수", "format": "number"},
                     ],
                 }
@@ -321,9 +321,9 @@ def main() -> None:
                     "body": (
                         "## 핵심 요약\n\n"
                         "> **중요:** 실제 고객 조사나 운영 기록이 아닙니다. 같은 결과를 재현할 수 있도록 난수 초기값을 고정해 만든 가상 데이터입니다.\n\n"
-                        f"- **다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다.** 기준 시나리오에서 5개 성공 기준을 모두 충족할 추정 확률은 {probabilities['all_criteria']:.1f}%입니다.\n"
-                        f"- **전담 개발 인력은 아직 투입하지 않습니다.** 배분안 확정 화면 진입과 유료 파일럿 기준을 함께 충족할 추정 확률은 {probabilities['investment_rule']:.1f}%입니다. 예시 결과에서 유료 파일럿에 참여한 기업은 5곳 중 {representative['paid_pilot']}곳으로 목표인 2곳에 미치지 못했습니다.\n"
-                        "- **실제 파일럿에서는 지불 의향과 구매 결정권자를 확인합니다.** 실제 기업 5곳의 지불 의사와 계약 주체를 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다."
+                        f"- **다음 검증안은 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인하는 것입니다.** 기준 시나리오에서 5개 성공 기준을 모두 충족할 추정 확률은 {probabilities['all_criteria']:.1f}%입니다.\n"
+                        f"- **가상 데이터만으로 후속 개발 여부를 결정할 수 없습니다.** 배분안 확정 화면 도달과 유료 파일럿 참여 의향 기준을 함께 충족할 추정 확률은 {probabilities['investment_rule']:.1f}%입니다. 예시 결과에서는 가상 기업 5곳 중 {representative['paid_pilot']}곳에 참여 의향이 있다고 가정했습니다. 사전 기준인 2곳에는 미치지 못했습니다.\n"
+                        "- **개인 프로젝트에서는 참여 기업을 모집하거나 영업하지 않았습니다.** 실제 사업 환경에서는 사업팀이 기업 5곳 이내에서 고객의 지불 의사와 계약 주체를 확인해야 합니다. 그전까지 이 결과는 검증 구조를 점검한 참고값으로만 사용합니다."
                     ),
                 },
                 {"id": "decision_metrics", "type": "metric-strip", "cardIds": ["all_criteria_card", "investment_rule_card", "paid_pilot_card"]},
@@ -342,7 +342,7 @@ def main() -> None:
                     "id": "sensitivity_heading",
                     "type": "markdown",
                     "sourceId": "sensitivity_source",
-                    "body": "## 가정에 따라 전체 기준 충족 확률은 1.6%에서 52.3%까지 달라집니다\n\n낙관 시나리오에서도 실제 고객 근거 없이 전담 개발 인력을 투입할 수 없습니다. 보수 시나리오에서는 모든 기준을 충족할 가능성이 크게 낮아집니다.",
+                    "body": "## 가정에 따라 전체 기준 충족 확률은 1.6%에서 52.3%까지 달라집니다\n\n낙관 시나리오도 실제 고객의 수요나 지불 의사를 입증하지 않습니다. 보수 시나리오에서는 모든 기준을 충족할 가능성이 크게 낮아집니다.",
                 },
                 {"id": "sensitivity", "type": "table", "tableId": "sensitivity_table"},
                 {
@@ -350,9 +350,9 @@ def main() -> None:
                     "type": "markdown",
                     "body": (
                         "## 다음 검증에서 할 일\n\n"
-                        "1. 기업 5곳 이내에서 소규모 실제 파일럿을 진행합니다.\n"
-                        "2. 화면 반응보다 지불 의사, 계약 주체와 운영 중단 기준을 먼저 확인합니다.\n"
-                        "3. 유료 파일럿에 참여한 기업이 2곳 이상이고 배분안 확정 화면 진입률이 20% 이상일 때만 전담 개발 인력 투입을 다시 판단합니다."
+                        "1. 실제 사업 환경에서는 사업팀이 기업 5곳 이내를 대상으로 고객의 지불 의사를 확인합니다.\n"
+                        "2. 화면 반응보다 고객의 지불 의사, 계약 주체와 운영 중단 기준을 우선 확인합니다.\n"
+                        "3. 기업 5곳 중 2곳 이상에서 유료 파일럿 참여 의향을 확인하고, 테스트 사용자 중 20% 이상이 배분안 확정 화면에 도달하면 후속 개발을 검토합니다."
                     ),
                 },
                 {
