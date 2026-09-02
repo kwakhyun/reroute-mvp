@@ -21,10 +21,10 @@ async function fetchJsonFromPage(page: Page, url: string) {
 test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계를 명확히 보여준다", async ({ page, request }) => {
   await page.context().clearCookies();
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "사무 자산을 어떻게 처분할지 한눈에 비교합니다." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "사무 자산 처분안을 한눈에 비교하고 결정합니다." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
-  await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 기록이 아닙니다/)).toBeVisible();
-  await expect(page.getByRole("heading", { name: /기여도 100%/ })).toBeVisible();
+  await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /100% 직접 수행했습니다/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
   const report = await request.get("/reports/validation-simulation.html");
@@ -89,7 +89,7 @@ test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기
   await page.goto(`${demoProjectPath}/matching`);
   await expect(page.getByRole("heading", { name: "성수 오피스 이전" })).toBeVisible();
 
-  const summary = page.getByRole("region", { name: "추천 결과" });
+  const summary = page.getByRole("region", { name: "확정 결과" });
   await expect(summary).toContainText("1,840");
   await expect(summary).toContainText("300");
   await expect(summary).toContainText("2,140");

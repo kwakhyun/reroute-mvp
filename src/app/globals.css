@@ -3018,6 +3018,7 @@ tfoot td {
   font-weight: 660;
   letter-spacing: -0.058em;
   line-height: 1.15;
+  word-break: keep-all;
 }
 
 .portfolio-hypothesis-grid {
@@ -3053,6 +3054,7 @@ tfoot td {
   font-size: clamp(25px, 2.4vw, 36px);
   letter-spacing: -0.045em;
   line-height: 1.3;
+  word-break: keep-all;
 }
 
 .portfolio-hypothesis-grid p,
