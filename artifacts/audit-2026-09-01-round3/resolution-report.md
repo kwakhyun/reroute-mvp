@@ -56,4 +56,4 @@
 
 실제 Turso 다중 리전, 원격 CI, Vercel 배포, 외부 결제와 운송 연동은 연결하지 않았으며 운영 전환 전 별도 검증 항목으로 남긴다.
 
-**Final result: passed within the documented local verification scope**
+**최종 판정: 문서에 기록한 로컬 검증 범위에서 통과**

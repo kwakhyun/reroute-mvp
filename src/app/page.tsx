@@ -27,7 +27,7 @@ const flow = [
   },
   {
     number: "04",
-    title: "확정한 배분안으로 수거와 정산 진행",
+    title: "확정 결과를 수거와 정산에 반영",
     body: "동시 수정과 중복 요청을 막고, 수거 진행 상황과 결제사 확인 상태를 감사 로그에 기록합니다.",
   },
 ] as const;
@@ -52,19 +52,16 @@ function DemoButton({ className = "" }: { className?: string }) {
 
   return (
     <form action={demoLoginAction} className={`portfolio-demo-form ${className}`}>
+      <input name="resetDemo" type="hidden" value="true" />
       <button className="portfolio-button portfolio-button-primary" type="submit">
-        샘플 데이터로 제품 데모 열기
+        초기 상태로 데모 열기
       </button>
     </form>
   );
 }
 
 function DemoNote() {
-  return process.env.DEMO_RESET_ON_LOGIN === "true" ? (
-    <>한 번의 클릭으로 샘플 작업 공간을 초기 상태로 되돌린 뒤 승인자 계정으로 접속합니다.</>
-  ) : (
-    <>실제 고객 데이터와 분리된 샘플 계정으로 접속합니다. 공유 계정이므로 다른 방문자가 저장한 상태가 남아 있을 수 있습니다.</>
-  );
+  return <>데모를 열 때 샘플 작업 공간을 초기 상태로 되돌립니다. 실제 고객 데이터는 사용하지 않습니다.</>;
 }
 
 export default function HomePage() {
@@ -79,8 +76,9 @@ export default function HomePage() {
           <span>제품 개발 사례</span>
         </Link>
         <nav aria-label="제품 개발 사례 메뉴">
-          <a href="#hypothesis">가설</a>
-          <a href="#validation">검증</a>
+          <a href="#hypothesis">사업 가설</a>
+          <a href="#flow">제품 흐름</a>
+          <a href="#validation">판단 근거</a>
           <a href="#engineering">구현</a>
           <a href="#ownership">기여</a>
         </nav>
@@ -100,7 +98,7 @@ export default function HomePage() {
             <em>한눈에 비교하고 결정합니다.</em>
           </h1>
           <p>
-            오피스 이전이나 폐점으로 처분해야 하는 사무 자산을 사업자 정보와 처리 자격이 확인된 업체에 배분합니다. 매각 대금, 폐기 및 운반 비용
+            오피스 이전이나 폐점으로 처분해야 하는 사무 자산을 사업자 정보와 처리 자격이 확인된 업체에 배분합니다. 매각 대금, 폐기비와 운반비
             절감액, 재사용률을 한 화면에서 비교할 수 있는 B2B 매칭 서비스입니다.
           </p>
           <div className="portfolio-hero-actions">
@@ -128,7 +126,7 @@ export default function HomePage() {
           </div>
           <Image
             src="/portfolio/walkthrough-frames/02-matching.png"
-            alt="매각 대금과 비용 절감액, 재사용률, 자산별 배분 결과를 보여 주는 REROUTE 화면"
+            alt="매각 대금, 폐기비와 운반비 절감액, 재사용률, 자산별 배분 결과를 보여 주는 REROUTE 화면"
             width={1440}
             height={1024}
             priority
@@ -136,8 +134,8 @@ export default function HomePage() {
             unoptimized
           />
           <div className="portfolio-visual-proof">
-            <span>실제로 작동하는 핵심 흐름</span>
-            <strong>화면부터 API, 데이터베이스, 배포까지</strong>
+            <span>데모에서 확인할 수 있는 범위</span>
+            <strong>배분안 계산과 확정, 수거와 정산 기록</strong>
           </div>
         </div>
         </section>
@@ -147,14 +145,15 @@ export default function HomePage() {
         <div><strong>214</strong><span>샘플 자산</span></div>
         <div><strong>11</strong><span>샘플 입찰</span></div>
         <div><strong>16</strong><span>관계형 테이블</span></div>
-        <div><strong>4</strong><span>브라우저 E2E 시나리오</span></div>
+        <div><strong>5</strong><span>브라우저 E2E 시나리오</span></div>
         </section>
 
         <nav className="portfolio-mobile-index" aria-label="모바일 빠른 탐색">
           <span>핵심 내용 바로가기</span>
           <div>
-            <a href="#validation">판단 결과</a>
             <a href="#hypothesis">사업 가설</a>
+            <a href="#flow">제품 흐름</a>
+            <a href="#validation">판단 근거</a>
             <a href="#engineering">구현</a>
             <a href="#ownership">기여</a>
           </div>
@@ -175,9 +174,9 @@ export default function HomePage() {
           </article>
           <article className="portfolio-hypothesis-card-accent">
             <span>검증할 가설</span>
-            <h3>판단 기준을 한곳에 모으면 배분안 확정까지 이어질까?</h3>
+            <h3>판단 기준을 한곳에 모으면 확정 화면 진입률이 높아질 것이다.</h3>
             <p>
-              매각 대금, 비용 절감액, 재사용률, 수거 횟수를 한 화면에서 비교할 수 있으면 자산 담당자가 배분안 확정 단계까지 더 쉽게 진행할 것으로 가정했습니다.
+              매각 대금, 폐기비와 운반비 절감액, 재사용률, 수거 횟수를 한 화면에서 비교할 수 있으면 확정 화면까지 이동하는 사용자의 비율이 높아질 것으로 가정했습니다.
             </p>
           </article>
         </div>
@@ -187,10 +186,10 @@ export default function HomePage() {
         <div className="portfolio-section-heading portfolio-section-heading-inline">
           <div>
             <span className="portfolio-section-index">02 / 제품 흐름</span>
-            <h2>조건 입력부터 수거와 정산까지<br />하나의 흐름으로 구현했습니다.</h2>
+            <h2>확정한 배분안은 수거 일정과<br />정산 기록에 반영됩니다.</h2>
           </div>
           <p>
-            입력한 조건으로 배분안을 계산하고, 확정 결과를 수거와 정산에 반영하는 전 과정을 구현했습니다.
+            최소 매각 금액과 재사용률, 수거 횟수를 기준으로 배분안을 계산하고 확정 결과로 수거 일정과 정산 기록을 만듭니다.
           </p>
         </div>
         <ol className="portfolio-flow-list">
@@ -232,9 +231,9 @@ export default function HomePage() {
             <p>배분안 확정 단계 진입률과 유료 파일럿 참여 기업 수가 모두 기준을 넘을 추정 확률</p>
           </article>
           <article className="portfolio-validation-card-warning">
-            <span>유료 파일럿 참여 기업</span>
+            <span>예시 결과의 유료 파일럿 참여</span>
             <strong>1곳 / 5곳</strong>
-            <p>목표인 2곳보다 적었습니다. 실제 기업을 대상으로 비용을 지불할 의사와 구매 결정권자를 먼저 확인해야 합니다.</p>
+            <p>가상 시나리오에서는 목표인 2곳보다 적었습니다. 실제 기업을 대상으로 비용을 지불할 의사와 구매 결정권자를 먼저 확인해야 합니다.</p>
           </article>
         </div>
 
@@ -261,10 +260,10 @@ export default function HomePage() {
         <div className="portfolio-section-heading portfolio-section-heading-inline">
           <div>
             <span className="portfolio-section-index">04 / 구현</span>
-            <h2>검증에 필요한 핵심 기능과<br />안전장치를 함께 구현했습니다.</h2>
+            <h2>조직별 권한과 동시 수정 충돌 방지,<br />행동 기록까지 구현했습니다.</h2>
           </div>
           <p>
-            기능을 늘리기보다 조직별 데이터 분리와 역할별 권한, 데이터 일관성, 중복 요청 방지, 사용자 행동 기록을 우선했습니다.
+            데이터베이스 제약과 역할별 권한, 중복 요청 방지, 사용자 행동 이벤트를 제품 흐름에 적용했습니다.
           </p>
         </div>
         <div className="portfolio-architecture-grid">
@@ -278,7 +277,7 @@ export default function HomePage() {
         <div className="portfolio-boundaries">
           <article>
             <span>반드시 구현한 범위</span>
-            <h3>서비스 신뢰를 위한 안전장치</h3>
+            <h3>데이터 오염과 중복 처리를 막는 장치</h3>
             <p>데이터베이스 제약, 조직별 데이터 분리, 역할별 권한, 중복 실행 방지, 감사 로그, 사용자 행동 이벤트</p>
           </article>
           <article>

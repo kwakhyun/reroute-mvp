@@ -2878,7 +2878,7 @@ tfoot td {
 .portfolio-demo-note {
   margin: 15px 0 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 
@@ -2987,7 +2987,7 @@ tfoot td {
 .portfolio-proof-strip span {
   margin-top: 8px;
   color: rgba(255, 250, 244, 0.64);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .portfolio-mobile-index {
@@ -3333,7 +3333,7 @@ tfoot td {
   border-radius: 999px;
   background: var(--surface-soft);
   color: var(--brand-strong);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
 }
 
@@ -3388,7 +3388,7 @@ tfoot td {
 .portfolio-footer p {
   margin: 0;
   color: rgba(255, 250, 244, 0.55);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 @media (max-width: 1180px) {
@@ -3399,11 +3399,23 @@ tfoot td {
   }
 
   .portfolio-nav {
-    grid-template-columns: 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 24px;
   }
 
   .portfolio-nav nav {
-    display: none;
+    justify-self: center;
+    gap: 20px;
+  }
+
+  .portfolio-nav nav a {
+    font-size: 12px;
+  }
+
+  .portfolio-nav-demo .portfolio-button,
+  .portfolio-nav > .portfolio-button {
+    padding-inline: 14px;
+    font-size: 11px;
   }
 
   .portfolio-hero {
@@ -3444,6 +3456,16 @@ tfoot td {
   }
 }
 
+@media (max-width: 900px) {
+  .portfolio-nav {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .portfolio-nav-demo {
+    display: none;
+  }
+}
+
 @media (max-width: 760px) {
   .portfolio-nav,
   .portfolio-hero,
@@ -3453,6 +3475,11 @@ tfoot td {
 
   .portfolio-nav {
     min-height: 76px;
+    grid-template-columns: 1fr;
+  }
+
+  .portfolio-nav nav {
+    display: none;
   }
 
   .portfolio-nav-demo {
@@ -3526,28 +3553,33 @@ tfoot td {
 
   .portfolio-mobile-index > span {
     color: var(--muted);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 750;
   }
 
   .portfolio-mobile-index > div {
     margin-top: 10px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
+    padding-bottom: 3px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+    scrollbar-width: thin;
   }
 
   .portfolio-mobile-index a {
-    min-height: 38px;
-    padding: 0 7px;
+    min-width: 78px;
+    min-height: 44px;
+    padding: 0 11px;
     border: 1px solid var(--border);
     border-radius: 999px;
     display: inline-flex;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     background: var(--portfolio-card);
     color: var(--brand-strong);
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 750;
   }
 
@@ -3628,7 +3660,7 @@ tfoot td {
 
   .portfolio-architecture-grid p {
     margin-top: 18px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   .portfolio-ownership-card {

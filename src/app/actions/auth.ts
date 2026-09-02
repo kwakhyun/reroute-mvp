@@ -102,11 +102,12 @@ export async function logoutAction() {
   redirect("/login");
 }
 
-export async function demoLoginAction() {
+export async function demoLoginAction(formData?: FormData) {
   if (process.env.DEMO_MODE !== "true") {
     throw new Error("Demo login is disabled");
   }
-  if (process.env.DEMO_RESET_ON_LOGIN === "true") {
+  const resetRequested = formData?.get("resetDemo") === "true";
+  if (resetRequested || process.env.DEMO_RESET_ON_LOGIN === "true") {
     await resetDemoDatabase();
   }
   const [user] = await db.select().from(users).where(eq(users.email, DEMO_ACCOUNTS.approver.email)).limit(1);

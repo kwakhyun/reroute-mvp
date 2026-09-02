@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const useProductionBuild = process.env.PLAYWRIGHT_USE_PRODUCTION === "true";
+const testPort = process.env.PLAYWRIGHT_PORT ?? "3000";
+const testBaseUrl = `http://127.0.0.1:${testPort}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -8,7 +10,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"], ["html", { open: "never" }]],
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: testBaseUrl,
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",
@@ -20,13 +22,15 @@ export default defineConfig({
     command:
       useProductionBuild
         ? "npm run start"
-        : "npm run dev -- --hostname 127.0.0.1 --port 3000",
+        : `npm run dev -- --hostname 127.0.0.1 --port ${testPort}`,
     env: {
       ...process.env,
+      HOSTNAME: "127.0.0.1",
+      PORT: testPort,
       ...(useProductionBuild ? { ALLOW_FILE_DATABASE: "true" } : {}),
     },
-    url: "http://127.0.0.1:3000/api/health",
-    reuseExistingServer: !process.env.CI,
+    url: `${testBaseUrl}/api/health`,
+    reuseExistingServer: !process.env.CI && !process.env.PLAYWRIGHT_PORT,
     timeout: 120_000,
   },
 });

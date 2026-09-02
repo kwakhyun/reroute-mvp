@@ -298,8 +298,8 @@ def write_markdown(result: dict[str, Any]) -> None:
 
 ## 핵심 요약
 
-- **소규모 실제 파일럿은 진행할 가치가 있습니다.** 예시 결과에서는 인수처 확인 자료 검토 {representative_counts['bids_opened']}/10명, 조건 탐색 {representative_counts['recalculation_opened']}/10명, 배분안 확정 화면 진입 {representative_counts['confirmation_opened']}/10명으로 행동 기준을 통과했습니다.
-- **전담 개발 인력 투입은 보류해야 합니다.** 예시 결과에서 유료 파일럿에 참여한 기업은 5곳 중 {representative_counts['paid_pilot']}곳으로 목표인 2곳에 미치지 못했습니다. 배분안 확정 화면 진입과 유료 파일럿 기준을 함께 충족할 추정 확률도 {probability['investment_rule']:.1f}%였습니다.
+- **다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다.** 예시 결과에서는 인수처 확인 자료 검토 {representative_counts['bids_opened']}/10명, 조건 탐색 {representative_counts['recalculation_opened']}/10명, 배분안 확정 화면 진입 {representative_counts['confirmation_opened']}/10명으로 행동 기준을 통과했습니다.
+- **전담 개발 인력은 아직 투입하지 않습니다.** 예시 결과에서 유료 파일럿에 참여한 기업은 5곳 중 {representative_counts['paid_pilot']}곳으로 목표인 2곳에 미치지 못했습니다. 배분안 확정 화면 진입과 유료 파일럿 기준을 함께 충족할 추정 확률도 {probability['investment_rule']:.1f}%였습니다.
 - **다음 검증은 가격과 구매 권한에 집중합니다.** 실제 기업 5곳을 대상으로 지불 의사, 계약 주체와 운영 중단 기준을 확인하기 전까지 이 결과는 다음 검증 방향을 정하는 참고값으로만 사용합니다.
 
 ## 검증 질문
@@ -344,7 +344,7 @@ def write_markdown(result: dict[str, Any]) -> None:
 | --- | ---: | ---: |
 {scenario_rows}
 
-## 권장 결정
+## 현재 판단
 
 1. 전담 개발 인력 투입은 보류합니다.
 2. 기업 5곳 이내의 소규모 실제 파일럿을 진행합니다.

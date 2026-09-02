@@ -28,7 +28,7 @@ export default async function BidsPage({ params }: { params: Promise<{ projectId
           </a>
         }
         backHref={`/projects/${projectId}/matching`}
-        description="인수처별 매각 대금, 비용 절감액, 확인 상태와 수거 가능일을 비교합니다. 필요한 확인 절차를 마치지 않은 인수처는 배분 대상에서 제외됩니다."
+        description="인수처별 매각 대금, 비용 절감액, 확인 상태와 수거 가능일을 비교합니다. 사업자 정보와 처리 자격이 확인되지 않은 인수처는 배분 대상에서 제외됩니다."
         eyebrow={dashboard.project.name}
         title={`인수처 입찰 ${bidRows.length}건`}
       />

@@ -19,7 +19,7 @@
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:demo-reset": "tsx scripts/verify-demo-reset.ts",
-    "analysis:generate": "python3 analysis/simulate_validation.py && python3 analysis/build_validation_report.py",
+    "analysis:generate": "python3 analysis/simulate_validation.py && python3 analysis/build_validation_report.py && python3 analysis/sync_validation_report_payload.py",
     "analysis:verify": "python3 analysis/verify_validation.py",
     "db:generate": "npm exec --yes --package=drizzle-orm@0.45.2 --package=drizzle-kit@0.31.10 -- drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.ts",

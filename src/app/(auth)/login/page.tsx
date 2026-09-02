@@ -32,7 +32,8 @@ export default async function LoginPage() {
           <LoginForm />
           {process.env.DEMO_MODE === "true" ? (
             <form action={demoLoginAction} className="demo-login-form">
-              <button className="button button-ghost" type="submit">샘플 데이터로 데모 열기</button>
+              <input name="resetDemo" type="hidden" value="true" />
+              <button className="button button-ghost" type="submit">초기 상태로 데모 열기</button>
             </form>
           ) : null}
         </div>

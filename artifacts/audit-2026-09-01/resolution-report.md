@@ -33,4 +33,4 @@
 
 열린 P0, P1, P2 항목: 0건
 
-**Final result: passed**
+**최종 판정: 통과**

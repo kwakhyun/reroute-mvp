@@ -7,6 +7,7 @@ NARRATION_TEXT="$PROJECT_ROOT/docs/walkthrough-narration.txt"
 OUTPUT_VIDEO="$PROJECT_ROOT/public/portfolio/reroute-walkthrough.mp4"
 TEMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/reroute-walkthrough.XXXXXX")"
 NARRATION_AUDIO="$TEMP_DIR/narration.aiff"
+TEMP_OUTPUT_VIDEO="$TEMP_DIR/reroute-walkthrough.mp4"
 
 cleanup() {
   rm -rf "$TEMP_DIR"
@@ -24,6 +25,12 @@ command -v ffmpeg >/dev/null 2>&1 || {
 }
 
 say -v Yuna -r 170 -f "$NARRATION_TEXT" -o "$NARRATION_AUDIO"
+
+NARRATION_DURATION="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$NARRATION_AUDIO")"
+awk -v duration="$NARRATION_DURATION" 'BEGIN { exit !(duration > 1) }' || {
+  echo "Narration audio is empty or too short; keeping the existing video unchanged." >&2
+  exit 1
+}
 
 FRAMES=(
   "$PROJECT_ROOT/public/portfolio/walkthrough-frames/01-case-study-hero.png"
@@ -66,7 +73,17 @@ ffmpeg -hide_banner -loglevel error -y \
   -i "$NARRATION_AUDIO" \
   -map 0:v:0 -map 1:a:0 -shortest \
   -c:v copy -c:a aac -b:a 160k -movflags +faststart \
-  "$OUTPUT_VIDEO"
+  "$TEMP_OUTPUT_VIDEO"
+
+VIDEO_DURATION="$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$TEMP_OUTPUT_VIDEO")"
+VIDEO_SIZE="$(wc -c < "$TEMP_OUTPUT_VIDEO" | tr -d ' ')"
+awk -v duration="$VIDEO_DURATION" -v size="$VIDEO_SIZE" \
+  'BEGIN { exit !(duration > 60 && size > 1000000) }' || {
+  echo "Rendered video failed duration or file-size validation; keeping the existing video unchanged." >&2
+  exit 1
+}
+
+mv "$TEMP_OUTPUT_VIDEO" "$OUTPUT_VIDEO"
 
 ffprobe -v error \
   -show_entries format=duration,size:stream=codec_name,width,height \

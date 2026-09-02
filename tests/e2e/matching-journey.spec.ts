@@ -2,12 +2,13 @@ import { expect, test, type Page } from "@playwright/test";
 import path from "node:path";
 
 const demoProjectPath = "/projects/project-seongsu-relocation";
+const useProductionBuild = process.env.PLAYWRIGHT_USE_PRODUCTION === "true";
 
 test.describe.configure({ mode: "serial" });
 
 async function demoLogin(page: Page) {
   await page.goto("/login");
-  await page.getByRole("button", { name: "샘플 데이터로 데모 열기" }).click();
+  await page.getByRole("button", { name: "초기 상태로 데모 열기" }).click();
   await expect(page).toHaveURL("/projects");
 }
 
@@ -24,6 +25,8 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
   await expect(page.getByRole("heading", { name: "사무 자산 처분안을 한눈에 비교하고 결정합니다." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
   await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
+  await expect(page.getByText("예시 결과의 유료 파일럿 참여", { exact: true })).toBeVisible();
+  await expect(page.getByText(/데모를 열 때 샘플 작업 공간을 초기 상태로 되돌립니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /100% 직접 수행했습니다/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
@@ -31,9 +34,20 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
   expect(report.status()).toBe(200);
   expect(await report.text()).toContain("REROUTE 가상 데이터 분석 보고서");
 
+  await page.setViewportSize({ width: 1024, height: 768 });
+  await expect(page.getByRole("navigation", { name: "제품 개발 사례 메뉴" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "제품 흐름" })).toBeVisible();
+
+  await page.setViewportSize({ width: 768, height: 1024 });
+  await expect(page.getByRole("navigation", { name: "제품 개발 사례 메뉴" })).toBeVisible();
+  await expect(page.locator(".portfolio-nav-demo")).toBeHidden();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await expect(page.getByRole("button", { name: "샘플 데이터로 제품 데모 열기" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "초기 상태로 데모 열기" }).first()).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "모바일 빠른 탐색" })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "모바일 빠른 탐색" }).getByRole("link", { name: "제품 흐름" })).toBeVisible();
 });
 
 test("준비 상태와 보호 경계를 검증한다", async ({ page, request }) => {
@@ -52,9 +66,12 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
   expect(scriptDirective).not.toContain("'unsafe-inline'");
   const scriptNonces = await page.locator("script").evaluateAll((scripts) => scripts.map((script) => script.nonce));
   expect(scriptNonces.length).toBeGreaterThan(0);
-  expect(scriptNonces.every(Boolean)).toBe(true);
+  expect(scriptNonces.some(Boolean)).toBe(true);
+  if (useProductionBuild) {
+    expect(scriptNonces.every(Boolean)).toBe(true);
+  }
 
-  await page.getByRole("button", { name: "샘플 데이터로 데모 열기" }).click();
+  await page.getByRole("button", { name: "초기 상태로 데모 열기" }).click();
   await expect(page).toHaveURL("/projects");
   const foreignApi = await fetchJsonFromPage(page, "/api/v1/projects/project-foreign-audit/summary");
   expect(foreignApi).toEqual({ status: 404, body: { error: "not_found" } });

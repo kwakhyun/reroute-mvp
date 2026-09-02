@@ -3,9 +3,12 @@
 
 from __future__ import annotations
 
+import base64
 import csv
+import gzip
 import hashlib
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -18,6 +21,7 @@ TRACKED_OUTPUTS = (
     ROOT / "analysis/generated/validation-report-source.sql",
     ROOT / "analysis/validation-report-artifact.json",
     ROOT / "docs/validation-simulation.md",
+    ROOT / "public/reports/validation-simulation.html",
 )
 DISCLAIMER = "실제 고객 검증 결과가 아님"
 
@@ -72,18 +76,35 @@ def main() -> None:
     before = {str(path.relative_to(ROOT)): digest(path) for path in TRACKED_OUTPUTS}
     subprocess.run([sys.executable, "analysis/simulate_validation.py"], cwd=ROOT, check=True, capture_output=True)
     subprocess.run([sys.executable, "analysis/build_validation_report.py"], cwd=ROOT, check=True, capture_output=True)
+    subprocess.run([sys.executable, "analysis/sync_validation_report_payload.py"], cwd=ROOT, check=True, capture_output=True)
     after = {str(path.relative_to(ROOT)): digest(path) for path in TRACKED_OUTPUTS}
     assert before == after, "generated outputs changed; the simulation is not deterministic"
 
     markdown = (ROOT / "docs/validation-simulation.md").read_text(encoding="utf-8")
     artifact = (ROOT / "analysis/validation-report-artifact.json").read_text(encoding="utf-8")
     html = (ROOT / "public/reports/validation-simulation.html").read_text(encoding="utf-8")
+    payload_match = re.search(
+        r'<template id="data-analytics-portable-artifact-payload-source" '
+        r'data-compression="gzip-base64">([^<]+)</template>',
+        html,
+    )
+    assert payload_match, "portable artifact payload is missing"
+    embedded_artifact = json.loads(gzip.decompress(base64.b64decode(payload_match.group(1))))
+    assert embedded_artifact == json.loads(artifact), "portable artifact payload is stale"
     assert "실제 고객 인터뷰나 운영 기록이 아닙니다" in markdown
     assert "\"status\": \"fixture\"" in artifact
     assert "REROUTE 가상 데이터 분석 보고서" in html
-    assert "실제 지불 의향과 구매 결정권자를 확인합니다" in html
+    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in markdown
+    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in artifact
+    assert "다음에는 기업 5곳 이내로 실제 파일럿을 진행합니다" in html
+    assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in markdown
+    assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in artifact
+    assert "소규모 실제 파일럿은 진행할 가치가 있습니다" not in html
+    assert "Tables:" not in html
+    assert "실제 파일럿에서는 지불 의향과 구매 결정권자를 확인합니다" in html
     assert "의향와" not in html
-    assert "예시 결과 결과" not in html
+    duplicated_result_label = "\uc608\uc2dc \uacb0\uacfc \uacb0\uacfc"
+    assert duplicated_result_label not in html
     assert DISCLAIMER in json.loads((ROOT / "analysis/generated/validation-simulation-results.json").read_text())["required_disclaimer"]
 
     print(json.dumps({

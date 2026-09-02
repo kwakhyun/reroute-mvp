@@ -49,7 +49,7 @@ export default async function ProjectsPage() {
         <div className="content-empty-state">
           <Buildings aria-hidden="true" size={36} />
           <h2>첫 프로젝트를 만들어 보세요.</h2>
-          <p>자산 CSV를 가져오면 최소 매각 금액을 정하고 인수처를 찾을 수 있습니다.</p>
+          <p>자산 CSV를 가져오면 최소 매각 금액을 정하고 인수처 입찰을 등록할 수 있습니다.</p>
           {canCreate ? <Link className="button button-primary" href="/projects/new">프로젝트 만들기</Link> : null}
         </div>
       ) : null}
