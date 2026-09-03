@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { demoLoginAction } from "@/app/actions/auth";
+import { DemoOpenForm } from "@/components/auth/demo-access";
 
 export const metadata: Metadata = {
   title: "B2B 사무 자산 처분 MVP 사례",
@@ -50,18 +50,15 @@ function DemoButton({ className = "" }: { className?: string }) {
     );
   }
 
-  return (
-    <form action={demoLoginAction} className={`portfolio-demo-form ${className}`}>
-      <input name="resetDemo" type="hidden" value="true" />
-      <button className="portfolio-button portfolio-button-primary" type="submit">
-        초기 상태로 데모 열기
-      </button>
-    </form>
-  );
+  return <DemoOpenForm className={className} kind="portfolio" />;
 }
 
 function DemoNote() {
-  return <>데모를 열 때 샘플 작업 공간을 초기 상태로 되돌립니다. 실제 고객 데이터는 사용하지 않습니다.</>;
+  return (
+    <>
+      별도 초기화 없이 바로 열립니다. 처음부터 살펴보려면 <Link href="/login">로그인 화면</Link>에서 샘플 데이터를 초기화할 수 있습니다. 실제 고객 데이터는 사용하지 않습니다.
+    </>
+  );
 }
 
 export default function HomePage() {
@@ -145,7 +142,7 @@ export default function HomePage() {
         <div><strong>214</strong><span>샘플 자산</span></div>
         <div><strong>11</strong><span>샘플 입찰</span></div>
         <div><strong>16</strong><span>관계형 테이블</span></div>
-        <div><strong>6</strong><span>브라우저 E2E 시나리오</span></div>
+        <div><strong>8</strong><span>브라우저 E2E 시나리오</span></div>
         </section>
 
         <nav className="portfolio-mobile-index" aria-label="모바일 빠른 탐색">

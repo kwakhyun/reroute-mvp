@@ -102,18 +102,47 @@ export async function logoutAction() {
   redirect("/login");
 }
 
-export async function demoLoginAction(formData?: FormData) {
-  if (process.env.DEMO_MODE !== "true") {
-    throw new Error("Demo login is disabled");
-  }
-  const resetRequested = formData?.get("resetDemo") === "true";
-  if (resetRequested || process.env.DEMO_RESET_ON_LOGIN === "true") {
+async function findDemoApprover() {
+  const [user] = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, DEMO_ACCOUNTS.approver.email))
+    .limit(1);
+
+  return user;
+}
+
+async function openDemoSession() {
+  let user = await findDemoApprover();
+
+  // A fresh deployment may not have been seeded yet. Repair that exceptional
+  // case without making every normal demo visit pay the reset cost.
+  if (!user) {
     await resetDemoDatabase();
+    user = await findDemoApprover();
   }
-  const [user] = await db.select().from(users).where(eq(users.email, DEMO_ACCOUNTS.approver.email)).limit(1);
+
   if (!user) {
     throw new Error("데모 계정을 찾을 수 없습니다.");
   }
+
   await createSession(user.id);
   redirect("/projects");
+}
+
+export async function demoLoginAction() {
+  if (process.env.DEMO_MODE !== "true") {
+    throw new Error("Demo login is disabled");
+  }
+
+  await openDemoSession();
+}
+
+export async function resetDemoLoginAction() {
+  if (process.env.DEMO_MODE !== "true") {
+    throw new Error("Demo reset is disabled");
+  }
+
+  await resetDemoDatabase();
+  await openDemoSession();
 }

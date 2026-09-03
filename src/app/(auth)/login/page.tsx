@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { DemoLoginControls } from "@/components/auth/demo-access";
 import { LoginForm } from "@/components/auth/login-form";
-import { demoLoginAction } from "@/app/actions/auth";
 import { getCurrentUser } from "@/server/auth/session";
 
 export const metadata: Metadata = { title: "로그인" };
@@ -29,13 +29,13 @@ export default async function LoginPage() {
           <span className="eyebrow">작업 공간 로그인</span>
           <h1>REROUTE에 로그인</h1>
           <p>성수 오피스 이전 프로젝트의 추천 배분안을 확인할 수 있습니다.</p>
-          <LoginForm />
           {process.env.DEMO_MODE === "true" ? (
-            <form action={demoLoginAction} className="demo-login-form">
-              <input name="resetDemo" type="hidden" value="true" />
-              <button className="button button-ghost" type="submit">초기 상태로 데모 열기</button>
-            </form>
+            <>
+              <DemoLoginControls />
+              <div className="login-divider"><span>또는 계정으로 로그인</span></div>
+            </>
           ) : null}
+          <LoginForm />
         </div>
       </section>
     </main>

@@ -8,7 +8,7 @@ test.describe.configure({ mode: "serial" });
 
 async function demoLogin(page: Page) {
   await page.goto("/login");
-  await page.getByRole("button", { name: "초기 상태로 데모 열기" }).click();
+  await page.getByRole("button", { name: "초기 상태로 다시 시작" }).click();
   await expect(page).toHaveURL("/projects");
 }
 
@@ -26,7 +26,7 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
   await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
   await expect(page.getByText("예시 결과의 유료 파일럿 참여 의향", { exact: true })).toBeVisible();
-  await expect(page.getByText(/데모를 열 때 샘플 작업 공간을 초기 상태로 되돌립니다/)).toBeVisible();
+  await expect(page.getByText(/별도 초기화 없이 바로 열립니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /100% 직접 수행했습니다/ })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 
@@ -45,9 +45,35 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
 
   await page.setViewportSize({ width: 390, height: 844 });
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await expect(page.getByRole("button", { name: "초기 상태로 데모 열기" }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "제품 데모 열기" }).first()).toBeVisible();
   await expect(page.getByRole("navigation", { name: "모바일 빠른 탐색" })).toBeVisible();
   await expect(page.getByRole("navigation", { name: "모바일 빠른 탐색" }).getByRole("link", { name: "제품 흐름" })).toBeVisible();
+});
+
+test("빠른 데모 진입과 초기 상태 복원을 분리해 안내한다", async ({ page }) => {
+  await page.context().clearCookies();
+  await page.goto("/login");
+
+  let delayedReset = false;
+  await page.route("**/login", async (route) => {
+    if (route.request().method() === "POST" && !delayedReset) {
+      delayedReset = true;
+      await new Promise((resolve) => setTimeout(resolve, 700));
+    }
+    await route.continue();
+  });
+
+  await page.getByRole("button", { name: "초기 상태로 다시 시작" }).click();
+  const progress = page.getByRole("status");
+  await expect(progress).toContainText("초기 상태를 준비하고 있습니다");
+  await expect(progress.getByRole("list", { name: "초기화 실행 순서" })).toContainText("기존 샘플 기록 정리");
+  await expect(progress).toContainText("작업 공간으로 이동");
+  await expect(page).toHaveURL("/projects");
+
+  await page.context().clearCookies();
+  await page.goto("/");
+  await page.getByRole("button", { name: "제품 데모 열기" }).first().click();
+  await expect(page).toHaveURL("/projects");
 });
 
 test("준비 상태와 보호 경계를 검증한다", async ({ page, request }) => {
@@ -71,7 +97,7 @@ test("준비 상태와 보호 경계를 검증한다", async ({ page, request })
     expect(scriptNonces.every(Boolean)).toBe(true);
   }
 
-  await page.getByRole("button", { name: "초기 상태로 데모 열기" }).click();
+  await page.getByRole("button", { name: "초기 상태로 다시 시작" }).click();
   await expect(page).toHaveURL("/projects");
   const foreignApi = await fetchJsonFromPage(page, "/api/v1/projects/project-foreign-audit/summary");
   expect(foreignApi).toEqual({ status: 404, body: { error: "not_found" } });
