@@ -3,6 +3,7 @@
 import {
   Briefcase,
   CaretDown,
+  CircleNotch,
   CurrencyKrw,
   Gavel,
   ListChecks,
@@ -13,9 +14,9 @@ import {
   UsersThree,
   X,
 } from "@phosphor-icons/react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import Link, { useLinkStatus } from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/actions/auth";
 
 const navigation = [
@@ -32,17 +33,44 @@ type SidebarProps = {
   user: { name: string; role: "VIEWER" | "MANAGER" | "APPROVER"; team: string };
 };
 
+function SidebarLinkContent({ icon, label }: { icon: React.ReactNode; label: string }) {
+  const { pending } = useLinkStatus();
+
+  return (
+    <>
+      <span aria-busy={pending} className={`sidebar-link-icon${pending ? " sidebar-link-icon-pending" : ""}`}>
+        <span className="sidebar-link-symbol">{icon}</span>
+        <CircleNotch aria-hidden="true" className="sidebar-link-spinner" size={25} weight="bold" />
+      </span>
+      <span>{label}</span>
+      <span aria-live="polite" className="sr-only">{pending ? `${label} 화면을 불러오는 중입니다.` : ""}</span>
+    </>
+  );
+}
+
 export function Sidebar({ defaultProject, user }: SidebarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [mobile, setMobile] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const wasOpenRef = useRef(false);
+  const prefetchedRoutesRef = useRef(new Set<string>());
   const matchedProjectId = pathname.match(/^\/projects\/([^/]+)/)?.[1] ?? null;
   const routeProjectId = matchedProjectId === "new" ? null : matchedProjectId;
   const projectId = routeProjectId ?? defaultProject?.id ?? null;
+
+  const prefetchRoute = useCallback((href: string) => {
+    if (href === pathname || prefetchedRoutesRef.current.has(href)) return;
+    prefetchedRoutesRef.current.add(href);
+    router.prefetch(href);
+  }, [pathname, router]);
+
+  useEffect(() => {
+    prefetchedRoutesRef.current.clear();
+  }, [pathname]);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 900px)");
@@ -166,9 +194,15 @@ export function Sidebar({ defaultProject, user }: SidebarProps) {
                 href={href}
                 key={item.label}
                 onClick={() => setOpen(false)}
+                onFocus={() => prefetchRoute(href)}
+                onPointerEnter={() => prefetchRoute(href)}
+                onTouchStart={() => prefetchRoute(href)}
+                prefetch={false}
               >
-                <Icon aria-hidden="true" size={28} weight="regular" />
-                <span>{item.label}</span>
+                <SidebarLinkContent
+                  icon={<Icon aria-hidden="true" size={28} weight="regular" />}
+                  label={item.label}
+                />
               </Link>
             );
           })}

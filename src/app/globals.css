@@ -428,6 +428,40 @@ button {
   transition: background-color 140ms ease, color 140ms ease;
 }
 
+.sidebar-link-icon {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+}
+
+.sidebar-link-symbol,
+.sidebar-link-spinner {
+  grid-area: 1 / 1;
+}
+
+.sidebar-link-symbol {
+  display: grid;
+  place-items: center;
+  transition: opacity 120ms ease;
+}
+
+.sidebar-link-spinner {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.sidebar-link-icon-pending .sidebar-link-symbol {
+  opacity: 0;
+}
+
+.sidebar-link-icon-pending .sidebar-link-spinner {
+  visibility: visible;
+  animation: sidebar-spinner-fade 160ms ease 100ms both, sidebar-spinner-turn 700ms linear 100ms infinite;
+}
+
 .sidebar-link:hover {
   background: rgba(105, 29, 18, 0.16);
   color: #fff;
@@ -2233,6 +2267,15 @@ tfoot td {
 @keyframes skeleton-pulse {
   from { opacity: 0.52; }
   to { opacity: 0.94; }
+}
+
+@keyframes sidebar-spinner-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes sidebar-spinner-turn {
+  to { transform: rotate(360deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {

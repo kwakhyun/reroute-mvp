@@ -1,7 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { AuthenticationError, AuthorizationError } from "@/server/auth/errors";
-import { requireUser } from "@/server/auth/session";
 import { requireProjectAccess } from "@/server/auth/project-access";
 import { db } from "@/server/db/client";
 import { analyticsEvents } from "@/server/db/schema";
@@ -16,12 +15,11 @@ const eventSchema = z.object({
 export async function POST(request: Request) {
   return observeHttpRequest(request, "/api/analytics/events", async () => {
     try {
-      const user = await requireUser();
       const parsed = eventSchema.safeParse(await request.json());
       if (!parsed.success) {
         return Response.json({ error: "invalid_payload" }, { status: 400 });
       }
-      await requireProjectAccess(parsed.data.projectId);
+      const { user } = await requireProjectAccess(parsed.data.projectId);
       await db.insert(analyticsEvents).values({
         id: randomUUID(),
         userId: user.id,

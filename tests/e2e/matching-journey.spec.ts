@@ -101,6 +101,28 @@ test("프로젝트 목록에서도 최근 프로젝트의 하위 메뉴로 이�
   await expect(page.getByRole("heading", { name: "자산 목록" })).toBeVisible();
 });
 
+test("데이터 응답이 늦어도 메뉴 이동 상태를 즉시 알린다", async ({ page }) => {
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/matching`);
+  await expect(page.getByRole("heading", { name: "성수 오피스 이전" })).toBeVisible();
+
+  await page.route(`**${demoProjectPath}/assets?*`, async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    await route.continue();
+  });
+
+  const assetLink = page.getByRole("link", { name: "자산", exact: true });
+  await assetLink.hover();
+  await assetLink.click();
+
+  const navigationFeedback = page.locator(
+    '.sidebar-link-icon[aria-busy="true"], .dashboard-skeleton[aria-busy="true"]',
+  );
+  await expect(navigationFeedback.first()).toBeVisible();
+  await expect(page).toHaveURL(`${demoProjectPath}/assets`);
+  await expect(page.getByRole("heading", { name: "자산 목록" })).toBeVisible();
+});
+
 test("모바일 경로 전환 뒤 첫 제목이 상단 메뉴에 가리지 않는다", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await demoLogin(page);

@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, count, desc, eq } from "drizzle-orm";
 import { db } from "@/server/db/client";
 import { requireUser } from "@/server/auth/session";
 import { requireProjectAccess } from "@/server/auth/project-access";
@@ -28,7 +28,7 @@ export async function getProject(projectId: string) {
 export async function getProjectList() {
   const user = await requireUser();
   const projectRows = await db
-    .select({ project: projects, membershipRole: organizationMemberships.role })
+    .select({ project: projects, membershipRole: organizationMemberships.role, plan: matchPlans })
     .from(projects)
     .innerJoin(
       organizationMemberships,
@@ -37,24 +37,15 @@ export async function getProjectList() {
         eq(organizationMemberships.userId, user.id),
       ),
     )
-    .orderBy(desc(projects.updatedAt));
-  const projectIds = projectRows.map(({ project }) => project.id);
-  const planRows = projectIds.length
-    ? await db
-        .select()
-        .from(matchPlans)
-        .where(inArray(matchPlans.projectId, projectIds))
-        .orderBy(desc(matchPlans.createdAt))
-    : [];
-  const latestPlanByProject = new Map<string, (typeof planRows)[number]>();
-  for (const plan of planRows) {
-    if (!latestPlanByProject.has(plan.projectId)) {
-      latestPlanByProject.set(plan.projectId, plan);
-    }
+    .leftJoin(matchPlans, eq(matchPlans.projectId, projects.id))
+    .orderBy(desc(projects.updatedAt), desc(matchPlans.createdAt));
+
+  const latestProjectRows = new Map<string, (typeof projectRows)[number]>();
+  for (const row of projectRows) {
+    if (!latestProjectRows.has(row.project.id)) latestProjectRows.set(row.project.id, row);
   }
 
-  return projectRows.map(({ project, membershipRole }) => {
-    const plan = latestPlanByProject.get(project.id);
+  return [...latestProjectRows.values()].map(({ project, membershipRole, plan }) => {
     return {
       ...project,
       membershipRole,
@@ -106,7 +97,13 @@ export async function getProjectCreationOrganizations() {
 
 export async function getMatchingDashboard(projectId: string) {
   const { project, membership } = await requireProjectAccess(projectId);
-  const [assets, bidCountResult, plans] = await Promise.all([
+  const latestPlanId = db
+    .select({ id: matchPlans.id })
+    .from(matchPlans)
+    .where(eq(matchPlans.projectId, projectId))
+    .orderBy(desc(matchPlans.confirmedAt), desc(matchPlans.createdAt))
+    .limit(1);
+  const [assets, bidCountResult, plans, allocationRows] = await db.batch([
     db.select().from(assetGroups).where(eq(assetGroups.projectId, projectId)).orderBy(asc(assetGroups.displayOrder)),
     db.select({ count: count() }).from(bids).where(eq(bids.projectId, projectId)),
     db
@@ -115,39 +112,38 @@ export async function getMatchingDashboard(projectId: string) {
       .where(eq(matchPlans.projectId, projectId))
       .orderBy(desc(matchPlans.confirmedAt), desc(matchPlans.createdAt))
       .limit(1),
+    db
+      .select({
+        id: matchAllocations.id,
+        bidId: matchAllocations.bidId,
+        quantity: matchAllocations.quantity,
+        cashRecovery: matchAllocations.cashRecovery,
+        costSavings: matchAllocations.costSavings,
+        performanceLabel: matchAllocations.performanceLabel,
+        performanceRate: matchAllocations.performanceRate,
+        pickupDate: matchAllocations.pickupDate,
+        assetGroupId: assetGroups.id,
+        assetGroupName: assetGroups.name,
+        assetDisplayOrder: assetGroups.displayOrder,
+        partnerId: partners.id,
+        partnerName: partners.name,
+        partnerType: partners.type,
+        verificationLabel: partners.verificationLabel,
+        verificationReference: partners.verificationReference,
+        verifiedAt: partners.verifiedAt,
+        verificationExpiresAt: partners.verificationExpiresAt,
+        isVerified: partners.isVerified,
+      })
+      .from(matchAllocations)
+      .innerJoin(bids, eq(matchAllocations.bidId, bids.id))
+      .innerJoin(assetGroups, eq(bids.assetGroupId, assetGroups.id))
+      .innerJoin(partners, eq(matchAllocations.partnerId, partners.id))
+      .where(eq(matchAllocations.matchPlanId, latestPlanId))
+      .orderBy(asc(assetGroups.displayOrder), asc(partners.name)),
   ]);
 
   const plan = plans[0] ?? null;
-  const allocations = plan
-    ? await db
-        .select({
-          id: matchAllocations.id,
-          bidId: matchAllocations.bidId,
-          quantity: matchAllocations.quantity,
-          cashRecovery: matchAllocations.cashRecovery,
-          costSavings: matchAllocations.costSavings,
-          performanceLabel: matchAllocations.performanceLabel,
-          performanceRate: matchAllocations.performanceRate,
-          pickupDate: matchAllocations.pickupDate,
-          assetGroupId: assetGroups.id,
-          assetGroupName: assetGroups.name,
-          assetDisplayOrder: assetGroups.displayOrder,
-          partnerId: partners.id,
-          partnerName: partners.name,
-          partnerType: partners.type,
-          verificationLabel: partners.verificationLabel,
-          verificationReference: partners.verificationReference,
-          verifiedAt: partners.verifiedAt,
-          verificationExpiresAt: partners.verificationExpiresAt,
-          isVerified: partners.isVerified,
-        })
-        .from(matchAllocations)
-        .innerJoin(bids, eq(matchAllocations.bidId, bids.id))
-        .innerJoin(assetGroups, eq(bids.assetGroupId, assetGroups.id))
-        .innerJoin(partners, eq(matchAllocations.partnerId, partners.id))
-        .where(eq(matchAllocations.matchPlanId, plan.id))
-        .orderBy(asc(assetGroups.displayOrder), asc(partners.name))
-    : [];
+  const allocations = plan ? allocationRows : [];
 
   return {
     project: {

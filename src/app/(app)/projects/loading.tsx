@@ -1,4 +1,4 @@
-export default function AppLoading() {
+export default function ProjectsLoading() {
   return (
     <div className="dashboard-skeleton" aria-label="화면을 불러오는 중" aria-busy="true" role="status">
       <span className="sr-only">요청한 화면을 불러오고 있습니다.</span>

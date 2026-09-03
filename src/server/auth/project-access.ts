@@ -1,13 +1,14 @@
 import "server-only";
 
 import { and, eq } from "drizzle-orm";
+import { cache } from "react";
 import { db } from "@/server/db/client";
 import { organizationMemberships, projects, type UserRole } from "@/server/db/schema";
 import { assertMembershipRole } from "./access-policy";
 import { ProjectNotFoundError } from "./errors";
 import { requireUser } from "./session";
 
-export async function getProjectAccess(projectId: string) {
+export const getProjectAccess = cache(async (projectId: string) => {
   const user = await requireUser();
   const [access] = await db
     .select({ project: projects, membership: organizationMemberships })
@@ -23,7 +24,7 @@ export async function getProjectAccess(projectId: string) {
     .limit(1);
 
   return access ? { ...access, user } : null;
-}
+});
 
 export async function requireProjectAccess(projectId: string, allowedRoles?: readonly UserRole[]) {
   const access = await getProjectAccess(projectId);
