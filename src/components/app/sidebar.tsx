@@ -18,6 +18,7 @@ import Link, { useLinkStatus } from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { logoutAction } from "@/app/actions/auth";
+import { RerouteMark } from "@/components/brand/reroute-mark";
 
 const navigation = [
   { label: "프로젝트", segment: null, icon: Briefcase, match: "/projects$" },
@@ -145,7 +146,10 @@ export function Sidebar({ defaultProject, user }: SidebarProps) {
         <button aria-controls="primary-sidebar" aria-expanded={open} aria-label="메뉴 열기" className="mobile-menu-button" onClick={() => setOpen(true)} ref={menuButtonRef} type="button">
           <ListChecks aria-hidden="true" size={24} />
         </button>
-        <span className="mobile-wordmark">REROUTE</span>
+        <span className="mobile-brand">
+          <RerouteMark className="mobile-brand-mark" />
+          <span className="mobile-wordmark">REROUTE</span>
+        </span>
       </div>
       {open ? <button aria-hidden="true" className="sidebar-scrim" onClick={() => setOpen(false)} tabIndex={-1} type="button" /> : null}
       <aside
@@ -160,8 +164,11 @@ export function Sidebar({ defaultProject, user }: SidebarProps) {
       >
         <div className="sidebar-brand">
           <Link href="/projects" onClick={() => setOpen(false)}>
-            <strong>REROUTE</strong>
-            <span>풀스택 MVP</span>
+            <RerouteMark className="sidebar-brand-mark" />
+            <span className="sidebar-brand-copy">
+              <strong>REROUTE</strong>
+              <span>풀스택 MVP</span>
+            </span>
           </Link>
           <button aria-label="메뉴 닫기" className="sidebar-close" onClick={() => setOpen(false)} ref={closeButtonRef} type="button">
             <X aria-hidden="true" size={22} />

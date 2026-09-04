@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DemoLoginControls } from "@/components/auth/demo-access";
+import { RerouteMark } from "@/components/brand/reroute-mark";
 import { LoginForm } from "@/components/auth/login-form";
 import { getCurrentUser } from "@/server/auth/session";
 
@@ -16,7 +17,10 @@ export default async function LoginPage() {
     <main className="login-page">
       <section className="login-brand-panel" aria-label="REROUTE 소개">
         <div className="login-brand-lockup">
-          <strong>REROUTE</strong>
+          <div className="login-brand-title">
+            <RerouteMark className="login-brand-mark" />
+            <strong>REROUTE</strong>
+          </div>
           <span>풀스택 MVP</span>
         </div>
         <div className="login-brand-copy">

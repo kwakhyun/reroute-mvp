@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { DemoOpenForm } from "@/components/auth/demo-access";
+import { RerouteMark } from "@/components/brand/reroute-mark";
 
 export const metadata: Metadata = {
   title: "B2B 사무 자산 처분 MVP 사례",
@@ -69,8 +70,11 @@ export default function HomePage() {
       </a>
       <header className="portfolio-nav">
         <Link className="portfolio-brand" href="#top" aria-label="제품 개발 사례 첫 화면으로">
-          <strong>REROUTE</strong>
-          <span>제품 개발 사례</span>
+          <RerouteMark className="portfolio-brand-mark" />
+          <span className="portfolio-brand-copy">
+            <strong>REROUTE</strong>
+            <span>제품 개발 사례</span>
+          </span>
         </Link>
         <nav aria-label="제품 개발 사례 메뉴">
           <a href="#hypothesis">사업 가설</a>
@@ -327,8 +331,11 @@ export default function HomePage() {
 
       <footer className="portfolio-footer">
         <div className="portfolio-brand">
-          <strong>REROUTE</strong>
-          <span>개인 풀스택 프로젝트</span>
+          <RerouteMark className="portfolio-brand-mark" />
+          <span className="portfolio-brand-copy">
+            <strong>REROUTE</strong>
+            <span>개인 풀스택 프로젝트</span>
+          </span>
         </div>
         <p>아직 실제 고객을 대상으로 검증하지 않은 개인 풀스택 포트폴리오 프로젝트입니다.</p>
       </footer>
