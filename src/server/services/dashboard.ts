@@ -95,24 +95,19 @@ export async function getProjectCreationOrganizations() {
     .orderBy(asc(organizations.name));
 }
 
-export async function getMatchingDashboard(projectId: string) {
-  const { project, membership } = await requireProjectAccess(projectId);
+function latestPlanQuery(projectId: string) {
+  return db.select().from(matchPlans).where(eq(matchPlans.projectId, projectId))
+    .orderBy(desc(matchPlans.confirmedAt), desc(matchPlans.createdAt)).limit(1);
+}
+
+function allocationQuery(projectId: string) {
   const latestPlanId = db
     .select({ id: matchPlans.id })
     .from(matchPlans)
     .where(eq(matchPlans.projectId, projectId))
     .orderBy(desc(matchPlans.confirmedAt), desc(matchPlans.createdAt))
     .limit(1);
-  const [assets, bidCountResult, plans, allocationRows] = await db.batch([
-    db.select().from(assetGroups).where(eq(assetGroups.projectId, projectId)).orderBy(asc(assetGroups.displayOrder)),
-    db.select({ count: count() }).from(bids).where(eq(bids.projectId, projectId)),
-    db
-      .select()
-      .from(matchPlans)
-      .where(eq(matchPlans.projectId, projectId))
-      .orderBy(desc(matchPlans.confirmedAt), desc(matchPlans.createdAt))
-      .limit(1),
-    db
+  return db
       .select({
         id: matchAllocations.id,
         bidId: matchAllocations.bidId,
@@ -139,7 +134,44 @@ export async function getMatchingDashboard(projectId: string) {
       .innerJoin(assetGroups, eq(bids.assetGroupId, assetGroups.id))
       .innerJoin(partners, eq(matchAllocations.partnerId, partners.id))
       .where(eq(matchAllocations.matchPlanId, latestPlanId))
-      .orderBy(asc(assetGroups.displayOrder), asc(partners.name)),
+      .orderBy(asc(assetGroups.displayOrder), asc(partners.name));
+}
+
+function serializePlan(plan: typeof matchPlans.$inferSelect | undefined) {
+  return plan ? { ...plan, createdAt: plan.createdAt.toISOString(), confirmedAt: plan.confirmedAt?.toISOString() ?? null } : null;
+}
+
+function serializeProject(project: typeof projects.$inferSelect) {
+  return { ...project, updatedAt: project.updatedAt.toISOString() };
+}
+
+export async function getProjectAssets(projectId: string) {
+  const { project, membership } = await requireProjectAccess(projectId);
+  const assets = await db.select().from(assetGroups).where(eq(assetGroups.projectId, projectId)).orderBy(asc(assetGroups.displayOrder));
+  return { project: serializeProject(project), membershipRole: membership.role, assets };
+}
+
+export async function getProjectPlanSummary(projectId: string) {
+  const { project, membership } = await requireProjectAccess(projectId);
+  const [plan] = await latestPlanQuery(projectId);
+  return { project: serializeProject(project), membershipRole: membership.role, plan: serializePlan(plan) };
+}
+
+export async function getPickupDashboard(projectId: string) {
+  const { project, membership } = await requireProjectAccess(projectId);
+  const [plans, rows] = await db.batch([latestPlanQuery(projectId), allocationQuery(projectId)]);
+  return { project: serializeProject(project), membershipRole: membership.role, plan: serializePlan(plans[0]), allocations: rows.map((row) => ({
+    ...row, isVerified: isPartnerEvidenceCurrent(row), pickupDate: row.pickupDate.toISOString(),
+  })) };
+}
+
+export async function getMatchingDashboard(projectId: string) {
+  const { project, membership } = await requireProjectAccess(projectId);
+  const [assets, bidCountResult, plans, allocationRows] = await db.batch([
+    db.select().from(assetGroups).where(eq(assetGroups.projectId, projectId)).orderBy(asc(assetGroups.displayOrder)),
+    db.select({ count: count() }).from(bids).where(eq(bids.projectId, projectId)),
+    latestPlanQuery(projectId),
+    allocationQuery(projectId),
   ]);
 
   const plan = plans[0] ?? null;
@@ -170,45 +202,7 @@ export async function getMatchingDashboard(projectId: string) {
   };
 }
 
-export async function getProjectBids(projectId: string) {
-  await requireProjectAccess(projectId);
-  const rows = await db
-    .select({
-      id: bids.id,
-      slot: bids.slot,
-      assetGroupId: bids.assetGroupId,
-      assetGroupName: assetGroups.name,
-      quantity: bids.quantity,
-      cashRecovery: bids.cashRecovery,
-      costSavings: bids.costSavings,
-      reuseQuantity: bids.reuseQuantity,
-      performanceLabel: bids.performanceLabel,
-      performanceRate: bids.performanceRate,
-      pickupDate: bids.pickupDate,
-      submittedAt: bids.submittedAt,
-      partnerName: partners.name,
-      partnerType: partners.type,
-      verificationLabel: partners.verificationLabel,
-      verificationReference: partners.verificationReference,
-      verifiedAt: partners.verifiedAt,
-      verificationExpiresAt: partners.verificationExpiresAt,
-      isVerified: partners.isVerified,
-    })
-    .from(bids)
-    .innerJoin(assetGroups, eq(bids.assetGroupId, assetGroups.id))
-    .innerJoin(partners, eq(bids.partnerId, partners.id))
-    .where(eq(bids.projectId, projectId))
-    .orderBy(desc(bids.cashRecovery), desc(bids.costSavings));
-
-  return rows.map((row) => ({
-    ...row,
-    isVerified: isPartnerEvidenceCurrent(row),
-    pickupDate: row.pickupDate.toISOString(),
-    submittedAt: row.submittedAt.toISOString(),
-    verifiedAt: row.verifiedAt?.toISOString() ?? null,
-    verificationExpiresAt: row.verificationExpiresAt?.toISOString() ?? null,
-  }));
-}
+export { getProjectBids } from "./project-bids";
 
 export async function getProjectAuditLog(projectId: string, limit = 20) {
   await requireProjectAccess(projectId, ["MANAGER", "APPROVER"]);

@@ -1,3 +1,4 @@
+import { TableScroll } from "@/components/ui/table-scroll";
 import { formatKoreanDate, formatNumber } from "@/lib/format";
 import { toSeoulDateKey } from "@/lib/date";
 import type { PartnerType } from "@/server/db/schema";
@@ -51,8 +52,7 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
         <h2 id="proposal-title">{props.confirmed ? "확정 배분안" : "추천 배분안"} (총 {formatNumber(props.totalQuantity)}개)</h2>
         {props.confirmed ? <span className="status-badge status-confirmed">수거 일정 등록 가능</span> : null}
       </div>
-      <p aria-hidden="true" className="table-scroll-hint">표를 좌우로 밀어 전체 항목을 확인하세요.</p>
-      <div aria-label="자산 배분안 표" className="table-scroll" role="region" tabIndex={0}>
+      <TableScroll label="자산 배분안 표">
         <table className="proposal-table">
           <colgroup>
             <col className="proposal-col-asset" />
@@ -122,7 +122,7 @@ export function MatchProposalTable(props: MatchProposalTableProps) {
             </tr>
           </tfoot>
         </table>
-      </div>
+      </TableScroll>
     </section>
   );
 }

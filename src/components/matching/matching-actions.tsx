@@ -3,7 +3,7 @@
 import { ArrowRight, CheckCircle, Info, WarningCircle } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import {
   confirmMatchAction,
   recalculateAction,
@@ -15,6 +15,8 @@ import { MAX_PROJECT_CASH_RECOVERY } from "@/lib/domain-constraints";
 import { initialMatchingActionState } from "@/lib/matching-action-state";
 
 type MatchingResult = {
+  planId: string;
+  projectVersion: number;
   cashRecovery: number;
   costSavings: number;
   netImpact: number;
@@ -105,10 +107,12 @@ function ConfirmationDialog({
   idempotencyKey,
   onClose,
   onCompleted,
+  onReviewLatest,
 }: { projectId: string; result: MatchingResult } & {
   idempotencyKey: string;
   onClose: () => void;
   onCompleted: DialogCompletion;
+  onReviewLatest: () => void;
 }) {
   const [state, action, pending] = useActionState(confirmMatchAction, initialMatchingActionState);
 
@@ -151,7 +155,14 @@ function ConfirmationDialog({
           <form action={action}>
             <input name="projectId" type="hidden" value={projectId} />
             <input name="idempotencyKey" type="hidden" value={idempotencyKey} />
-            {state.status === "error" ? <p className="form-error" role="alert">{state.message}</p> : null}
+            <input name="planId" type="hidden" value={result.planId} />
+            <input name="expectedVersion" type="hidden" value={result.projectVersion} />
+            {state.status === "error" ? (
+              <div role="alert">
+                <p className="form-error">{state.message}</p>
+                <button className="button button-secondary" onClick={onReviewLatest} type="button">최신 배분안 확인</button>
+              </div>
+            ) : null}
             <div className="modal-actions">
               <button className="button button-ghost" onClick={onClose} type="button">취소</button>
               <button className="button button-primary" disabled={pending || !idempotencyKey} type="submit">
@@ -167,24 +178,29 @@ function ConfirmationDialog({
 
 export function MatchingActions(props: MatchingActionsProps) {
   const router = useRouter();
+  const [refreshPending, startRefresh] = useTransition();
   const [activeDialog, setActiveDialog] = useState<"recalculate" | "confirm" | null>(null);
   const [idempotencyKey, setIdempotencyKey] = useState("");
+  const [confirmationResult, setConfirmationResult] = useState<MatchingResult | null>(null);
   const [feedback, setFeedback] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
   const completeDialog = (message: string) => {
     setFeedback({ type: "success", message });
     setActiveDialog(null);
-    router.refresh();
+    startRefresh(() => router.refresh());
   };
 
   const openRecalculation = () => {
+    if (refreshPending) return;
     setFeedback(null);
     setActiveDialog("recalculate");
     trackEvent("recalculation_opened", props.projectId);
   };
 
   const openConfirmation = () => {
+    if (refreshPending) return;
     setFeedback(null);
+    setConfirmationResult(props.result);
     setIdempotencyKey(globalThis.crypto.randomUUID());
     setActiveDialog("confirm");
     trackEvent("confirmation_opened", props.projectId);
@@ -194,7 +210,7 @@ export function MatchingActions(props: MatchingActionsProps) {
     <>
       <div className="action-area">
         <div className="action-feedback" aria-live="polite">
-          {feedback ? (
+          {refreshPending ? <span>최신 배분안을 불러오고 있습니다…</span> : feedback ? (
             <span className={feedback.type === "success" ? "feedback-success" : "feedback-error"}>
               {feedback.type === "success" ? <CheckCircle aria-hidden="true" size={19} /> : <WarningCircle aria-hidden="true" size={19} />}
               {feedback.message}
@@ -205,7 +221,7 @@ export function MatchingActions(props: MatchingActionsProps) {
           <Link className="button button-secondary" href={`/projects/${props.projectId}/bids`}>
             입찰 {props.bidCount}건 보기
           </Link>
-          <button className="button button-secondary" disabled={!props.canRecalculate || props.confirmed} onClick={openRecalculation} type="button">
+          <button className="button button-secondary" aria-disabled={refreshPending || undefined} disabled={!props.canRecalculate || props.confirmed} onClick={openRecalculation} type="button">
             조건 다시 계산
           </button>
           {props.confirmed ? (
@@ -215,6 +231,7 @@ export function MatchingActions(props: MatchingActionsProps) {
           ) : (
             <button
               className="button button-primary primary-action"
+              aria-disabled={refreshPending || undefined}
               disabled={!props.canConfirm || !props.result?.criteriaPassed}
               onClick={openConfirmation}
               title={!props.canConfirm ? "확정 권한이 필요합니다." : undefined}
@@ -229,8 +246,8 @@ export function MatchingActions(props: MatchingActionsProps) {
       {activeDialog === "recalculate" ? (
         <RecalculationDialog bidCount={props.bidCount} criteria={props.criteria} onClose={() => setActiveDialog(null)} onCompleted={completeDialog} projectId={props.projectId} />
       ) : null}
-      {activeDialog === "confirm" && props.result ? (
-        <ConfirmationDialog idempotencyKey={idempotencyKey} onClose={() => setActiveDialog(null)} onCompleted={completeDialog} projectId={props.projectId} result={props.result} />
+      {activeDialog === "confirm" && confirmationResult ? (
+        <ConfirmationDialog idempotencyKey={idempotencyKey} onClose={() => setActiveDialog(null)} onCompleted={completeDialog} onReviewLatest={() => { setActiveDialog(null); setFeedback(null); startRefresh(() => router.refresh()); }} projectId={props.projectId} result={confirmationResult} />
       ) : null}
     </>
   );

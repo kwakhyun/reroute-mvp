@@ -1,0 +1,368 @@
+/* Scope stable semantic class names to this screen boundary.
+   :where keeps their specificity unchanged when composing shared primitives. */
+.root { min-width: 0; }
+:where(.root) :global(.proposal-heading) {
+  min-height: 38px;
+  padding: 0 4px 13px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:where(.root) :global(.proposal-heading h2) {
+  margin: 0;
+}
+
+:where(.root) :global(.table-scroll) {
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+:where(.root) :global(.numeric-cell) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.asset-table) {
+  min-width: 390px;
+  table-layout: fixed;
+}
+
+:where(.root) :global(.asset-column) {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+}
+
+:where(.root) :global(.asset-card) {
+  flex: 1;
+  height: auto;
+}
+
+:where(.root) :global(.asset-col-name) { width: 45%; }
+:where(.root) :global(.asset-col-quantity) { width: 13%; }
+:where(.root) :global(.asset-col-condition) { width: 14%; }
+:where(.root) :global(.asset-col-recovery) { width: 28%; }
+
+:where(.root) :global(.asset-table th:nth-child(2)),
+:where(.root) :global(.asset-table td:nth-child(2)) {
+  padding: 0 0 0 5px;
+  text-align: left;
+}
+
+:where(.root) :global(.asset-table th:nth-child(3)),
+:where(.root) :global(.asset-table td:nth-child(3)) {
+  padding-left: 17px;
+}
+
+:where(.root) :global(.asset-table th:last-child),
+:where(.root) :global(.asset-table td:last-child) {
+  padding-left: 14px;
+  text-align: left;
+}
+
+:where(.root) :global(.asset-name-cell) {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+:where(.root) :global(.asset-name-cell strong) {
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.asset-thumbnail) {
+  width: 70px;
+  height: 70px;
+  flex: 0 0 70px;
+  border-radius: 5px;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+}
+
+:where(.root) :global(.condition-grade) {
+  width: fit-content;
+  min-width: 30px;
+  height: 27px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  display: grid;
+  place-items: center;
+  background: #f7ead7;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  line-height: 1;
+}
+
+:where(.root) :global(.condition-bplus) {
+  border-color: #b9c9a8;
+  background: #e8efdf;
+}
+
+:where(.root) :global(.condition-cplus) {
+  background: #ebe7e1;
+}
+
+:where(.root) :global(.condition-label) {
+  display: block;
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.recovery-goal) {
+  font-size: 13px;
+}
+
+:where(.root) :global(.table-note) {
+  margin: 10px 4px 0;
+  color: var(--muted-light);
+  font-size: 11px;
+}
+
+:where(.root) :global(.table-scroll-hint) {
+  display: block;
+  margin: 10px 2px 5px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.proposal-table) {
+  min-width: 840px;
+  table-layout: fixed;
+}
+
+:where(.root) :global(.proposal-col-asset) { width: 16%; }
+:where(.root) :global(.proposal-col-partner) { width: 24%; }
+:where(.root) :global(.proposal-col-quantity) { width: 9%; }
+:where(.root) :global(.proposal-col-cash) { width: 14%; }
+:where(.root) :global(.proposal-col-savings) { width: 13%; }
+:where(.root) :global(.proposal-col-performance) { width: 13%; }
+:where(.root) :global(.proposal-col-pickup) { width: 11%; }
+
+:where(.root) :global(.proposal-table th:not(:first-child)),
+:where(.root) :global(.proposal-table td:not(:first-child)) {
+  padding-left: 10px;
+}
+
+:where(.root) :global(.proposal-table thead th:not(:first-child)),
+:where(.root) :global(.proposal-table tbody td:not(:first-child)),
+:where(.root) :global(.proposal-table tfoot td:not(:first-child)) {
+  text-align: left;
+}
+
+:where(.root) :global(.partner-cell) {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+:where(.root) :global(.partner-cell > div) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:where(.root) :global(.partner-cell strong) {
+  max-width: 150px;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.partner-mark) {
+  width: 58px;
+  height: 58px;
+  flex: 0 0 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+
+:where(.root) :global(.partner-mark-icon) {
+  display: block;
+  flex: none;
+  transform-origin: center;
+}
+:where(.root) :global(.partner-mark-business .partner-mark-icon) {
+  transform: translate(1.5px, 1px);
+}
+
+:where(.root) :global(.partner-mark-employee .partner-mark-icon) {
+  transform: translate(0.5px, 0.5px);
+}
+
+:where(.root) :global(.partner-mark-business) {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+:where(.root) :global(.partner-mark-employee) {
+  background: #f9e6dc;
+  color: #c75a36;
+}
+
+:where(.root) :global(.partner-mark-nonprofit) {
+  background: var(--warning-soft);
+  color: #c9891b;
+}
+
+:where(.root) :global(.partner-mark-recycler) {
+  background: #ecebea;
+  color: #393939;
+}
+
+:where(.root) :global(.verification-badge) {
+  margin-top: 5px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.verification-business) {
+  background: var(--blue-soft);
+  color: #2f6faa;
+}
+
+:where(.root) :global(.verification-employee) {
+  background: #f9e6dc;
+  color: #a94c2d;
+}
+
+:where(.root) :global(.verification-nonprofit) {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+:where(.root) :global(.verification-pending) {
+  border: 1px solid #e5c6c0;
+  background: #fae9e5;
+  color: var(--danger);
+}
+
+:where(.root) :global(.verification-recycler) {
+  background: #ecebea;
+  color: #56504c;
+}
+
+:where(.root) :global(.verification-evidence) {
+  max-width: 190px;
+  margin-top: 4px;
+  overflow: hidden;
+  color: var(--muted-light);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.metric-cell small),
+:where(.root) :global(.metric-cell strong) {
+  display: block;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.metric-cell small) {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.metric-cell strong) {
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+:where(.root) :global(.bids-table) {
+  min-width: 930px;
+}
+
+:where(.root) :global(.bids-table th),
+:where(.root) :global(.bids-table td) {
+  padding: 0 14px;
+}
+
+:where(.root) :global(.bids-table tbody td) {
+  height: 74px;
+}
+
+:where(.root) :global(.bids-table .partner-mark) {
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+}
+
+:where(.root) :global(.bid-selected) {
+  background: #fbf2ec;
+}
+
+:where(.root) :global(.selected-mark) {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--success);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.muted-dash) {
+  color: var(--muted-light);
+}
+
+@media (max-width: 1500px) {
+
+  :where(.root) :global(.asset-card) {
+    min-height: auto;
+  }
+
+  :where(.root) :global(.asset-table) {
+    min-width: 640px;
+  }
+
+  :where(.root) :global(.asset-table th:first-child),
+:where(.root) :global(.asset-table td:first-child) {
+    width: 47%;
+  }
+}
+
+@media (max-width: 560px) {
+
+  :where(.root) :global(.table-scroll-hint) {
+    display: block;
+  }
+
+  :where(.root) :global(.table-scroll) {
+    overscroll-behavior-inline: contain;
+  }
+
+  :where(.root) :global(.asset-table th:first-child),
+:where(.root) :global(.asset-table td:first-child),
+:where(.root) :global(.proposal-table th:first-child),
+:where(.root) :global(.proposal-table td:first-child),
+:where(.root) :global(.bids-table th:nth-child(2)),
+:where(.root) :global(.bids-table td:nth-child(2)) {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+    background: var(--surface);
+    box-shadow: 1px 0 0 var(--border);
+  }
+
+  :where(.root) :global(.proposal-table tfoot th:first-child),
+:where(.root) :global(.asset-table tfoot th:first-child) {
+    z-index: 3;
+  }
+
+  :where(.root) :global(.bids-table .bid-selected td:nth-child(2)) {
+    background: #fbf2ec;
+  }
+}

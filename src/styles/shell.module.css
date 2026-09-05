@@ -1,0 +1,314 @@
+/* Scope stable semantic class names to this screen boundary.
+   :where keeps their specificity unchanged when composing shared primitives. */
+.root { min-width: 0; }
+:where(.root):global(.app-shell) {
+  min-height: 100vh;
+}
+
+:where(.root) :global(.sidebar-brand) {
+  height: 135px;
+  padding: 38px 20px 28px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+:where(.root) :global(.sidebar-brand a) {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+:where(.root) :global(.sidebar-brand-mark) {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  --reroute-mark-field: #8f2f1f;
+}
+
+:where(.root) :global(.sidebar-brand-copy) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:where(.root) :global(.sidebar-brand strong) {
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(255, 248, 242, 0.5);
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 580;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+:where(.root) :global(.sidebar-brand-copy > span) {
+  margin-top: 7px;
+  color: rgba(255, 248, 242, 0.64);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+}
+
+:where(.root) :global(.sidebar-close) {
+  display: none;
+}
+
+:where(.root) :global(.sidebar-nav) {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+:where(.root) :global(.sidebar-link) {
+  position: relative;
+  min-height: 70px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: rgba(255, 248, 242, 0.9);
+  font-size: 17px;
+  font-weight: 500;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+:where(.root) :global(.sidebar-link-icon) {
+  position: relative;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+}
+
+:where(.root) :global(.sidebar-link-symbol),
+:where(.root) :global(.sidebar-link-spinner) {
+  grid-area: 1 / 1;
+}
+
+:where(.root) :global(.sidebar-link-symbol) {
+  display: grid;
+  place-items: center;
+  transition: opacity 120ms ease;
+}
+
+:where(.root) :global(.sidebar-link-spinner) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+:where(.root) :global(.sidebar-link-icon-pending .sidebar-link-symbol) {
+  opacity: 0;
+}
+
+:where(.root) :global(.sidebar-link-icon-pending .sidebar-link-spinner) {
+  visibility: visible;
+  animation: sidebar-spinner-fade 160ms ease 100ms both, sidebar-spinner-turn 700ms linear 100ms infinite;
+}
+
+:where(.root) :global(.sidebar-link:hover) {
+  background: rgba(105, 29, 18, 0.16);
+  color: #fff;
+}
+
+:where(.root) :global(.sidebar-link-disabled) {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+:where(.root) :global(.sidebar-link-disabled:hover) {
+  background: transparent;
+  color: rgba(255, 248, 242, 0.9);
+}
+
+:where(.root) :global(.sidebar-link-active) {
+  background: var(--brand-strong);
+  color: #fff;
+  font-weight: 700;
+}
+
+:where(.root) :global(.sidebar-link-active::before) {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: #fff6ef;
+  content: "";
+}
+
+:where(.root) :global(.sidebar-account) {
+  position: relative;
+  margin-top: auto;
+  margin-bottom: 28px;
+  min-height: 82px;
+  padding: 15px 18px;
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+:where(.root) :global(.sidebar-account > div) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+:where(.root) :global(.sidebar-account strong) {
+  overflow: hidden;
+  font-size: 12px;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.sidebar-account span) {
+  margin-top: 3px;
+  color: rgba(255, 248, 242, 0.72);
+  font-size: 11px;
+}
+
+:where(.root) :global(.account-menu summary) {
+  padding: 8px 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+:where(.root) :global(.account-menu summary::-webkit-details-marker) {
+  display: none;
+}
+
+:where(.root) :global(.account-popover) {
+  position: absolute;
+  right: 10px;
+  bottom: 68px;
+  width: 170px;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-modal);
+  color: var(--espresso);
+}
+
+:where(.root) :global(.account-popover > span) {
+  display: block;
+  padding: 7px 9px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.account-popover button) {
+  width: 100%;
+  padding: 9px;
+  border: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  cursor: pointer;
+}
+
+:where(.root) :global(.account-popover button:hover) {
+  background: var(--brand-soft);
+}
+
+:where(.root) :global(.app-content) {
+  min-height: 100vh;
+  margin-left: var(--sidebar-width);
+  background: var(--canvas);
+}
+
+:where(.root) :global(.mobile-app-bar),
+:where(.root) :global(.sidebar-scrim) {
+  display: none;
+}
+
+@media (max-width: 900px) {
+
+  :where(.root) :global(.mobile-app-bar) {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: 58px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(247, 242, 233, 0.96);
+    backdrop-filter: blur(12px);
+  }
+
+  :where(.root) :global(.mobile-menu-button),
+:where(.root) :global(.sidebar-close) {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    display: grid;
+    place-items: center;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+  }
+
+  :where(.root) :global(.mobile-wordmark) {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 600;
+  }
+
+  :where(.root) :global(.mobile-brand) {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  :where(.root) :global(.mobile-brand-mark) {
+    width: 27px;
+    height: 27px;
+    flex: 0 0 auto;
+  }
+
+  :where(.root) :global(.sidebar-open) {
+    transform: translateX(0);
+    visibility: visible;
+    transition: transform 180ms ease;
+  }
+
+  :where(.root) :global(.sidebar-brand) {
+    height: 112px;
+    padding: 28px 24px;
+  }
+
+  :where(.root) :global(.sidebar-nav) {
+    gap: 0;
+  }
+
+  :where(.root) :global(.sidebar-account) {
+    margin-bottom: 0;
+  }
+
+  :where(.root) :global(.sidebar-close) {
+    color: #fff;
+  }
+
+  :where(.root) :global(.sidebar-scrim) {
+    position: fixed;
+    inset: 0;
+    z-index: 35;
+    border: 0;
+    display: block;
+    background: rgba(42, 33, 29, 0.45);
+  }
+
+  :where(.root) :global(.app-content) {
+    margin-left: 0;
+  }
+}
+
+@keyframes sidebar-spinner-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sidebar-spinner-turn { to { transform: rotate(360deg); } }

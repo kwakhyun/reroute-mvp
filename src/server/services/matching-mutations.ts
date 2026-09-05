@@ -1,7 +1,7 @@
 import "server-only";
 
 import { randomUUID } from "node:crypto";
-import { and, desc, eq, inArray, ne, sql } from "drizzle-orm";
+import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { toSeoulDateKey } from "@/lib/date";
 import { db } from "@/server/db/client";
 import {
@@ -45,8 +45,9 @@ export async function recalculateMatchPlan(
   projectId: string,
   input: RecalculationInput,
   actor: { id: string; ipHash: string },
+  database = db,
 ) {
-  const [project] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
+  const [project] = await database.select().from(projects).where(eq(projects.id, projectId)).limit(1);
   if (!project) {
     throw new MatchingMutationError("프로젝트를 찾을 수 없습니다.");
   }
@@ -55,7 +56,7 @@ export async function recalculateMatchPlan(
   }
 
   const [candidateRows, expectedGroups] = await Promise.all([
-    db
+    database
       .select({
         bid: bids,
         isVerified: partners.isVerified,
@@ -66,7 +67,7 @@ export async function recalculateMatchPlan(
       .from(bids)
       .innerJoin(partners, eq(bids.partnerId, partners.id))
       .where(eq(bids.projectId, projectId)),
-    db
+    database
       .select({ id: assetGroups.id, quantity: assetGroups.quantity, minimumRecovery: assetGroups.minimumRecovery })
       .from(assetGroups)
       .where(eq(assetGroups.projectId, projectId)),
@@ -112,7 +113,7 @@ export async function recalculateMatchPlan(
   const now = new Date();
 
   try {
-    await db.transaction(async (tx) => {
+    await database.transaction(async (tx) => {
       const projectUpdate = await tx
         .update(projects)
         .set({
@@ -202,7 +203,7 @@ export async function recalculateMatchPlan(
   } catch (error) {
     if (error instanceof MatchingMutationError) throw error;
     if (isDatabaseConflict(error)) {
-      throw new MatchingMutationError("프로젝트가 동시에 변경되었습니다. 최신 화면에서 다시 시도해 주세요.");
+      throw new MatchingMutationError("프로젝트가 동시에 변경되었습니다. 최신 화면에서 다시 시도해 주세요.", { cause: error });
     }
     throw error;
   }
@@ -222,47 +223,43 @@ export async function confirmMatchPlan(
   projectId: string,
   idempotencyKey: string,
   actor: { id: string; ipHash: string },
+  expected: { planId: string; version: number },
+  database = db,
 ) {
-  const [existingReceipt] = await db
+  const [existingReceipt] = await database
     .select()
     .from(mutationReceipts)
     .where(eq(mutationReceipts.idempotencyKey, idempotencyKey))
     .limit(1);
   if (existingReceipt) {
-    return replayConfirmationReceipt(existingReceipt, actor.id, projectId)!;
+    return replayConfirmationReceipt(existingReceipt, actor.id, projectId, expected.planId)!;
   }
 
-  const [project] = await db.select().from(projects).where(eq(projects.id, projectId)).limit(1);
+  const [project] = await database.select().from(projects).where(eq(projects.id, projectId)).limit(1);
   if (!project) throw new MatchingMutationError("프로젝트를 찾을 수 없습니다.");
 
-  const [plan] = await db
+  const [plan] = await database
     .select()
     .from(matchPlans)
-    .where(and(eq(matchPlans.projectId, projectId), eq(matchPlans.status, "DRAFT")))
-    .orderBy(desc(matchPlans.createdAt))
+    .where(and(eq(matchPlans.projectId, projectId), eq(matchPlans.id, expected.planId)))
     .limit(1);
 
-  if (!plan) {
-    const [confirmed] = await db
-      .select({ id: matchPlans.id })
-      .from(matchPlans)
-      .where(and(eq(matchPlans.projectId, projectId), eq(matchPlans.status, "CONFIRMED")))
-      .limit(1);
-    if (confirmed) {
-      return { projectId, planId: confirmed.id, status: "CONFIRMED" as const };
-    }
-    throw new MatchingMutationError("확정할 배분안이 없습니다.");
+  if (plan?.status === "CONFIRMED") {
+    return { projectId, planId: plan.id, status: "CONFIRMED" as const };
+  }
+  if (!plan || project.version !== expected.version || project.status === "CONFIRMED") {
+    throw new MatchingMutationError("검토한 배분안이 변경되었습니다. 최신 배분안을 확인한 뒤 다시 확정해 주세요.");
   }
   if (!plan.criteriaPassed) {
     throw new MatchingMutationError("확정 기준을 충족한 배분안만 확정할 수 있습니다.");
   }
 
   const [expectedGroups, allocationRows] = await Promise.all([
-    db
+    database
       .select({ id: assetGroups.id, quantity: assetGroups.quantity })
       .from(assetGroups)
       .where(eq(assetGroups.projectId, projectId)),
-    db
+    database
       .select({
         assetGroupId: bids.assetGroupId,
         quantity: matchAllocations.quantity,
@@ -293,7 +290,7 @@ export async function confirmMatchPlan(
   const result = { projectId, planId: plan.id, status: "CONFIRMED" as const };
 
   try {
-    await db.transaction(async (tx) => {
+    await database.transaction(async (tx) => {
       const updated = await tx
       .update(matchPlans)
       .set({ status: "CONFIRMED", confirmedAt: now, confirmedBy: actor.id })
@@ -372,17 +369,17 @@ export async function confirmMatchPlan(
       .onConflictDoNothing();
     });
   } catch (error) {
-    const [receiptAfterConflict] = await db
+    const [receiptAfterConflict] = await database
       .select()
       .from(mutationReceipts)
       .where(eq(mutationReceipts.idempotencyKey, idempotencyKey))
       .limit(1);
     if (receiptAfterConflict) {
-      return replayConfirmationReceipt(receiptAfterConflict, actor.id, projectId)!;
+      return replayConfirmationReceipt(receiptAfterConflict, actor.id, projectId, expected.planId)!;
     }
     if (error instanceof MatchingMutationError) throw error;
     if (isDatabaseConflict(error)) {
-      throw new MatchingMutationError("배분안이 동시에 변경되었습니다. 최신 화면에서 다시 확인해 주세요.");
+      throw new MatchingMutationError("배분안이 동시에 변경되었습니다. 최신 화면에서 다시 확인해 주세요.", { cause: error });
     }
     throw error;
   }

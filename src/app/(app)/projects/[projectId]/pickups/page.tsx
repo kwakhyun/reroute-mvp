@@ -1,12 +1,12 @@
 import { CalendarCheck, MapPin, Truck, UserCircle } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { ProjectPreparation } from "@/components/app/project-preparation";
 import { ContentHeader } from "@/components/app/content-header";
 import { PartnerMark } from "@/components/matching/partner-mark";
 import { PickupOperationForm } from "@/components/operations/pickup-operation-form";
 import { formatKoreanDate, formatNumber } from "@/lib/format";
 import { toSeoulDateKey } from "@/lib/date";
-import { getMatchingDashboard, getPickupOperations } from "@/server/services/dashboard";
+import { getPickupDashboard, getPickupOperations } from "@/server/services/dashboard";
 import { projectPageData } from "../project-page-data";
 
 export const dynamic = "force-dynamic";
@@ -22,8 +22,8 @@ const statusLabel = {
 
 export default async function PickupsPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
-  const [dashboard, operations] = await projectPageData(Promise.all([getMatchingDashboard(projectId), getPickupOperations(projectId)]));
-  if (!dashboard || !dashboard.plan) notFound();
+  const [dashboard, operations] = await projectPageData(Promise.all([getPickupDashboard(projectId), getPickupOperations(projectId)]));
+  if (!dashboard.plan) return <ProjectPreparation projectId={projectId} projectName={dashboard.project.name} title="수거 일정" />;
   const confirmed = dashboard.plan.status === "CONFIRMED";
   const canEdit = dashboard.membershipRole === "MANAGER" || dashboard.membershipRole === "APPROVER";
   const operationByDate = new Map(operations.map((operation) => [toSeoulDateKey(operation.pickupDate), operation]));

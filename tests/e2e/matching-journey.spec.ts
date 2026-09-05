@@ -19,12 +19,15 @@ async function fetchJsonFromPage(page: Page, url: string) {
   }, url);
 }
 
-test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계를 명확히 보여준다", async ({ page, request }) => {
+test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계를 명확히 보여준다", async ({ page, request }, testInfo) => {
   await page.context().clearCookies();
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "사무 자산 처분안을 한눈에 비교하고 결정합니다." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
   await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "확인창에서 본 배분안만 확정합니다." })).toBeVisible();
+  await expect(page.getByText("예시 결과의 유료 파일럿 참여 의향", { exact: true })).toBeHidden();
+  await page.getByText("가상 데이터 시뮬레이션과 판단 기준 펼치기", { exact: true }).click();
   await expect(page.getByText("예시 결과의 유료 파일럿 참여 의향", { exact: true })).toBeVisible();
   await expect(page.getByText(/별도 초기화 없이 바로 열립니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: /100% 직접 수행했습니다/ })).toBeVisible();
@@ -33,6 +36,8 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
   const report = await request.get("/reports/validation-simulation.html");
   expect(report.status()).toBe(200);
   expect(await report.text()).toContain("REROUTE 가상 데이터 분석 보고서");
+
+  await page.locator("#frontend").screenshot({ animations: "disabled", path: testInfo.outputPath("frontend-evidence.png") });
 
   await page.setViewportSize({ width: 1024, height: 768 });
   await expect(page.getByRole("navigation", { name: "제품 개발 사례 메뉴" })).toBeVisible();
@@ -218,6 +223,13 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까�
   expect(createdPayload.data.bidCount).toBe(0);
   expect(createdPayload.data.plan).toBeNull();
   const assets = createdPayload.data.assets as Array<{ id: string; name: string; quantity: number; minimumRecovery: number }>;
+  for (const route of ["pickups", "settlements"]) {
+    await page.goto(`/projects/${projectId}/${route}`);
+    await expect(page.getByRole("heading", { name: "배분안을 먼저 계산해 주세요." })).toBeVisible();
+    await page.getByRole("link", { name: "배분안 준비하기" }).click();
+    await expect(page.getByText("아직 계산된 배분안이 없습니다.")).toBeVisible();
+  }
+
 
   await page.getByRole("link", { name: "입찰", exact: true }).click();
   await expect(page.getByRole("heading", { name: "인수처 입찰 0건" })).toBeVisible();
@@ -242,12 +254,18 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까�
     100,
     "2026-09-15",
   ].join(","));
+  await page.getByText("CSV로 입찰 가져오기", { exact: true }).click();
   await page.locator('input[name="bidFile"]').setInputFiles({
     name: "bids.csv",
     mimeType: "text/csv",
     buffer: Buffer.from(`\uFEFF${bidHeader}\n${bidRows.join("\n")}`),
   });
-  await page.getByRole("button", { name: "CSV 확인 후 가져오기" }).click();
+  await page.getByRole("button", { name: "CSV 검증 및 미리보기" }).click();
+  const importPreview = page.getByRole("region", { name: "입찰 교체 미리보기", exact: true });
+  await expect(importPreview).toContainText("기존 0건 → 새 4건");
+  const beforeImport = await fetchJsonFromPage(page, `/api/v1/projects/${projectId}/summary`);
+  expect(beforeImport.body.data.bidCount).toBe(0);
+  await page.getByRole("button", { name: "확인한 내용으로 입찰 교체" }).click();
   await expect(page.getByText("확인 자료가 포함된 인수처 입찰 4건을 가져왔습니다. 이제 배분안을 계산할 수 있습니다.")).toBeVisible();
   await expect(page.locator("tbody tr")).toHaveCount(4);
 
@@ -312,4 +330,152 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까�
       "SETTLEMENT_STATUS_UPDATED",
     ]),
   );
+});
+
+
+test("다른 사용자의 재계산 뒤에는 검토했던 배분안을 확정할 수 없다", async ({ page, browser }) => {
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/matching`);
+  await page.getByRole("button", { name: "배분안 확정", exact: true }).click();
+  const confirmation = page.getByRole("dialog", { name: "이 배분안을 확정할까요?" });
+  const originalPlanId = await confirmation.locator('input[name="planId"]').inputValue();
+
+  const managerContext = await browser.newContext();
+  const manager = await managerContext.newPage();
+  try {
+    await manager.goto(new URL("/login", page.url()).href);
+    await manager.getByLabel("이메일").fill("manager@reroute.local");
+    await manager.getByLabel("비밀번호").fill("Reroute!2026");
+    await manager.getByRole("button", { name: "프로젝트 열기", exact: true }).click();
+    await expect(manager).toHaveURL(/\/projects$/);
+    await manager.goto(new URL(`${demoProjectPath}/matching`, page.url()).href);
+    await manager.getByRole("button", { name: "조건 다시 계산" }).click();
+    const recalculation = manager.getByRole("dialog", { name: "매칭 조건 다시 계산" });
+    await recalculation.getByLabel("최소 재사용률").fill("80");
+    await recalculation.getByRole("button", { name: "새 조건으로 계산" }).click();
+    await expect(recalculation.getByText("새 배분안을 계산했습니다.")).toBeVisible();
+    await recalculation.getByRole("button", { name: "결과 확인" }).click();
+
+    await confirmation.getByRole("button", { name: "확정하고 수거 일정 만들기" }).click();
+    await expect(confirmation.getByRole("alert")).toContainText("검토한 배분안이 변경되었습니다");
+    const afterConflict = await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`);
+    expect(afterConflict.body.data.plan.id).not.toBe(originalPlanId);
+    expect(afterConflict.body.data.plan.status).toBe("DRAFT");
+    await page.route(`**${demoProjectPath}/matching?*`, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 900));
+      await route.continue();
+    });
+    await confirmation.getByRole("button", { name: "최신 배분안 확인" }).click();
+    await expect(page.getByText("최신 배분안을 불러오고 있습니다…")).toBeVisible();
+    await expect(page.getByRole("button", { name: "배분안 확정", exact: true })).toHaveAttribute("aria-disabled", "true");
+    await expect(confirmation).toBeHidden();
+    await page.getByRole("button", { name: "배분안 확정", exact: true }).click();
+    await expect(page.getByRole("dialog").locator('input[name="planId"]')).toHaveValue(afterConflict.body.data.plan.id);
+  } finally { await managerContext.close(); }
+});
+
+test("CSV 미리보기는 기존 입찰을 보존하고 파일을 바꾸면 교체 승인을 해제한다", async ({ page }, testInfo) => {
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/bids`);
+  const before = await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`);
+  const assets = before.body.data.assets as Array<{ id: string; name: string; quantity: number; minimumRecovery: number }>;
+  const header = "assetGroupId,assetGroupName,partnerName,partnerType,verificationLabel,verificationReference,verificationExpiresOn,quantity,cashRecovery,costSavings,reuseQuantity,performanceLabel,performanceRate,pickupDate";
+  const rows = assets.map((asset) => [asset.id, asset.name, "검증 인수처", "BUSINESS", "서류 확인", "reference-browser", "2035-09-01", asset.quantity, asset.minimumRecovery, 0, asset.quantity, "재사용", 100, "2030-09-15"].join(","));
+  const source = `${header}\n${rows.join("\n")}`;
+  await page.getByText("CSV로 입찰 가져오기", { exact: true }).click();
+  const file = page.locator('input[name="bidFile"]');
+  await file.setInputFiles({ name: "preview.csv", mimeType: "text/csv", buffer: Buffer.from(source) });
+  await page.getByRole("button", { name: "CSV 검증 및 미리보기" }).click();
+  const preview = page.getByRole("region", { name: "입찰 교체 미리보기", exact: true });
+  await expect(preview).toContainText("기존 11건 → 새 4건");
+  await expect(preview).toContainText("삭제될 배분안 초안");
+  expect((await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`)).body.data.plan.id).toBe(before.body.data.plan.id);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await preview.screenshot({ animations: "disabled", path: testInfo.outputPath("bid-preview-mobile.png") });
+  await page.screenshot({ animations: "disabled", path: testInfo.outputPath("bid-import-mobile-viewport.png") });
+  await file.setInputFiles({ name: "changed.csv", mimeType: "text/csv", buffer: Buffer.from(source) });
+  await expect(preview).toBeHidden();
+  await expect(page.getByRole("button", { name: "확인한 내용으로 입찰 교체" })).toHaveCount(0);
+  expect((await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`)).body.data.bidCount).toBe(11);
+});
+
+test("입찰 필터와 페이지 이동이 전체 CSV 내보내기 범위를 바꾸지 않는다", async ({ page }) => {
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/bids`);
+  await page.getByLabel("배분안 포함만 보기").check();
+  await page.getByRole("button", { name: "필터 적용" }).click();
+  await expect(page.getByRole("heading", { name: "인수처 입찰 4건" })).toBeVisible();
+  await expect(page.locator("tr.bid-selected")).toHaveCount(4);
+  await page.getByRole("link", { name: "필터 초기화" }).click();
+  const snapshot = (await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`)).body.data;
+  const assets = snapshot.assets as Array<{ id: string; name: string; quantity: number; minimumRecovery: number }>;
+  const header = "assetGroupId,assetGroupName,partnerName,partnerType,verificationLabel,verificationReference,verificationExpiresOn,quantity,cashRecovery,costSavings,reuseQuantity,performanceLabel,performanceRate,pickupDate";
+  const rows = Array.from({ length: 121 }, (_, i) => {
+    const asset = assets[i < 118 ? 0 : i - 117];
+    return [asset.id, asset.name, `인수처 ${i}`, "BUSINESS", "서류 확인", `paging-${i}`, "2035-09-01", asset.quantity, asset.minimumRecovery, 0, asset.quantity, "재사용", 100, "2030-09-15"].join(",");
+  });
+  await page.getByText("CSV로 입찰 가져오기", { exact: true }).click();
+  await page.locator('input[name="bidFile"]').setInputFiles({ name: "pagination.csv", mimeType: "text/csv", buffer: Buffer.from(`${header}\n${rows.join("\n")}`) });
+  await page.getByRole("button", { name: "CSV 검증 및 미리보기" }).click();
+  await page.getByRole("button", { name: "확인한 내용으로 입찰 교체" }).click();
+  await expect(page.getByRole("heading", { name: "인수처 입찰 121건" })).toBeVisible();
+  const list = page.getByRole("region", { name: "입찰 비교 표", exact: true });
+  await expect(list.locator("tbody tr")).toHaveCount(50);
+  await page.getByRole("combobox", { name: "자산 항목" }).selectOption(assets[0].id);
+  await page.getByRole("button", { name: "필터 적용" }).click();
+  await expect(page.getByRole("heading", { name: "인수처 입찰 118건" })).toBeVisible();
+  const firstPage = await list.locator("tbody tr").allTextContents();
+  await page.getByRole("link", { name: "다음 페이지" }).click();
+  await expect(page.getByRole("navigation", { name: "입찰 페이지" })).toContainText("2 / 3 페이지");
+  await expect(page.getByRole("combobox", { name: "자산 항목" })).toHaveValue(assets[0].id);
+  const secondPage = await list.locator("tbody tr").allTextContents();
+  expect(firstPage.filter(row => secondPage.includes(row))).toHaveLength(0);
+  const exported = await page.evaluate(async url => {
+    const response = await fetch(url);
+    return { status: response.status, text: await response.text() };
+  }, `/api/v1${demoProjectPath}/bids/export`);
+  expect(exported.status).toBe(200);
+  expect(exported.text.trim().split("\n")).toHaveLength(122);
+  await page.getByRole("link", { name: "다음 페이지" }).click();
+  await expect(list.locator("tbody tr")).toHaveCount(18);
+  await expect(page.getByRole("link", { name: "다음 페이지" })).toHaveCount(0);
+});
+
+test("중간 화면 폭에서 지표가 겹치지 않고 넘치는 표에만 스크롤을 안내한다", async ({ page }, testInfo) => {
+  await page.goto("/");
+  await page.setViewportSize({ width: 1280, height: 720 });
+  const heroLinks = page.locator(".portfolio-hero .portfolio-hero-actions");
+  const heroBox = await heroLinks.boundingBox();
+  expect(heroBox!.y + heroBox!.height).toBeLessThanOrEqual(720);
+  const image = page.locator(".portfolio-hero-visual img");
+  await expect(image).toHaveAttribute("srcset", /_next\/image/);
+  await expect.poll(async () => image.evaluate(node => (node as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  await page.screenshot({ path: testInfo.outputPath("home-1280.png"), animations: "disabled" });
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/matching`);
+  await expect(page.getByRole("heading", { name: "추천 결과" })).toBeVisible();
+  for (const width of [1024, 1280, 1440, 640, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+    for (const item of await page.locator(".kpi-item").all()) {
+      expect(await item.evaluate(element => {
+        const parent = element.getBoundingClientRect();
+        const title = element.querySelector("dt")!.getBoundingClientRect();
+        return title.left >= parent.left - 1 && title.right <= parent.right + 1;
+      })).toBe(true);
+    }
+    const noteBox = await page.locator(".table-note").boundingBox();
+    const proposalBox = await page.locator(".proposal-card").boundingBox();
+    expect(noteBox!.y + noteBox!.height).toBeLessThanOrEqual(proposalBox!.y + 1);
+    const region = page.getByRole("region", { name: "자산 배분안 표", exact: true });
+    const overflow = await region.evaluate(element => element.scrollWidth > element.clientWidth + 1);
+    if (overflow) {
+      await expect(page.locator(".proposal-card .table-scroll-hint")).toBeVisible();
+      await expect(region).toHaveAttribute("tabindex", "0");
+    } else {
+      await expect(page.locator(".proposal-card .table-scroll-hint")).toHaveCount(0);
+    }
+    if (width === 1280 || width === 390) await page.screenshot({ path: testInfo.outputPath(`matching-${width}.png`), animations: "disabled", fullPage: true });
+  }
 });

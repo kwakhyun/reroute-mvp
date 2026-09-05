@@ -128,8 +128,14 @@ export function evaluateCombination(
     pickupDates.add(toSeoulDateKey(bid.pickupDate));
   }
 
+  return evaluateTotals(selectedBids, constraints, cashRecovery, costSavings, reuseQuantity, pickupDates.size);
+}
+
+function evaluateTotals(
+  selectedBids: CandidateBid[], constraints: MatchingConstraints,
+  cashRecovery: number, costSavings: number, reuseQuantity: number, pickupRounds: number,
+): MatchEvaluation {
   const reuseRate = Number(((reuseQuantity / constraints.assetCount) * 100).toFixed(1));
-  const pickupRounds = pickupDates.size;
   const cashPassed = cashRecovery >= constraints.minimumCashRecovery;
   const reusePassed = reuseRate >= constraints.minimumReuseRate;
   const pickupPassed = pickupRounds <= constraints.maximumPickupRounds;
@@ -147,6 +153,10 @@ export function evaluateCombination(
     pickupPassed,
     criteriaPassed: cashPassed && reusePassed && pickupPassed,
   };
+}
+
+export function countMatchCombinations(bids: CandidateBid[], expectedGroups: ExpectedAssetGroup[], assetCount: number) {
+  return validateAndGroupBids(bids, expectedGroups, assetCount).reduce((total, group) => total * group.length, 1);
 }
 
 function compareEvaluations(left: MatchEvaluation, right: MatchEvaluation) {
@@ -194,26 +204,35 @@ export function recommendMatchPlan(
   }
   const deadline = performance.now() + (options.maxRuntimeMs ?? 1_500);
 
+  // Date conversion is independent of the chosen combination.
+  const dateKeys = new Map(groups.flat().map((bid) => [bid.id, toSeoulDateKey(bid.pickupDate)]));
+  const pickupDateCounts = new Map<string, number>();
   let recommendation: MatchEvaluation | null = null;
   const selected: CandidateBid[] = [];
-  const visit = (groupIndex: number) => {
+  const visit = (groupIndex: number, cash: number, savings: number, reuse: number) => {
     if (performance.now() > deadline) throw new MatchingTimeoutError();
     if (groupIndex === groups.length) {
-      const evaluation = evaluateCombination([...selected], effectiveConstraints);
+      // Borrow selected for comparison; only retain a copy for a new best result.
+      const evaluation = evaluateTotals(selected, effectiveConstraints, cash, savings, reuse, pickupDateCounts.size);
       if (!recommendation || compareEvaluations(evaluation, recommendation) < 0) {
-        recommendation = evaluation;
+        recommendation = { ...evaluation, bids: [...selected] };
       }
       return;
     }
 
     for (const bid of groups[groupIndex]) {
+      const key = dateKeys.get(bid.id)!;
+      const previousCount = pickupDateCounts.get(key) ?? 0;
+      pickupDateCounts.set(key, previousCount + 1);
       selected.push(bid);
-      visit(groupIndex + 1);
+      visit(groupIndex + 1, cash + bid.cashRecovery, savings + bid.costSavings, reuse + bid.reuseQuantity);
       selected.pop();
+      if (previousCount === 0) pickupDateCounts.delete(key);
+      else pickupDateCounts.set(key, previousCount);
     }
   };
 
-  visit(0);
+  visit(0, 0, 0, 0);
   if (!recommendation) {
     throw new MatchingIntegrityError("No bid combination covers the full asset batch");
   }

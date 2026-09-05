@@ -100,3 +100,27 @@ describe("matching engine", () => {
     expect(recommendMatchPlan([{ ...base, id: "z-last" }, { ...base, id: "a-first" }], open, groups).bids[0].id).toBe("a-first");
   });
 });
+
+
+describe("optimized enumeration equivalence", () => {
+  it("matches an exhaustive reference across qualifying, failing and tied combinations", () => {
+    let seed = 17;
+    const random = (limit: number) => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed % limit; };
+    for (let sample = 0; sample < 40; sample++) {
+      const groups = Array.from({ length: 4 }, (_, i) => ({ id: `g${i}`, quantity: 3, minimumRecovery: 1 }));
+      const candidates = groups.map(group => Array.from({ length: 3 }, (_, i) => ({ ...preferred[0], id: `${group.id}-${i}`, assetGroupId: group.id, quantity: 3, cashRecovery: random(5), costSavings: random(5), reuseQuantity: random(4), pickupDate: date(8 + random(3)) })));
+      const limits = { assetCount: 12, minimumCashRecovery: random(20), minimumReuseRate: random(101), maximumPickupRounds: 1 + random(3) };
+      const all = candidates.reduce<CandidateBid[][]>((combinations, group) => combinations.flatMap(combination => group.map(bid => [...combination, bid])), [[]]);
+      const scores = all.map(combination => evaluateCombination(combination, { ...limits, minimumCashRecovery: Math.max(4, limits.minimumCashRecovery) }));
+      scores.sort((a, b) => Number(b.criteriaPassed) - Number(a.criteriaPassed) || b.netImpact - a.netImpact || b.reuseRate - a.reuseRate || a.pickupRounds - b.pickupRounds || b.cashRecovery - a.cashRecovery || a.bids.map(bid => bid.id).sort().join(":").localeCompare(b.bids.map(bid => bid.id).sort().join(":")));
+      expect(recommendMatchPlan(candidates.flat().reverse(), limits, groups)).toEqual(scores[0]);
+    }
+  });
+  it("finishes the 65,536-combination fixture within the existing runtime guard", () => {
+    const groups = Array.from({ length: 16 }, (_, i) => ({ id: `g${i}`, quantity: 1 }));
+    const candidates = groups.flatMap(group => [0, 1].map(i => ({ ...preferred[0], id: `${group.id}-${i}`, assetGroupId: group.id, quantity: 1, cashRecovery: i, costSavings: 1, reuseQuantity: 1, pickupDate: date(10 + i) })));
+    const result = recommendMatchPlan(candidates, { assetCount: 16, minimumCashRecovery: 0, minimumReuseRate: 0, maximumPickupRounds: 3 }, groups);
+    expect(result).toMatchObject({ cashRecovery: 16, netImpact: 32, pickupRounds: 1 });
+    expect(result.bids).toHaveLength(16);
+  });
+});

@@ -30,12 +30,12 @@ describe("confirmation idempotency", () => {
   const receipt = { userId: "user-1", action: "CONFIRM_MATCH_PLAN", resultJson: JSON.stringify({ projectId: "project-1", planId: "plan-1", status: "CONFIRMED" }) };
 
   it("replays the same actor and project result", () => {
-    expect(replayConfirmationReceipt(receipt, "user-1", "project-1")).toEqual({ projectId: "project-1", planId: "plan-1", status: "CONFIRMED" });
+    expect(replayConfirmationReceipt(receipt, "user-1", "project-1", "plan-1")).toEqual({ projectId: "project-1", planId: "plan-1", status: "CONFIRMED" });
   });
 
   it("rejects cross-user and cross-project key reuse", () => {
-    expect(() => replayConfirmationReceipt(receipt, "user-2", "project-1")).toThrow(MatchingMutationError);
-    expect(() => replayConfirmationReceipt(receipt, "user-1", "project-2")).toThrow("다른 작업");
+    expect(() => replayConfirmationReceipt(receipt, "user-2", "project-1", "plan-1")).toThrow(MatchingMutationError);
+    expect(() => replayConfirmationReceipt(receipt, "user-1", "project-2", "plan-1")).toThrow("다른 작업");
   });
 });
 

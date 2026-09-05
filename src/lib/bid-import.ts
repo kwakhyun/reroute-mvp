@@ -39,17 +39,17 @@ const bidRowSchema = z
     verificationLabel: z.string().trim().min(2).max(60),
     verificationReference: z.string().trim().min(3).max(160),
     verificationExpiresOn: z.union([dateKey, z.literal("")]),
-    quantity: z.coerce.number().int().min(1).max(100_000),
-    cashRecovery: z.coerce.number().int().min(0).max(MAX_BID_CASH_VALUE),
-    costSavings: z.coerce.number().int().min(0).max(MAX_BID_CASH_VALUE),
-    reuseQuantity: z.coerce.number().int().min(0).max(100_000),
+    quantity: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(1).max(100_000)),
+    cashRecovery: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(0).max(MAX_BID_CASH_VALUE)),
+    costSavings: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(0).max(MAX_BID_CASH_VALUE)),
+    reuseQuantity: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(0).max(100_000)),
     performanceLabel: z.string().trim().min(1).max(60),
-    performanceRate: z.coerce.number().min(0).max(100),
+    performanceRate: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().min(0).max(100)),
     pickupDate: dateKey,
   })
   .superRefine((row, context) => {
     if (row.reuseQuantity > row.quantity) {
-      context.addIssue({ code: "custom", message: "reuseQuantity must not exceed quantity" });
+      context.addIssue({ code: "custom", path: ["reuseQuantity"], message: "reuseQuantity must not exceed quantity" });
     }
   })
   .transform((row) => ({
@@ -99,7 +99,8 @@ export function parseBidCsv(source: string): ImportedBidRow[] {
       Object.fromEntries(headers.map((header, index) => [header.trim(), values[index]?.trim() ?? ""])),
     );
     if (!parsed.success) {
-      throw new BidImportError(`${rowIndex + 2}행의 값, 수량, 인수처 확인 자료 또는 날짜를 확인해 주세요.`);
+      const field = String(parsed.error.issues[0]?.path[0] ?? "값");
+      throw new BidImportError(`${rowIndex + 2}행 ${field} 열의 값을 확인해 주세요. 숫자 값은 빈칸 대신 0을 명시해 주세요.`);
     }
     return parsed.data;
   });

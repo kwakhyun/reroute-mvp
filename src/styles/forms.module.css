@@ -1,0 +1,587 @@
+/* Scope stable semantic class names to this screen boundary.
+   :where keeps their specificity unchanged when composing shared primitives. */
+.root { min-width: 0; }
+:where(.root) :global(.field-label) {
+  margin: 18px 0 8px;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+:where(.root) :global(.criteria-card) {
+  min-height: 156px;
+}
+
+:where(.root) :global(.criteria-card h2) {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+:where(.root) :global(.criteria-card) {
+  padding: 18px 20px 14px;
+}
+
+:where(.root) :global(.criteria-card ul) {
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  list-style: none;
+}
+
+:where(.root) :global(.criteria-card li) {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+:where(.root) :global(.criteria-card li > span) {
+  white-space: nowrap;
+}
+
+:where(.root) :global(.criteria-card li > strong) {
+  min-width: 43px;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 11px;
+  text-align: center;
+}
+:where(.root) :global(.modal) {
+  width: min(calc(100vw - 32px), 510px);
+  max-height: calc(100vh - 40px);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: auto;
+  background: var(--surface);
+  box-shadow: var(--shadow-modal);
+  color: var(--espresso);
+}
+
+:where(.root) :global(.modal-small) {
+  width: min(calc(100vw - 32px), 460px);
+}
+
+:where(.root) :global(.modal::backdrop) {
+  background: rgba(42, 33, 29, 0.54);
+  backdrop-filter: blur(3px);
+}
+
+:where(.root) :global(.modal-heading) {
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+:where(.root) :global(.modal-heading h2) {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.03em;
+}
+
+:where(.root) :global(.modal-heading p) {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+:where(.root) :global(.modal-close) {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+:where(.root) :global(.modal-close:hover) {
+  background: var(--surface-soft);
+}
+
+:where(.root) :global(.modal-form),
+:where(.root) :global(.modal-small > form) {
+  padding: 20px 24px 24px;
+}
+
+:where(.root) :global(.modal-form > label) {
+  display: block;
+  margin: 16px 0 7px;
+  font-size: 12px;
+  font-weight: 650;
+}
+
+:where(.root) :global(.modal-form > label:first-of-type) {
+  margin-top: 0;
+}
+
+:where(.root) :global(.modal-actions) {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+:where(.root) :global(.modal-actions .button) {
+  min-height: 44px;
+}
+
+:where(.root) :global(.confirm-summary) {
+  margin: 20px 24px 0;
+  padding: 4px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+:where(.root) :global(.confirm-summary > div) {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+:where(.root) :global(.confirm-summary span) {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.confirm-summary strong) {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(.root) :global(.confirm-allocation-summary) {
+  margin: 16px 24px 0;
+}
+
+:where(.root) :global(.confirm-allocation-summary > strong) {
+  font-size: 12px;
+}
+
+:where(.root) :global(.confirm-allocation-summary ul) {
+  max-height: 172px;
+  margin: 9px 0 0;
+  padding: 0;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  list-style: none;
+}
+
+:where(.root) :global(.confirm-allocation-summary li) {
+  min-height: 42px;
+  padding: 7px 10px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr) auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+:where(.root) :global(.confirm-allocation-summary li:first-child) {
+  border-top: 0;
+}
+
+:where(.root) :global(.confirm-allocation-summary li span),
+:where(.root) :global(.confirm-allocation-summary li b) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.confirm-allocation-summary li b) {
+  font-weight: 650;
+}
+
+:where(.root) :global(.confirm-allocation-summary li em) {
+  color: var(--muted);
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+:where(.root) :global(.confirm-notice) {
+  margin: 16px 24px 0;
+  padding: 11px 12px;
+  border-radius: 7px;
+  display: flex;
+  align-items: flex-start;
+  gap: 7px;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+:where(.root) :global(.confirm-notice svg) {
+  flex: 0 0 auto;
+}
+
+:where(.root) :global(.modal-result) {
+  padding: 30px 24px 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+:where(.root) :global(.modal-result > svg) {
+  color: var(--success);
+}
+
+:where(.root) :global(.modal-result > strong) {
+  margin-top: 12px;
+  font-size: 17px;
+}
+
+:where(.root) :global(.modal-result > p) {
+  margin: 7px 0 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+:where(.root) :global(.form-section-heading) {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+
+:where(.root) :global(.form-section-heading > span) {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  font-weight: 750;
+}
+
+:where(.root) :global(.form-section-heading h2) {
+  margin: 1px 0 4px;
+  font-size: 18px;
+}
+
+:where(.root) :global(.form-section-heading p),
+:where(.root) :global(.settlement-control p) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+:where(.root) :global(.form-section-divider) {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border);
+}
+
+:where(.root) :global(.form-grid) {
+  margin: 24px 0 0 43px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+:where(.root) :global(.form-grid label),
+:where(.root) :global(.operation-form label),
+:where(.root) :global(.settlement-control label) {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+:where(.root) :global(.form-grid label > span),
+:where(.root) :global(.operation-form label > span),
+:where(.root) :global(.settlement-control label > span) {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+:where(.root) :global(.form-grid label > span small) {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+:where(.root) :global(.form-grid label > small) {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+:where(.root) :global(.bid-import-card) {
+  margin-bottom: 18px;
+  padding: 20px 22px;
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: start;
+  gap: 24px;
+}
+
+:where(.root) :global(.bid-import-card > div:first-child) {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+:where(.root) :global(.bid-import-card h2) {
+  margin: 0 0 5px;
+  font-size: 16px;
+}
+
+:where(.root) :global(.bid-import-card p) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+:where(.root) :global(.bid-import-card form) {
+  min-width: 0;
+}
+
+:where(.root) :global(.compact-file-field) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+:where(.root) :global(.compact-file-field input) {
+  min-width: 0;
+  flex: 1;
+  padding: 9px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.bid-import-actions) {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+:where(.root) :global(.bid-import-actions .button) {
+  min-height: 40px;
+}
+
+:where(.root) :global(.bid-import-card > .form-error),
+:where(.root) :global(.bid-import-card > .form-success) {
+  grid-column: 1 / -1;
+  margin-top: -8px;
+}
+
+:where(.root) :global(.form-grid input),
+:where(.root) :global(.form-grid select),
+:where(.root) :global(.operation-form input),
+:where(.root) :global(.operation-form select),
+:where(.root) :global(.settlement-control input),
+:where(.root) :global(.settlement-control select) {
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--espresso);
+}
+
+:where(.root) :global(.form-submit-row) {
+  margin-top: 26px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+:where(.root) :global(.operation-facts) {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+:where(.root) :global(.operation-facts span) {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+:where(.root) :global(.operation-form) {
+  margin-top: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: repeat(5, minmax(110px, 1fr)) auto;
+  align-items: end;
+  gap: 10px;
+}
+
+:where(.root) :global(.operation-form input),
+:where(.root) :global(.operation-form select) {
+  height: 40px;
+  font-size: 12px;
+}
+
+:where(.root) :global(.operation-save) {
+  min-height: 40px;
+  padding-inline: 14px;
+  font-size: 12px;
+}
+
+:where(.root) :global(.operation-form .form-error),
+:where(.root) :global(.operation-form .form-success) {
+  grid-column: 1 / -1;
+}
+
+:where(.root) :global(.settlement-control) {
+  margin-top: 18px;
+  padding: 24px;
+  display: grid;
+  grid-template-columns: minmax(240px, 1.5fr) minmax(170px, 0.7fr) minmax(220px, 1fr) auto;
+  align-items: end;
+  gap: 18px;
+}
+
+:where(.root) :global(.settlement-control h2) {
+  margin: 6px 0 5px;
+  font-size: 17px;
+}
+
+:where(.root) :global(.settlement-control .form-error),
+:where(.root) :global(.settlement-control .form-success) {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1060px) {
+  :where(.root) :global(.bid-import-card) {
+    grid-template-columns: 1fr;
+  }
+
+  :where(.root) :global(.criteria-card) {
+    min-height: auto;
+  }
+
+  :where(.root) :global(.criteria-card ul) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  :where(.root) :global(.criteria-card li) {
+    grid-template-columns: 22px 1fr;
+  }
+
+  :where(.root) :global(.criteria-card li > strong) {
+    grid-column: 2;
+    width: fit-content;
+  }
+
+  :where(.root) :global(.operation-form) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  :where(.root) :global(.operation-save) {
+    width: 100%;
+  }
+
+  :where(.root) :global(.settlement-control) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  :where(.root) :global(.settlement-control > div),
+:where(.root) :global(.settlement-control > button) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  :where(.root) :global(.bid-import-card) {
+    padding: 18px;
+  }
+
+  :where(.root) :global(.compact-file-field),
+:where(.root) :global(.bid-import-actions) {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  :where(.root) :global(.bid-import-actions .button) {
+    width: 100%;
+  }
+
+  :where(.root) :global(.criteria-card ul) {
+    grid-template-columns: 1fr;
+  }
+
+  :where(.root) :global(.form-grid) {
+    margin-left: 0;
+    grid-template-columns: 1fr;
+  }
+
+  :where(.root) :global(.form-submit-row .button) {
+    width: 100%;
+  }
+
+  :where(.root) :global(.operation-form),
+:where(.root) :global(.settlement-control) {
+    grid-template-columns: 1fr;
+  }
+
+  :where(.root) :global(.operation-form > *),
+:where(.root) :global(.settlement-control > *) {
+    grid-column: 1;
+  }
+}
+
+:where(.root) :global(.bid-import-preview) {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  min-width: 0;
+}
+
+:where(.root) :global(.bid-import-preview p),
+:where(.root) :global(.bid-import-preview dd) {
+  overflow-wrap: anywhere;
+}
+
+:where(.root) :global(.bid-import-summary) {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+}
+
+:where(.root) :global(.bid-import-summary dt) { font-size: 13px; color: var(--muted); }
+:where(.root) :global(.bid-import-summary dd) { margin: 4px 0 0; font-weight: 600; }
+:where(.root) :global(.bid-import-preview table) { width: 100%; min-width: 440px; border-collapse: collapse; text-align: left; }
+:where(.root) :global(.bid-import-preview th),
+:where(.root) :global(.bid-import-preview td) { padding: 10px; border-bottom: 1px solid var(--border); }
+
+@media (max-width: 600px) {
+  :where(.root) :global(.bid-import-summary) { grid-template-columns: 1fr; }
+  :where(.root) :global(.bid-import-preview) { padding: 14px; }
+}
+:where(.root) :global(.bid-import-disclosure) { margin-bottom: 20px; }
+:where(.root) :global(.bid-import-disclosure > summary) { min-height: 48px; padding: 12px 0; color: var(--brand-strong); font-weight: 650; cursor: pointer; }

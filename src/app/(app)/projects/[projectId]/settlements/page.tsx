@@ -1,10 +1,10 @@
 import { CheckCircle, CurrencyKrw, LockKey, Receipt, Truck, WarningCircle } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { ProjectPreparation } from "@/components/app/project-preparation";
 import { ContentHeader } from "@/components/app/content-header";
 import { SettlementStatusForm } from "@/components/operations/settlement-status-form";
 import { formatNumber } from "@/lib/format";
-import { getMatchingDashboard, getPickupOperations, getSettlement } from "@/server/services/dashboard";
+import { getProjectPlanSummary, getPickupOperations, getSettlement } from "@/server/services/dashboard";
 import { projectPageData } from "../project-page-data";
 
 export const dynamic = "force-dynamic";
@@ -21,11 +21,11 @@ const settlementLabels = {
 export default async function SettlementsPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
   const [dashboard, settlement, operations] = await projectPageData(Promise.all([
-    getMatchingDashboard(projectId),
+    getProjectPlanSummary(projectId),
     getSettlement(projectId),
     getPickupOperations(projectId),
   ]));
-  if (!dashboard || !dashboard.plan) notFound();
+  if (!dashboard.plan) return <ProjectPreparation projectId={projectId} projectName={dashboard.project.name} title="정산" />;
   const confirmed = dashboard.plan.status === "CONFIRMED";
   const escrowConfirmed = settlement?.status === "FUNDED" || settlement?.status === "RELEASED";
   const inspectionsComplete = confirmed && operations.length === dashboard.plan.pickupRounds && operations.every((operation) => operation.status === "INSPECTED");

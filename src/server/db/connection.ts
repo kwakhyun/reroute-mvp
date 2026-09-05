@@ -1,6 +1,5 @@
 import { createClient } from "@libsql/client";
-import { drizzle } from "drizzle-orm/libsql";
-import * as schema from "./schema";
+import { createDatabase } from "./create-database";
 import { resolveDatabaseConfig } from "./url";
 
 const { url, authToken } = resolveDatabaseConfig(process.env);
@@ -20,5 +19,5 @@ if (process.env.NODE_ENV !== "production") {
   globalForDatabase.rerouteDatabaseClient = client;
 }
 
-export const db = drizzle(client, { schema });
+export const db = createDatabase(client, url);
 export { client as databaseClient };

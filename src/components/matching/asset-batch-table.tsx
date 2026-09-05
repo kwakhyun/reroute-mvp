@@ -1,3 +1,4 @@
+import { TableScroll } from "@/components/ui/table-scroll";
 import Image from "next/image";
 import { formatNumber } from "@/lib/format";
 
@@ -19,8 +20,7 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
     <div className="asset-column">
       <section className="card data-card asset-card" aria-labelledby="asset-batch-title">
         <h2 id="asset-batch-title">자산 요약 (총 {formatNumber(totalQuantity)}개)</h2>
-        <p aria-hidden="true" className="table-scroll-hint">표를 좌우로 밀어 전체 항목을 확인하세요.</p>
-        <div aria-label="자산 목록 표" className="table-scroll" role="region" tabIndex={0}>
+        <TableScroll label="자산 목록 표">
           <table className="asset-table">
             <colgroup>
               <col className="asset-col-name" />
@@ -72,7 +72,7 @@ export function AssetBatchTable({ assets }: { assets: Asset[] }) {
             </tr>
           </tfoot>
           </table>
-        </div>
+        </TableScroll>
       </section>
       <p className="table-note">* 각 항목의 최소 매각 금액을 합산해 프로젝트의 최소 금액으로 사용합니다.</p>
     </div>

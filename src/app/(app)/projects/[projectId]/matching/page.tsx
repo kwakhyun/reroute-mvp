@@ -102,6 +102,8 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
         }}
         projectId={projectId}
         result={{
+          planId: plan.id,
+          projectVersion: project.version,
           cashRecovery: plan.cashRecovery,
           costSavings: plan.costSavings,
           netImpact: plan.netImpact,

@@ -1,0 +1,292 @@
+/* Scope stable semantic class names to this screen boundary.
+   :where keeps their specificity unchanged when composing shared primitives. */
+.root { min-width: 0; }
+:where(.root):global(.login-page) {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: minmax(360px, 0.82fr) minmax(560px, 1.18fr);
+}
+
+:where(.root) :global(.login-brand-panel) {
+  min-height: 100vh;
+  padding: clamp(32px, 5vw, 72px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--brand);
+  color: #fff8f2;
+}
+
+:where(.root) :global(.login-brand-lockup) {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+:where(.root) :global(.login-brand-title) {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+:where(.root) :global(.login-brand-mark) {
+  width: clamp(36px, 3.5vw, 46px);
+  height: clamp(36px, 3.5vw, 46px);
+  flex: 0 0 auto;
+  --reroute-mark-field: #8f2f1f;
+}
+
+:where(.root) :global(.login-brand-title strong) {
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
+  font-family: var(--font-serif);
+  font-size: clamp(31px, 3vw, 43px);
+  font-weight: 580;
+  letter-spacing: -0.02em;
+}
+
+:where(.root) :global(.login-brand-lockup > span) {
+  margin-top: 8px;
+  color: rgba(255, 248, 242, 0.7);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+}
+
+:where(.root) :global(.login-brand-copy) {
+  max-width: 480px;
+}
+
+:where(.root) :global(.login-brand-copy p) {
+  margin: 0 0 18px;
+  font-size: clamp(28px, 3.2vw, 48px);
+  font-weight: 580;
+  line-height: 1.25;
+  letter-spacing: -0.04em;
+}
+
+:where(.root) :global(.login-brand-copy span) {
+  color: rgba(255, 248, 242, 0.76);
+  font-size: 15px;
+  line-height: 1.75;
+}
+
+:where(.root) :global(.login-form-panel) {
+  padding: 48px;
+  display: grid;
+  place-items: center;
+  background: var(--surface);
+}
+
+:where(.root) :global(.login-form-wrap) {
+  width: min(100%, 460px);
+}
+
+:where(.root) :global(.login-form-wrap h1) {
+  margin: 12px 0 10px;
+  font-size: 34px;
+  letter-spacing: -0.04em;
+}
+
+:where(.root) :global(.login-form-wrap > p) {
+  margin: 0 0 34px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+:where(.root) :global(.login-form) {
+  display: flex;
+  flex-direction: column;
+}
+
+:where(.root) :global(.login-submit) {
+  width: 100%;
+  margin-top: 26px;
+}
+
+:where(.root) :global(.demo-credentials) {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 7px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  background: var(--surface-soft);
+}
+
+:where(.root) :global(.demo-credentials strong) {
+  font-size: 12px;
+}
+
+:where(.root) :global(.demo-credentials span) {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+:where(.root) :global(.demo-access) {
+  margin: 26px 0 24px;
+  padding: 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-soft);
+}
+
+:where(.root) :global(.demo-access-heading strong) {
+  font-size: 14px;
+  font-weight: 750;
+}
+
+:where(.root) :global(.demo-access-heading p) {
+  margin: 5px 0 15px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+:where(.root) :global(.demo-open-form),
+:where(.root) :global(.demo-open-button) {
+  width: 100%;
+}
+
+:where(.root) :global(.demo-open-button) {
+  min-height: 46px;
+  background: var(--surface);
+  font-size: 14px;
+}
+
+:where(.root) :global(.demo-reset-form) {
+  margin-top: 13px;
+}
+
+:where(.root) :global(.demo-reset-button) {
+  min-height: 32px;
+  padding: 4px 1px;
+  border: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 650;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+:where(.root) :global(.demo-reset-button:hover:not(:disabled)) {
+  color: var(--brand-strong);
+}
+
+:where(.root) :global(.demo-reset-button:disabled) {
+  cursor: wait;
+}
+
+:where(.root) :global(.demo-reset-help) {
+  margin: 2px 0 0;
+  color: var(--muted-light);
+  font-size: 11px;
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+:where(.root) :global(.demo-reset-progress) {
+  margin-top: 12px;
+  padding: 15px;
+  border: 1px solid color-mix(in srgb, var(--brand) 22%, var(--border));
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+:where(.root) :global(.demo-reset-progress-heading) {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+
+:where(.root) :global(.demo-reset-progress-heading strong) {
+  display: block;
+  font-size: 13px;
+}
+
+:where(.root) :global(.demo-reset-progress-heading p) {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+:where(.root) :global(.demo-reset-progress ol) {
+  margin: 14px 0 0 30px;
+  padding: 12px 0 0;
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 8px;
+  list-style: none;
+}
+
+:where(.root) :global(.demo-reset-progress li) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+:where(.root) :global(.demo-reset-progress li > span) {
+  width: 22px;
+  color: var(--brand);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+:where(.root) :global(.login-divider) {
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted-light);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+:where(.root) :global(.login-divider::before),
+:where(.root) :global(.login-divider::after) {
+  height: 1px;
+  flex: 1;
+  background: var(--border);
+  content: "";
+}
+
+@media (max-width: 900px) {
+
+  :where(.root):global(.login-page) {
+    grid-template-columns: 1fr;
+  }
+
+  :where(.root) :global(.login-brand-panel) {
+    min-height: auto;
+    padding: 28px;
+  }
+
+  :where(.root) :global(.login-brand-copy) {
+    display: none;
+  }
+
+  :where(.root) :global(.login-form-panel) {
+    min-height: calc(100vh - 120px);
+    padding: 34px 22px;
+  }
+}
+
+@media (max-width: 560px) {
+
+  :where(.root) :global(.login-form-wrap h1) {
+    font-size: 28px;
+  }
+}

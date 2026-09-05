@@ -31,6 +31,7 @@ export function replayConfirmationReceipt(
   receipt: ConfirmationReceipt | null | undefined,
   actorUserId: string,
   projectId: string,
+  planId: string,
 ): ConfirmationResult | null {
   if (!receipt) return null;
   let result: ConfirmationResult;
@@ -44,7 +45,7 @@ export function replayConfirmationReceipt(
     receipt.action !== "CONFIRM_MATCH_PLAN" ||
     result.projectId !== projectId ||
     result.status !== "CONFIRMED" ||
-    !result.planId
+    result.planId !== planId
   ) {
     throw new MatchingMutationError("이 요청 식별자는 이미 다른 작업에 사용되었습니다.");
   }

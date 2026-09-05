@@ -19,3 +19,9 @@ describe("parseAssetCsv", () => {
     expect(() => parseAssetCsv(`${header}\n의자,CHAIR,1,B,양호,0,/assets/missing.png`)).toThrow("이미지 경로");
   });
 });
+
+
+it("rejects an omitted minimum recovery while accepting explicit zero", () => {
+  expect(() => parseAssetCsv(`${header}\n의자,CHAIR,1,B,양호, ,/assets/meeting-chair.png`)).toThrow("2행 minimumRecovery 열");
+  expect(parseAssetCsv(`${header}\n의자,CHAIR,1,B,양호,0,/assets/meeting-chair.png`)[0].minimumRecovery).toBe(0);
+});

@@ -38,3 +38,18 @@ describe("parseBidCsv", () => {
     expect(() => parseBidCsv(`${header}\n${row.replace("2026-09-08", "2026-02-30")}`)).toThrow(BidImportError);
   });
 });
+
+
+describe("required CSV numbers", () => {
+  it.each(["quantity", "cashRecovery", "costSavings", "reuseQuantity", "performanceRate"])("rejects a blank %s and identifies its row and column", (field) => {
+    const values = row.split(",");
+    values[BID_IMPORT_HEADERS.indexOf(field as typeof BID_IMPORT_HEADERS[number])] = "   ";
+    expect(() => parseBidCsv(`${header}\n${values.join(",")}`)).toThrow(`2행 ${field} 열`);
+  });
+
+  it("accepts explicit zero for optional amounts and rates", () => {
+    const values = row.split(",");
+    for (const index of [8, 9, 10, 12]) values[index] = "0";
+    expect(parseBidCsv(`${header}\n${values.join(",")}`)[0]).toMatchObject({ cashRecovery: 0, costSavings: 0, reuseQuantity: 0, performanceRate: 0 });
+  });
+});

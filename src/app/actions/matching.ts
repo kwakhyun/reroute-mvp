@@ -21,6 +21,8 @@ const recalculateSchema = z.object({
 const confirmSchema = z.object({
   projectId: z.string().min(1),
   idempotencyKey: z.string().uuid(),
+  planId: z.string().min(1),
+  expectedVersion: z.coerce.number().int().positive(),
 });
 
 export async function recalculateAction(
@@ -78,7 +80,10 @@ export async function confirmMatchAction(
       requireProjectAccess(parsed.data.projectId, ["APPROVER"]),
       getRequestIpHash(),
     ]);
-    await confirmMatchPlan(parsed.data.projectId, parsed.data.idempotencyKey, { id: access.user.id, ipHash });
+    await confirmMatchPlan(parsed.data.projectId, parsed.data.idempotencyKey, { id: access.user.id, ipHash }, {
+      planId: parsed.data.planId,
+      version: parsed.data.expectedVersion,
+    });
     revalidatePath(`/projects/${parsed.data.projectId}/matching`);
     return { status: "success", message: "배분안이 확정되었습니다. 이제 수거 일정을 등록할 수 있습니다." };
   } catch (error) {

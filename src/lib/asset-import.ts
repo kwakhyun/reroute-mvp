@@ -23,10 +23,10 @@ export const SUPPORTED_ASSET_IMAGE_PATHS = [
 const assetRowSchema = z.object({
   name: z.string().trim().min(1).max(80),
   category: z.string().trim().min(1).max(40),
-  quantity: z.coerce.number().int().min(1).max(100_000),
+  quantity: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(1).max(100_000)),
   conditionGrade: z.string().trim().min(1).max(12),
   conditionLabel: z.string().trim().min(1).max(24),
-  minimumRecovery: z.coerce.number().int().min(0).max(1_000_000),
+  minimumRecovery: z.string().trim().min(1, "숫자를 입력해 주세요. 값이 없으면 0을 명시해 주세요.").pipe(z.coerce.number<string>().int().min(0).max(1_000_000)),
   imagePath: z.enum(SUPPORTED_ASSET_IMAGE_PATHS),
 });
 
@@ -57,7 +57,10 @@ export function parseAssetCsv(source: string): ImportedAssetRow[] {
   return body.map((values, rowIndex) => {
     if (values.length !== headers.length) throw new AssetImportError(`${rowIndex + 2}행의 열 개수가 올바르지 않습니다.`);
     const parsed = assetRowSchema.safeParse(Object.fromEntries(headers.map((header, index) => [header.trim(), values[index]?.trim() ?? ""])));
-    if (!parsed.success) throw new AssetImportError(`${rowIndex + 2}행의 값 또는 이미지 경로를 확인해 주세요.`);
+    if (!parsed.success) {
+      const field = String(parsed.error.issues[0]?.path[0] ?? "값");
+      throw new AssetImportError(`${rowIndex + 2}행 ${field} 열의 ${field === "imagePath" ? "이미지 경로" : "값"}를 확인해 주세요. 숫자 값은 빈칸 대신 0을 명시해 주세요.`);
+    }
     return parsed.data;
   });
 }

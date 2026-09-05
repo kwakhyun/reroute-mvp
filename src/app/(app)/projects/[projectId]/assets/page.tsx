@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { ContentHeader } from "@/components/app/content-header";
 import { AssetBatchTable } from "@/components/matching/asset-batch-table";
 import { formatNumber } from "@/lib/format";
-import { getMatchingDashboard } from "@/server/services/dashboard";
+import { getProjectAssets } from "@/server/services/dashboard";
 import { projectPageData } from "../project-page-data";
 
 export const dynamic = "force-dynamic";
@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "자산" };
 
 export default async function AssetsPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;
-  const dashboard = await projectPageData(getMatchingDashboard(projectId));
+  const dashboard = await projectPageData(getProjectAssets(projectId));
   if (!dashboard) notFound();
 
   const minimumRecovery = dashboard.assets.reduce((sum, asset) => sum + asset.minimumRecovery, 0);

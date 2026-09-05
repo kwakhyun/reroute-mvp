@@ -1,3 +1,5 @@
+import authStyles from "@/styles/auth.module.css";
+import formStyles from "@/styles/forms.module.css";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { DemoLoginControls } from "@/components/auth/demo-access";
@@ -14,7 +16,7 @@ export default async function LoginPage() {
   }
 
   return (
-    <main className="login-page">
+    <main className={`${authStyles.root} ${formStyles.root} login-page`}>
       <section className="login-brand-panel" aria-label="REROUTE 소개">
         <div className="login-brand-lockup">
           <div className="login-brand-title">
