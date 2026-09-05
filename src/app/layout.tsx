@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "@fontsource-variable/noto-sans-kr/wght.css";
-import "@fontsource-variable/newsreader/wght.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,7 +15,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/portfolio/walkthrough-frames/01-case-study-hero.png",
+        url: "/product/overview.png",
         width: 1280,
         height: 720,
         alt: "REROUTE B2B 사무 자산 처분 MVP 제품 개발 사례",
@@ -27,7 +26,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "REROUTE · B2B 사무 자산 처분 MVP",
     description: "문제 정의부터 풀스택 구현과 후속 개발 검토 기준까지 정리한 개인 제품 개발 사례",
-    images: ["/portfolio/walkthrough-frames/01-case-study-hero.png"],
+    images: ["/product/overview.png"],
   },
 };
 

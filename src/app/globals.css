@@ -1,28 +1,28 @@
 /* Shared tokens, resets, primitives and keyframes. Feature styles live in src/styles. */
 :root {
-  --canvas: #faf7f2;
-  --surface: #fffdf9;
-  --surface-soft: #fbf6ed;
-  --brand: #b34e32;
-  --brand-strong: #8f2f1f;
-  --brand-soft: #f7e5dc;
-  --espresso: #2a211d;
-  --muted: #71665f;
-  --muted-light: #786d65;
-  --border: #ded4c7;
-  --border-strong: #cabdae;
-  --success: #486c23;
-  --success-soft: #edf3e4;
-  --warning: #754806;
-  --warning-soft: #fff1d5;
-  --danger: #a63e31;
+  --canvas: #f6f7f9;
+  --surface: #ffffff;
+  --surface-soft: #f7f8fa;
+  --brand: #ffda24;
+  --brand-ink: #695600;
+  --brand-strong: #242629;
+  --brand-soft: #fff7cd;
+  --espresso: #242629;
+  --muted: #62666e;
+  --muted-light: #686d76;
+  --border: #e5e7eb;
+  --border-strong: #c9cdd4;
+  --success: #26734d;
+  --success-soft: #eaf6ee;
+  --warning: #795c00;
+  --warning-soft: #fff7d6;
+  --danger: #b83232;
   --blue: #3e86c7;
   --blue-soft: #e8f3fc;
-  --shadow-card: 0 2px 12px rgba(42, 33, 29, 0.045);
-  --shadow-modal: 0 24px 80px rgba(42, 33, 29, 0.2);
-  --sidebar-width: 190px;
+  --shadow-card: 0 2px 12px rgba(32, 34, 37, 0.045);
+  --shadow-modal: 0 24px 80px rgba(32, 34, 37, 0.2);
+  --sidebar-width: 220px;
   --font-sans: "Noto Sans KR Variable", "Pretendard", "Apple SD Gothic Neo", sans-serif;
-  --font-serif: "Newsreader Variable", Georgia, serif;
 }
 
 * {
@@ -66,7 +66,7 @@ button {
 }
 
 :focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--brand) 58%, white);
+  outline: 3px solid #725e00;
   outline-offset: 3px;
 }
 
@@ -91,7 +91,7 @@ button {
 }
 
 .reroute-mark-route {
-  fill: var(--reroute-mark-route, #fff8f2);
+  fill: var(--reroute-mark-route, #242629);
 }
 
 .eyebrow {
@@ -106,7 +106,7 @@ button {
   min-height: 48px;
   padding: 0 22px;
   border: 1px solid transparent;
-  border-radius: 7px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -130,17 +130,17 @@ button {
 
 .button-primary {
   background: var(--brand);
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(143, 47, 31, 0.16);
+  color: var(--espresso);
+  box-shadow: 0 4px 12px rgba(32, 34, 37, 0.16);
 }
 
 .button-primary:hover:not(:disabled) {
-  background: var(--brand-strong);
+  background: #f0c900;
 }
 
 .button-secondary {
-  border-color: var(--brand);
-  background: transparent;
+  border-color: var(--border-strong);
+  background: var(--surface);
   color: var(--espresso);
 }
 
@@ -154,7 +154,7 @@ button {
 }
 
 .button-ghost:hover:not(:disabled) {
-  background: rgba(42, 33, 29, 0.055);
+  background: rgba(32, 34, 37, 0.055);
   color: var(--espresso);
 }
 
@@ -169,7 +169,7 @@ button {
   width: min(100%, 520px);
   padding: 38px;
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 18px;
   background: var(--surface);
   box-shadow: var(--shadow-card);
   text-align: center;
@@ -213,7 +213,7 @@ button {
   left: 12px;
   z-index: 100;
   padding: 11px 15px;
-  border-radius: 7px;
+  border-radius: 10px;
   background: var(--espresso);
   color: #fff;
   font-weight: 700;
@@ -227,8 +227,8 @@ button {
 
 .card {
   border: 1px solid var(--border);
-  border-radius: 10px;
-  background: rgba(255, 253, 249, 0.82);
+  border-radius: 16px;
+  background: var(--surface);
   box-shadow: var(--shadow-card);
 }
 

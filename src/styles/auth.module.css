@@ -13,8 +13,9 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  background: var(--brand);
-  color: #fff8f2;
+  background: #fff4b8;
+  color: var(--espresso);
+  border-radius: 0 36px 36px 0;
 }
 
 :where(.root) :global(.login-brand-lockup) {
@@ -33,23 +34,23 @@
   width: clamp(36px, 3.5vw, 46px);
   height: clamp(36px, 3.5vw, 46px);
   flex: 0 0 auto;
-  --reroute-mark-field: #8f2f1f;
+  --reroute-mark-field: var(--brand);
 }
 
 :where(.root) :global(.login-brand-title strong) {
   padding-bottom: 5px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.55);
-  font-family: var(--font-serif);
-  font-size: clamp(31px, 3vw, 43px);
-  font-weight: 580;
+  border-bottom: 0;
+  font-family: var(--font-sans);
+  font-size: 32px;
+  font-weight: 850;
   letter-spacing: -0.02em;
 }
 
 :where(.root) :global(.login-brand-lockup > span) {
   margin-top: 8px;
-  color: rgba(255, 248, 242, 0.7);
+  color: var(--muted);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.04em;
 }
 
 :where(.root) :global(.login-brand-copy) {
@@ -59,13 +60,13 @@
 :where(.root) :global(.login-brand-copy p) {
   margin: 0 0 18px;
   font-size: clamp(28px, 3.2vw, 48px);
-  font-weight: 580;
-  line-height: 1.25;
+  font-weight: 800;
+  line-height: 1.35;
   letter-spacing: -0.04em;
 }
 
 :where(.root) :global(.login-brand-copy span) {
-  color: rgba(255, 248, 242, 0.76);
+  color: #50545c;
   font-size: 15px;
   line-height: 1.75;
 }
@@ -85,6 +86,7 @@
   margin: 12px 0 10px;
   font-size: 34px;
   letter-spacing: -0.04em;
+  font-weight: 800;
 }
 
 :where(.root) :global(.login-form-wrap > p) {
@@ -126,10 +128,11 @@
 
 :where(.root) :global(.demo-access) {
   margin: 26px 0 24px;
-  padding: 18px;
+  padding: 22px;
   border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--surface-soft);
+  border-radius: 16px;
+  background: #fffbed;
+  border-color: #e8d889;
 }
 
 :where(.root) :global(.demo-access-heading strong) {
@@ -239,7 +242,7 @@
 
 :where(.root) :global(.demo-reset-progress li > span) {
   width: 22px;
-  color: var(--brand);
+  color: var(--brand-ink);
   font-size: 9px;
   font-weight: 800;
   letter-spacing: 0.06em;
@@ -290,3 +293,8 @@
     font-size: 28px;
   }
 }
+
+:where(.root) :global(.login-journey) { list-style: none; display: grid; gap: 16px; padding: 0; margin: 32px 0 0; }
+:where(.root) :global(.login-journey li) { display: flex; align-items: center; gap: 14px; font-size: 14px; font-weight: 650; }
+:where(.root) :global(.login-journey b) { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.7); font-size: 12px; }
+@media (max-width: 900px) { :where(.root) :global(.login-journey) { display: none; } :where(.root) :global(.login-brand-panel) { border-radius: 0; } }

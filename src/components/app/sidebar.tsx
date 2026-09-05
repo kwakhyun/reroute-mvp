@@ -167,7 +167,7 @@ export function Sidebar({ defaultProject, user }: SidebarProps) {
             <RerouteMark className="sidebar-brand-mark" />
             <span className="sidebar-brand-copy">
               <strong>REROUTE</strong>
-              <span>풀스택 MVP</span>
+              <span>사무 자산 관리</span>
             </span>
           </Link>
           <button aria-label="메뉴 닫기" className="sidebar-close" onClick={() => setOpen(false)} ref={closeButtonRef} type="button">

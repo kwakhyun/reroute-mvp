@@ -6,11 +6,11 @@
 
 개인 프로젝트이며 기여도는 100%입니다. 문제 정의와 사업 가설 수립부터 제품 범위, UX/UI, 프론트엔드, API, 관계형 데이터, 보안, 테스트, 배포 구성, 판단 근거 문서까지 직접 만들었습니다.
 
-![REROUTE 공개 케이스 스터디](./public/portfolio/walkthrough-frames/01-case-study-hero.png)
+![REROUTE 공개 케이스 스터디](./public/product/overview.png)
 
 - [제품 케이스 스터디](./docs/project-overview.md)
 - [배포된 제품 데모](https://reroute-mvp-pied.vercel.app)
-- [4분 제품 워크스루 — CSV 미리보기 도입 전](./public/portfolio/reroute-walkthrough.mp4)
+- [4분 제품 워크스루 — 이전 UI, CSV 미리보기 도입 전](./public/portfolio/reroute-walkthrough.mp4)
 - [가상 데이터 분석 보고서](./public/reports/validation-simulation.html)
 - [검증 및 품질 보고서](./verification-report.md)
 - [기여도와 AI 검증 기준](./docs/contribution-and-ai.md)
@@ -165,6 +165,8 @@ CI는 `main` 푸시마다 분석 재현성, 보안 감사, 타입/린트, 커버
 컨테이너 배포에는 [Dockerfile](./Dockerfile)과 `node scripts/migrate-runtime.mjs`를 사용합니다. 환경 변수, 로그, 복구 절차는 [모니터링과 경보 문서](./docs/observability.md)와 [개발팀 인계 문서](./docs/handoff.md)에 정리했습니다.
 
 ## 디자인과 대용량 처리
+
+밝은 노란색 강조, 흰색 카드와 회색 작업 배경을 홈부터 정산 화면까지 적용했습니다. 서비스 소개 카드, 프로젝트 현황 요약과 모바일 메뉴를 제공하며, [디자인 시스템](./docs/design-system.md)에 색상과 반응형 규칙을 정리했습니다.
 
 - 배분안이 없는 프로젝트의 수거와 정산 화면은 준비 전 안내와 입찰/매칭 이동 경로를 제공합니다.
 - 입찰 목록은 페이지당 50건을 서버에서 조회합니다. 자산 필터와 배분안 포함 필터는 URL에 보존되며 CSV 내보내기는 항상 전체 입찰을 포함합니다. CSV 가져오기는 목록 위의 ‘CSV로 입찰 가져오기’를 펼쳐 시작합니다.

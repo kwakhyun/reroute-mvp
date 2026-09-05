@@ -94,8 +94,8 @@
   border-radius: 5px;
   display: grid;
   place-items: center;
-  background: #f7ead7;
-  font-family: var(--font-serif);
+  background: #f2f4f6;
+  font-family: var(--font-sans);
   font-size: 15px;
   line-height: 1;
 }
@@ -106,7 +106,7 @@
 }
 
 :where(.root) :global(.condition-cplus) {
-  background: #ebe7e1;
+  background: #f2f4f6;
 }
 
 :where(.root) :global(.condition-label) {
@@ -207,7 +207,7 @@
 }
 
 :where(.root) :global(.partner-mark-employee) {
-  background: #f9e6dc;
+  background: #fff7cd;
   color: #c75a36;
 }
 
@@ -217,7 +217,7 @@
 }
 
 :where(.root) :global(.partner-mark-recycler) {
-  background: #ecebea;
+  background: #f2f4f6;
   color: #393939;
 }
 
@@ -235,7 +235,7 @@
 }
 
 :where(.root) :global(.verification-employee) {
-  background: #f9e6dc;
+  background: #fff7cd;
   color: #a94c2d;
 }
 
@@ -251,8 +251,8 @@
 }
 
 :where(.root) :global(.verification-recycler) {
-  background: #ecebea;
-  color: #56504c;
+  background: #f2f4f6;
+  color: #62666e;
 }
 
 :where(.root) :global(.verification-evidence) {
@@ -301,7 +301,7 @@
 }
 
 :where(.root) :global(.bid-selected) {
-  background: #fbf2ec;
+  background: #f7f8fa;
 }
 
 :where(.root) :global(.selected-mark) {
@@ -363,6 +363,6 @@
   }
 
   :where(.root) :global(.bids-table .bid-selected td:nth-child(2)) {
-    background: #fbf2ec;
+    background: #f7f8fa;
   }
 }

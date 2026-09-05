@@ -20,6 +20,11 @@ export default async function ProjectsPage() {
         eyebrow="작업 공간"
         title="프로젝트"
       />
+      <dl className="workspace-overview" aria-label="프로젝트 현황">
+        <div><dt>등록 프로젝트</dt><dd>{formatNumber(projects.length)}<span>개</span></dd></div>
+        <div><dt>준비 및 검토 중</dt><dd>{formatNumber(projects.filter(project => project.status !== "CONFIRMED").length)}<span>개</span></dd></div>
+        <div><dt>배분 확정</dt><dd>{formatNumber(projects.filter(project => project.status === "CONFIRMED").length)}<span>개</span></dd></div>
+      </dl>
       <div className="project-list">
         {projects.map((project) => (
           <article className="project-card" key={project.id}>

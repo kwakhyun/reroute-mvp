@@ -22,6 +22,7 @@ export function AppShell({ defaultProject, user, children }: AppShellProps) {
       <a className="skip-link" href="#main-content">본문으로 건너뛰기</a>
       <Sidebar defaultProject={defaultProject} user={user} />
       <main className="app-content" id="main-content">
+        <div className="workspace-toolbar"><span>REROUTE <b>WORKSPACE</b></span><div>{process.env.DEMO_MODE === "true" ? <span className="workspace-demo-label">샘플 데이터 데모</span> : null}<span>{user.team}</span></div></div>
         {children}
       </main>
     </div>

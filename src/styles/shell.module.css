@@ -6,8 +6,8 @@
 }
 
 :where(.root) :global(.sidebar-brand) {
-  height: 135px;
-  padding: 38px 20px 28px;
+  height: 118px;
+  padding: 32px 22px 24px;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -23,7 +23,7 @@
   width: 30px;
   height: 30px;
   flex: 0 0 auto;
-  --reroute-mark-field: #8f2f1f;
+  --reroute-mark-field: var(--brand);
 }
 
 :where(.root) :global(.sidebar-brand-copy) {
@@ -34,42 +34,45 @@
 
 :where(.root) :global(.sidebar-brand strong) {
   padding-bottom: 2px;
-  border-bottom: 1px solid rgba(255, 248, 242, 0.5);
-  font-family: var(--font-serif);
-  font-size: 26px;
-  font-weight: 580;
+  border-bottom: 0;
+  font-family: var(--font-sans);
+  font-size: 23px;
+  font-weight: 850;
   letter-spacing: -0.025em;
   line-height: 1.1;
 }
 
 :where(.root) :global(.sidebar-brand-copy > span) {
   margin-top: 7px;
-  color: rgba(255, 248, 242, 0.64);
+  color: var(--muted);
   font-size: 11px;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.03em;
 }
 
 :where(.root) :global(.sidebar-close) {
   display: none;
+  color: var(--espresso);
 }
 
 :where(.root) :global(.sidebar-nav) {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 6px;
+  padding: 0 14px;
 }
 
 :where(.root) :global(.sidebar-link) {
   position: relative;
-  min-height: 70px;
-  padding: 0 24px;
+  min-height: 52px;
+  padding: 0 14px;
   display: flex;
   align-items: center;
-  gap: 18px;
-  color: rgba(255, 248, 242, 0.9);
-  font-size: 17px;
+  gap: 12px;
+  color: #50545c;
+  font-size: 15px;
   font-weight: 500;
   transition: background-color 140ms ease, color 140ms ease;
+  border-radius: 12px;
 }
 
 :where(.root) :global(.sidebar-link-icon) {
@@ -107,8 +110,8 @@
 }
 
 :where(.root) :global(.sidebar-link:hover) {
-  background: rgba(105, 29, 18, 0.16);
-  color: #fff;
+  background: var(--surface-soft);
+  color: var(--espresso);
 }
 
 :where(.root) :global(.sidebar-link-disabled) {
@@ -118,12 +121,12 @@
 
 :where(.root) :global(.sidebar-link-disabled:hover) {
   background: transparent;
-  color: rgba(255, 248, 242, 0.9);
+  color: var(--muted);
 }
 
 :where(.root) :global(.sidebar-link-active) {
-  background: var(--brand-strong);
-  color: #fff;
+  background: var(--brand);
+  color: var(--espresso);
   font-weight: 700;
 }
 
@@ -133,18 +136,20 @@
   width: 4px;
   background: #fff6ef;
   content: "";
+  display: none;
 }
 
 :where(.root) :global(.sidebar-account) {
   position: relative;
   margin-top: auto;
-  margin-bottom: 28px;
+  margin-bottom: 0;
   min-height: 82px;
-  padding: 15px 18px;
+  padding: 20px 16px;
   display: grid;
   grid-template-columns: 42px 1fr auto;
   align-items: center;
   gap: 10px;
+  border-top: 1px solid var(--border);
 }
 
 :where(.root) :global(.sidebar-account > div) {
@@ -163,7 +168,7 @@
 
 :where(.root) :global(.sidebar-account span) {
   margin-top: 3px;
-  color: rgba(255, 248, 242, 0.72);
+  color: var(--muted);
   font-size: 11px;
 }
 
@@ -238,7 +243,7 @@
     align-items: center;
     gap: 13px;
     border-bottom: 1px solid var(--border);
-    background: rgba(247, 242, 233, 0.96);
+  background: rgba(255, 255, 255, 0.97);
     backdrop-filter: blur(12px);
   }
 
@@ -256,9 +261,9 @@
   }
 
   :where(.root) :global(.mobile-wordmark) {
-    font-family: var(--font-serif);
+    font-family: var(--font-sans);
     font-size: 21px;
-    font-weight: 600;
+  font-weight: 850;
   }
 
   :where(.root) :global(.mobile-brand) {
@@ -302,7 +307,7 @@
     z-index: 35;
     border: 0;
     display: block;
-    background: rgba(42, 33, 29, 0.45);
+    background: rgba(32, 34, 37, 0.45);
   }
 
   :where(.root) :global(.app-content) {
@@ -312,3 +317,10 @@
 
 @keyframes sidebar-spinner-fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes sidebar-spinner-turn { to { transform: rotate(360deg); } }
+
+:where(.root) :global(.workspace-toolbar) { min-height: 66px; padding: 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--border); background: var(--surface); font-size: 12px; color: var(--muted); }
+:where(.root) :global(.workspace-toolbar > span) { color: var(--espresso); font-weight: 850; letter-spacing: 0.02em; }
+:where(.root) :global(.workspace-toolbar b) { margin-left: 8px; color: var(--muted); font-size: 10px; font-weight: 600; }
+:where(.root) :global(.workspace-toolbar > div) { display: flex; align-items: center; gap: 18px; }
+:where(.root) :global(.workspace-demo-label) { border-radius: 20px; padding: 7px 12px; background: var(--surface-soft); }
+@media (max-width: 900px) { :where(.root) :global(.workspace-toolbar) { display: none; } :where(.root) :global(.sidebar-close) { color: var(--espresso); } }

@@ -22,7 +22,7 @@ async function fetchJsonFromPage(page: Page, url: string) {
 test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계를 명확히 보여준다", async ({ page, request }, testInfo) => {
   await page.context().clearCookies();
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "사무 자산 처분안을 한눈에 비교하고 결정합니다." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "사무 자산의 다음, 한곳에서 결정하세요." })).toBeVisible();
   await expect(page.getByText("실제 고객 검증 전", { exact: true })).toBeVisible();
   await expect(page.getByText(/아래 수치는 실제 고객 조사나 운영 결과가 아닙니다/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "확인창에서 본 배분안만 확정합니다." })).toBeVisible();
@@ -58,6 +58,18 @@ test("공개 제품 개발 사례가 가설과 가상 데이터 분석의 한계
 test("빠른 데모 진입과 초기 상태 복원을 분리해 안내한다", async ({ page }) => {
   await page.context().clearCookies();
   await page.goto("/login");
+
+  // Account inputs must keep shared field styles after CSS module changes.
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    for (const field of await page.locator(".input-with-icon").all()) {
+      const box = await field.boundingBox();
+      expect(box!.height).toBeGreaterThanOrEqual(48);
+      expect(box!.width).toBeGreaterThan(250);
+    }
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  }
+  await page.setViewportSize({ width: 1440, height: 1024 });
 
   let delayedReset = false;
   await page.route("**/login", async (route) => {
@@ -478,4 +490,16 @@ test("중간 화면 폭에서 지표가 겹치지 않고 넘치는 표에만 스
     }
     if (width === 1280 || width === 390) await page.screenshot({ path: testInfo.outputPath(`matching-${width}.png`), animations: "disabled", fullPage: true });
   }
+  await page.getByRole("button", { name: "배분안 확정", exact: true }).click();
+  const confirmation = page.getByRole("dialog", { name: "이 배분안을 확정할까요?" });
+  const submit = confirmation.getByRole("button", { name: "확정하고 수거 일정 만들기" });
+  await submit.scrollIntoViewIfNeeded();
+  expect(await submit.evaluate(element => {
+    const range = document.createRange();
+    range.selectNodeContents(element);
+    const text = range.getBoundingClientRect();
+    const button = element.getBoundingClientRect();
+    return text.height < 30 && text.width <= button.width && button.height >= 48;
+  })).toBe(true);
+  await page.screenshot({ path: testInfo.outputPath("confirmation-mobile.png"), animations: "disabled" });
 });

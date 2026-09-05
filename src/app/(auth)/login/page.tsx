@@ -23,12 +23,13 @@ export default async function LoginPage() {
             <RerouteMark className="login-brand-mark" />
             <strong>REROUTE</strong>
           </div>
-          <span>풀스택 MVP</span>
+          <span>사무 자산 관리</span>
         </div>
         <div className="login-brand-copy">
-          <p>기업이 처분할 사무 자산을 다시 쓸 기업이나 기관과 연결합니다.</p>
+          <p>자산의 다음 쓰임,<br />여기서 시작하세요.</p>
           <span>매칭부터 수거 일정과 외부 결제사 확인까지 한곳에서 관리하세요.</span>
         </div>
+        <ol className="login-journey"><li><b>01</b> 자산과 입찰 준비</li><li><b>02</b> 배분안 비교와 확정</li><li><b>03</b> 수거와 정산 기록</li></ol>
       </section>
       <section className="login-form-panel">
         <div className="login-form-wrap">

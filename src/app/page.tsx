@@ -69,20 +69,21 @@ export default function HomePage() {
       <a className="skip-link" href="#portfolio-content">
         본문으로 건너뛰기
       </a>
+      <div className="service-announcement"><strong>사무 자산의 다음 쓰임을 찾는 일</strong><span>배분부터 수거와 정산 기록까지, 한곳에서.</span></div>
       <header className="portfolio-nav">
         <Link className="portfolio-brand" href="#top" aria-label="제품 개발 사례 첫 화면으로">
           <RerouteMark className="portfolio-brand-mark" />
           <span className="portfolio-brand-copy">
             <strong>REROUTE</strong>
-            <span>제품 개발 사례</span>
+            <span>사무 자산 관리</span>
           </span>
         </Link>
         <nav aria-label="제품 개발 사례 메뉴">
+          <a href="#services">서비스 소개</a>
           <a href="#frontend">문제 해결</a>
           <a href="#flow">제품 흐름</a>
           <a href="#engineering">구현</a>
           <a href="#validation">검증 계획</a>
-          <a href="#ownership">기여</a>
         </nav>
         <DemoButton className="portfolio-nav-demo" />
       </header>
@@ -91,17 +92,16 @@ export default function HomePage() {
         <section className="portfolio-hero" id="top">
         <div className="portfolio-hero-copy">
           <div className="portfolio-kicker-row">
-            <span className="portfolio-kicker">개인 풀스택 MVP</span>
+            <span className="portfolio-kicker">B2B 사무 자산 관리</span>
             <span className="portfolio-status">실제 고객 검증 전</span>
           </div>
           <h1>
-            사무 자산 처분안을
+            사무 자산의 다음,
             <br />
-            <em>한눈에 비교하고 결정합니다.</em>
+            <em>한곳에서 결정하세요.</em>
           </h1>
           <p>
-            오피스 이전이나 폐점으로 처분해야 하는 사무 자산을 사업자 정보와 처리 자격이 확인된 업체에 배분합니다. 매각 대금, 폐기비와 운반비
-            절감액, 재사용률을 한 화면에서 비교할 수 있는 B2B 매칭 서비스입니다.
+            오피스 이전부터 공간 정리까지. 매각 대금과 비용 절감액, 재사용률을 함께 비교하고 수거와 정산 기록까지 이어서 관리하세요.
           </p>
           <div className="portfolio-hero-actions">
             <DemoButton />
@@ -127,10 +127,10 @@ export default function HomePage() {
             <p>app.reroute / matching</p>
           </div>
           <Image
-            src="/portfolio/walkthrough-frames/02-matching.png"
+            src="/product/matching-preview.png"
             alt="매각 대금, 폐기비와 운반비 절감액, 재사용률, 자산별 배분 결과를 보여 주는 REROUTE 화면"
-            width={1440}
-            height={1024}
+            width={1600}
+            height={1100}
             preload
             sizes="(max-width: 1180px) 94vw, 52vw"
           />
@@ -147,6 +147,17 @@ export default function HomePage() {
         <div><strong>11</strong><span>샘플 입찰</span></div>
         <div><strong>16</strong><span>관계형 테이블</span></div>
         <div><strong>UI → DB</strong><span>브라우저와 서비스 통합 검증</span></div>
+        </section>
+
+        <section className="portfolio-section service-overview" id="services" aria-labelledby="services-title">
+          <div className="portfolio-section-heading"><span className="portfolio-section-index">REROUTE 서비스</span><h2 id="services-title">흩어져 있던 자산 업무를<br />하나의 흐름으로.</h2><p>자산 목록을 준비하고, 배분안을 비교하고, 확정된 결과를 관리합니다.</p></div>
+          <div className="service-card-grid">
+            {[
+              { image: "meeting-chair", title: "자산 목록 준비", label: "01 / 자산", body: "CSV로 자산과 수량, 상태를 한 번에 정리합니다.", href: "#flow" },
+              { image: "monitor-arm", title: "입찰과 배분안 비교", label: "02 / 매칭", body: "금액과 재사용률, 수거 조건을 함께 살펴봅니다.", href: "#frontend" },
+              { image: "mobile-pedestal", title: "확정부터 정산 기록", label: "03 / 운영", body: "자산 배정 결과를 수거와 결제사 확인으로 연결합니다.", href: "#flow" },
+            ].map(item => <a className="service-card" href={item.href} key={item.image}><span>{item.label}</span><h3>{item.title}</h3><p>{item.body}</p><Image src={`/assets/${item.image}.png`} alt="" width={180} height={180} sizes="180px" /><b aria-hidden="true">↗</b></a>)}
+          </div>
         </section>
 
         <nav className="portfolio-mobile-index" aria-label="모바일 빠른 탐색">
@@ -360,7 +371,7 @@ export default function HomePage() {
         <div className="portfolio-hero-actions">
           <DemoButton />
           <a className="portfolio-button portfolio-button-secondary" href="/portfolio/reroute-walkthrough.mp4">
-            4분 제품 시연 영상 보기
+            이전 UI 시연 영상 보기
           </a>
         </div>
         </section>
