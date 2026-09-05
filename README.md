@@ -8,15 +8,15 @@
 
 ![REROUTE 공개 케이스 스터디](./public/portfolio/walkthrough-frames/01-case-study-hero.png)
 
-- [제품 케이스 스터디](./docs/portfolio-overview.md)
+- [제품 케이스 스터디](./docs/project-overview.md)
 - [배포된 제품 데모](https://reroute-mvp-pied.vercel.app)
 - [4분 제품 워크스루 — CSV 미리보기 도입 전](./public/portfolio/reroute-walkthrough.mp4)
 - [가상 데이터 분석 보고서](./public/reports/validation-simulation.html)
 - [검증 및 품질 보고서](./verification-report.md)
 - [기여도와 AI 검증 기준](./docs/contribution-and-ai.md)
-- [제출 포트폴리오와 후속 개선의 정합성](./docs/submission-consistency.md)
+- [변경 이력과 검증 범위](./docs/version-history.md)
 
-제출한 포트폴리오 PDF의 화면과 품질 수치는 당시 기록으로 보존합니다. 아래 내용은 제출 후 개선을 포함합니다. 테스트는 57개에서 93개, E2E는 8개에서 12개로 늘었고, 커버리지는 측정 범위가 달라졌습니다. 제품 범위와 샘플 결과, 가상 분석의 수치와 해석은 유지합니다.
+아래 내용은 현재 구현을 기준으로 합니다. 이전 버전과 달라진 화면, 테스트와 커버리지 측정 범위는 변경 이력에 기록했습니다.
 
 ## 프론트엔드 문제 해결과 검증 근거
 
@@ -115,7 +115,7 @@ npm run db:seed
 npm run dev -- --hostname 127.0.0.1 --port 3000
 ```
 
-`.env.local`의 `SESSION_PEPPER`는 32자 이상의 임의 문자열로 교체해야 합니다. 공개 포트폴리오 데모에서는 샘플 데이터만 사용할 때 `DEMO_MODE=true`를 적용할 수 있습니다. 기본 데모 버튼은 현재 저장된 샘플 상태를 바로 열며, 로그인 화면에서만 초기 상태 복원을 명시적으로 실행할 수 있습니다. 실제 고객 데이터가 있는 환경에서는 `DEMO_MODE=false`를 유지해야 합니다.
+`.env.local`의 `SESSION_PEPPER`는 32자 이상의 임의 문자열로 교체해야 합니다. 공개 데모에서는 샘플 데이터만 사용할 때 `DEMO_MODE=true`를 적용할 수 있습니다. 기본 데모 버튼은 현재 저장된 샘플 상태를 바로 열며, 로그인 화면에서만 초기 상태 복원을 명시적으로 실행할 수 있습니다. 실제 고객 데이터가 있는 환경에서는 `DEMO_MODE=false`를 유지해야 합니다.
 
 샘플 계정은 실제 사용자 계정으로 사용하면 안 됩니다.
 
@@ -156,7 +156,7 @@ npm audit --audit-level=moderate
 
 원격 환경에는 `DATABASE_URL`, `DATABASE_AUTH_TOKEN`, `SESSION_PEPPER`가 필요합니다. Vercel의 비영속 파일 시스템에서는 파일 DB를 사용하지 않습니다. 마이그레이션과 샘플 데이터 입력은 앱 실행 과정과 분리해 한 번만 수행합니다.
 
-공개 포트폴리오 배포에서는 샘플 데이터만 사용합니다. 기본 데모 버튼은 초기화 없이 바로 로그인합니다. 처음 상태가 필요하면 로그인 화면의 `초기 상태로 다시 시작`을 선택해 샘플 작업 공간만 복원할 수 있습니다. 이 과정에서도 기존 로그인 세션과 다른 조직의 데이터는 보존합니다.
+공개 데모 배포에서는 샘플 데이터만 사용합니다. 기본 데모 버튼은 초기화 없이 바로 로그인합니다. 처음 상태가 필요하면 로그인 화면의 `초기 상태로 다시 시작`을 선택해 샘플 작업 공간만 복원할 수 있습니다. 이 과정에서도 기존 로그인 세션과 다른 조직의 데이터는 보존합니다.
 
 CI는 `main` 푸시마다 분석 재현성, 보안 감사, 타입/린트, 커버리지, 마이그레이션, 데모 리셋, 빌드와 Chromium E2E 시나리오를 실행합니다.
 

@@ -374,7 +374,7 @@ export default function HomePage() {
             <span>개인 풀스택 프로젝트</span>
           </span>
         </div>
-        <p>아직 실제 고객을 대상으로 검증하지 않은 개인 풀스택 포트폴리오 프로젝트입니다.</p>
+        <p>아직 실제 고객을 대상으로 검증하지 않은 개인 풀스택 프로젝트입니다.</p>
       </footer>
     </div>
   );
