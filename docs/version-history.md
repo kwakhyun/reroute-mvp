@@ -1,5 +1,13 @@
 # 변경 이력과 검증 범위
 
+## 2026-10-22 의존성 보안 패치
+
+- Next.js, `@next/env`, Next.js ESLint 설정을 16.3.8로 맞췄습니다. `sharp`, `vite`, `source-map-js`, `brace-expansion`도 보안 패치 버전으로 갱신했습니다.
+- 패치 버전이 없는 `braces`는 `fast-glob`과 `micromatch`를 함께 의존성에서 제거했습니다. Next.js 린터의 디렉터리 탐색을 Node.js 기본 API로 처리하는 작은 로컬 어댑터로 대체하고, 실제 린트 규칙과 경로 탐색을 검증하는 테스트 8개를 추가했습니다.
+- Docker 설치 단계에도 로컬 어댑터를 복사합니다. 깨끗한 `npm ci`와 전체 `npm audit`를 통과했으며, 알려진 취약점은 10건(심각 1건, 높음 9건)에서 0건으로 줄었습니다. 감사 범위나 린트 규칙은 줄이지 않았습니다.
+
+구현 범위와 제거 조건은 [어댑터 문서](../tooling/next-eslint-glob/README.md), 실행 결과는 [검증 보고서](../verification-report.md)에 기록합니다.
+
 ## 2026-10-22 전체 검토 후 수정
 
 - 공개 홈을 요청 시 렌더링해 요청별 CSP nonce가 React 스크립트에 적용되도록 했습니다. 브라우저 테스트는 nonce와 데모 버튼의 진행 상태를 함께 확인합니다.

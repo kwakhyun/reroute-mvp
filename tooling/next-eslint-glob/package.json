@@ -1,0 +1,11 @@
+{
+  "name": "@reroute/next-eslint-glob",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Node.js directory glob adapter for @next/eslint-plugin-next 16.3.8",
+  "type": "module",
+  "main": "index.js",
+  "engines": {
+    "node": ">=22.21.0 <25"
+  }
+}

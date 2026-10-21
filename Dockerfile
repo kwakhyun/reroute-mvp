@@ -1,6 +1,7 @@
 FROM node:22-alpine AS dependencies
 WORKDIR /app
 COPY package.json package-lock.json ./
+COPY tooling/next-eslint-glob ./tooling/next-eslint-glob
 RUN npm ci
 
 FROM node:22-alpine AS builder
