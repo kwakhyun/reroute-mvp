@@ -55,11 +55,20 @@ function RecalculationDialog({
   onCompleted,
 }: Pick<MatchingActionsProps, "projectId" | "criteria" | "bidCount"> & { onClose: () => void; onCompleted: DialogCompletion }) {
   const [state, action, pending] = useActionState(recalculateAction, initialMatchingActionState);
+  const [minimumCashRecovery, setMinimumCashRecovery] = useState(String(criteria.minimumCashRecovery));
+  const [minimumReuseRate, setMinimumReuseRate] = useState(String(criteria.minimumReuseRate));
+  const [maximumPickupRounds, setMaximumPickupRounds] = useState(String(criteria.maximumPickupRounds));
+  const closeDialog = () => {
+    if (pending) return;
+    if (state.status === "success") onCompleted(state.message ?? "배분안을 다시 계산했습니다.");
+    else onClose();
+  };
 
   return (
     <Modal
+      closeDisabled={pending}
       description={`최소 매각 금액이나 운영 조건을 바꾸면 확인이 끝난 입찰 ${bidCount}건을 다시 계산합니다.`}
-      onClose={onClose}
+      onClose={closeDialog}
       open
       title="매칭 조건 다시 계산"
     >
@@ -68,29 +77,29 @@ function RecalculationDialog({
           <CheckCircle aria-hidden="true" size={34} weight="fill" />
           <strong>새 배분안을 계산했습니다.</strong>
           <p>{state.message}</p>
-          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "배분안을 다시 계산했습니다.")} type="button">결과 확인</button>
+          <button className="button button-primary" onClick={closeDialog} type="button">결과 확인</button>
         </div>
       ) : (
         <form action={action} className="modal-form">
           <input name="projectId" type="hidden" value={projectId} />
           <label htmlFor="minimumCashRecovery">최소 매각 금액</label>
           <div className="unit-input">
-            <input defaultValue={criteria.minimumCashRecovery} id="minimumCashRecovery" max={MAX_PROJECT_CASH_RECOVERY} min="0" name="minimumCashRecovery" required step="10" type="number" />
+            <input id="minimumCashRecovery" max={MAX_PROJECT_CASH_RECOVERY} min="0" name="minimumCashRecovery" onChange={(event) => setMinimumCashRecovery(event.target.value)} required step="1" type="number" value={minimumCashRecovery} />
             <span>만 원</span>
           </div>
           <label htmlFor="minimumReuseRate">최소 재사용률</label>
           <div className="unit-input">
-            <input defaultValue={criteria.minimumReuseRate} id="minimumReuseRate" max="100" min="0" name="minimumReuseRate" required step="0.1" type="number" />
+            <input id="minimumReuseRate" max="100" min="0" name="minimumReuseRate" onChange={(event) => setMinimumReuseRate(event.target.value)} required step="0.1" type="number" value={minimumReuseRate} />
             <span>%</span>
           </div>
           <label htmlFor="maximumPickupRounds">최대 수거 횟수</label>
           <div className="unit-input">
-            <input defaultValue={criteria.maximumPickupRounds} id="maximumPickupRounds" max="30" min="1" name="maximumPickupRounds" required step="1" type="number" />
+            <input id="maximumPickupRounds" max="30" min="1" name="maximumPickupRounds" onChange={(event) => setMaximumPickupRounds(event.target.value)} required step="1" type="number" value={maximumPickupRounds} />
             <span>회</span>
           </div>
           {state.status === "error" ? <p className="form-error" role="alert">{state.message}</p> : null}
           <div className="modal-actions">
-            <button className="button button-ghost" onClick={onClose} type="button">취소</button>
+            <button className="button button-ghost" disabled={pending} onClick={closeDialog} type="button">취소</button>
             <button className="button button-primary" disabled={pending} type="submit">
               {pending ? "계산 중…" : "새 조건으로 계산"}
             </button>
@@ -115,11 +124,17 @@ function ConfirmationDialog({
   onReviewLatest: () => void;
 }) {
   const [state, action, pending] = useActionState(confirmMatchAction, initialMatchingActionState);
+  const closeDialog = () => {
+    if (pending) return;
+    if (state.status === "success") onCompleted(state.message ?? "배분안이 확정되었습니다.");
+    else onClose();
+  };
 
   return (
     <Modal
+      closeDisabled={pending}
       description="확정하면 자산 배정과 금액을 더 이상 바꿀 수 없으며, 수거 일정을 등록할 수 있습니다."
-      onClose={onClose}
+      onClose={closeDialog}
       open
       size="small"
       title="이 배분안을 확정할까요?"
@@ -129,7 +144,7 @@ function ConfirmationDialog({
           <CheckCircle aria-hidden="true" size={34} weight="fill" />
           <strong>배분안이 확정되었습니다.</strong>
           <p>{state.message}</p>
-          <button className="button button-primary" onClick={() => onCompleted(state.message ?? "배분안이 확정되었습니다.")} type="button">확정 결과 보기</button>
+          <button className="button button-primary" onClick={closeDialog} type="button">확정 결과 보기</button>
         </div>
       ) : (
         <>
@@ -164,7 +179,7 @@ function ConfirmationDialog({
               </div>
             ) : null}
             <div className="modal-actions">
-              <button className="button button-ghost" onClick={onClose} type="button">취소</button>
+              <button className="button button-ghost" disabled={pending} onClick={closeDialog} type="button">취소</button>
               <button className="button button-primary" disabled={pending || !idempotencyKey} type="submit">
                 {pending ? "확정 중…" : "확정하고 수거 일정 만들기"}
               </button>
@@ -187,7 +202,6 @@ export function MatchingActions(props: MatchingActionsProps) {
   const completeDialog = (message: string) => {
     setFeedback({ type: "success", message });
     setActiveDialog(null);
-    startRefresh(() => router.refresh());
   };
 
   const openRecalculation = () => {

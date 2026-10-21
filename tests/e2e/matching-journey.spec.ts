@@ -93,6 +93,39 @@ test("빠른 데모 진입과 초기 상태 복원을 분리해 안내한다", a
   await expect(page).toHaveURL("/projects");
 });
 
+test("공개 홈의 스크립트가 CSP를 통과하고 데모 진행 상태를 표시한다", async ({ page }) => {
+  const scriptViolations: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error" && /content security policy|script-src/i.test(message.text())) {
+      scriptViolations.push(message.text());
+    }
+  });
+
+  const response = await page.goto("/");
+  const policy = response?.headers()["content-security-policy"] ?? "";
+  const nonce = policy.match(/'nonce-([^']+)'/)?.[1];
+  expect(nonce).toBeTruthy();
+  const scriptNonces = await page.locator("script").evaluateAll((scripts) => scripts.map((script) => script.nonce));
+  expect(scriptNonces.length).toBeGreaterThan(0);
+  if (useProductionBuild) expect(scriptNonces.every((value) => value === nonce)).toBe(true);
+
+  // Hold the action response until we have observed React's pending state.
+  let releaseAction!: () => void;
+  const actionGate = new Promise<void>((resolve) => { releaseAction = resolve; });
+  await page.route((url) => url.pathname === "/", async (route) => {
+    if (route.request().method() === "POST") await actionGate;
+    await route.continue();
+  });
+  try {
+    await page.getByRole("button", { name: "제품 데모 열기" }).first().click();
+    await expect(page.getByRole("button", { name: "데모 여는 중…" })).toBeDisabled();
+  } finally {
+    releaseAction();
+  }
+  await expect(page).toHaveURL("/projects");
+  expect(scriptViolations).toEqual([]);
+});
+
 test("준비 상태와 보호 경계를 검증한다", async ({ page, request }) => {
   const health = await request.get("/api/health");
   expect(health.status()).toBe(200);
@@ -222,6 +255,15 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까�
   const projectName = `판교 연구소 이전 ${Date.now()}-${testInfo.retry}`;
   await page.getByLabel("프로젝트명").fill(projectName);
   await page.getByLabel("위치").fill("경기 성남시 분당구");
+  await page.getByRole("spinbutton", { name: /최소 매각 금액/ }).fill("123");
+  const assetFile = page.locator('input[name="assetFile"]');
+  await assetFile.setInputFiles({ name: "invalid.csv", mimeType: "text/csv", buffer: Buffer.from("wrong,headers\n1,2") });
+  await page.getByRole("button", { name: "프로젝트 생성" }).click();
+  await expect(page.locator(".project-create-form").getByRole("alert")).toContainText("CSV 헤더");
+  await expect(page.getByLabel("프로젝트명")).toHaveValue(projectName);
+  await expect(page.getByLabel("위치")).toHaveValue("경기 성남시 분당구");
+  await expect(page.getByRole("spinbutton", { name: /최소 매각 금액/ })).toHaveValue("123");
+  expect(await assetFile.evaluate((input: HTMLInputElement) => input.files?.[0]?.name)).toBe("invalid.csv");
   await page.locator('input[name="assetFile"]').setInputFiles(path.resolve(process.cwd(), "public/templates/asset-groups-template.csv"));
   await page.getByRole("button", { name: "프로젝트 생성" }).click();
   await expect(page).toHaveURL(/\/projects\/project-[^/]+\/matching$/);
@@ -344,6 +386,30 @@ test("새 프로젝트를 입찰 가져오기부터 확정과 수거 등록까�
   );
 });
 
+
+test("재계산 완료 창을 닫는 모든 경로에서 최신 조건과 배분안을 확인한다", async ({ page }) => {
+  await demoLogin(page);
+  await page.goto(`${demoProjectPath}/matching`);
+
+  for (const [closeMethod, minimumReuseRate] of [["button", "81"], ["escape", "82"]] as const) {
+    await page.getByRole("button", { name: "조건 다시 계산" }).click();
+    const recalculation = page.getByRole("dialog", { name: "매칭 조건 다시 계산" });
+    await recalculation.getByLabel("최소 재사용률").fill(minimumReuseRate);
+    await recalculation.getByRole("button", { name: "새 조건으로 계산" }).click();
+    await expect(recalculation.getByText("새 배분안을 계산했습니다.")).toBeVisible();
+    if (closeMethod === "button") await recalculation.getByRole("button", { name: "닫기", exact: true }).click();
+    else await page.keyboard.press("Escape");
+    await expect(recalculation).toBeHidden();
+    await expect(page.getByText(`재사용률 ${minimumReuseRate}% 이상`, { exact: true })).toBeVisible();
+
+    const latest = (await fetchJsonFromPage(page, `/api/v1${demoProjectPath}/summary`)).body.data;
+    await page.getByRole("button", { name: "배분안 확정", exact: true }).click();
+    const confirmation = page.getByRole("dialog", { name: "이 배분안을 확정할까요?" });
+    await expect(confirmation.locator('input[name="planId"]')).toHaveValue(latest.plan.id);
+    await expect(confirmation.locator('input[name="expectedVersion"]')).toHaveValue(String(latest.project.version));
+    await confirmation.getByRole("button", { name: "취소", exact: true }).click();
+  }
+});
 
 test("다른 사용자의 재계산 뒤에는 검토했던 배분안을 확정할 수 없다", async ({ page, browser }) => {
   await demoLogin(page);

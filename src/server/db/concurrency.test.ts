@@ -112,6 +112,23 @@ describe("actual matching service with independent database connections", () => 
     await expectNoConfirmation();
   });
 
+  it("rejects a rounded-up reuse rate, including drafts saved by the old comparison", async () => {
+    await fixture.db.update(schema.projects).set({ assetCount: 100_000 });
+    await fixture.db.update(schema.assetGroups).set({ quantity: 99_999 }).where(eq(schema.assetGroups.id, "asset-0"));
+    await fixture.db.update(schema.bids).set({ quantity: 99_999, reuseQuantity: 99_999 }).where(eq(schema.bids.assetGroupId, "asset-0"));
+    await fixture.db.update(schema.bids).set({ reuseQuantity: 0 }).where(eq(schema.bids.assetGroupId, "asset-1"));
+    const plan = await service.recalculateMatchPlan("project-test", { ...constraints, minimumReuseRate: 100 }, actorA, fixture.db);
+    expect(plan).toMatchObject({ reuseRate: 100, criteriaPassed: false });
+    const [project] = await fixture.db.select().from(schema.projects);
+    const reviewed = { planId: plan.planId, version: project.version };
+    await expect(service.confirmMatchPlan("project-test", crypto.randomUUID(), actorA, reviewed, fixture.db)).rejects.toThrow("확정 기준");
+
+    // Existing drafts from the previous version can still carry an incorrect true flag.
+    await fixture.db.update(schema.matchPlans).set({ criteriaPassed: true }).where(eq(schema.matchPlans.id, plan.planId));
+    await expect(service.confirmMatchPlan("project-test", crypto.randomUUID(), actorA, reviewed, fixture.db)).rejects.toThrow("확정 기준");
+    await expectNoConfirmation();
+  });
+
   it("rechecks expired partner evidence before confirming a previously valid plan", async () => {
     const reviewed = await reviewedPlan();
     await fixture.db.update(schema.partners).set({ verificationExpiresAt: new Date("2020-01-01T00:00:00+09:00") }).where(eq(schema.partners.id, "partner-test"));

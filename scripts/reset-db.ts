@@ -1,14 +1,9 @@
 import { rm } from "node:fs/promises";
 import { spawn } from "node:child_process";
+import { pathToFileURL } from "node:url";
+import { resolveResetDatabasePath } from "../src/server/db/reset-path";
 
 const databaseUrl = process.env.DATABASE_URL ?? "file:./data/reroute.db";
-const expectedPrefix = "file:./data/";
-
-if (!databaseUrl.startsWith(expectedPrefix)) {
-  throw new Error("db:reset only accepts a local database under ./data");
-}
-
-const databasePath = databaseUrl.slice("file:".length);
 
 async function run(script: "db:migrate" | "db:seed") {
   await new Promise<void>((resolve, reject) => {
@@ -19,6 +14,9 @@ async function run(script: "db:migrate" | "db:seed") {
 }
 
 async function main() {
+  const databasePath = await resolveResetDatabasePath(databaseUrl);
+  // Migrations and seeding must use the exact same validated, decoded file.
+  process.env.DATABASE_URL = pathToFileURL(databasePath).href;
   await rm(databasePath, { force: true });
   await run("db:migrate");
   await run("db:seed");

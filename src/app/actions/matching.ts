@@ -48,6 +48,7 @@ export async function recalculateAction(
       },
       { id: access.user.id, ipHash },
     );
+    revalidatePath(`/projects/${parsed.data.projectId}/matching`);
     return {
       status: "success",
       message: result.criteriaPassed

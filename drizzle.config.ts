@@ -1,3 +1,5 @@
+import "./scripts/load-env.mjs";
+
 const config = {
   schema: "./src/server/db/schema.ts",
   out: "./drizzle",

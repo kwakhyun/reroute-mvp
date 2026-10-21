@@ -1,4 +1,5 @@
 import { toSeoulDateKey } from "@/lib/date";
+import { meetsMinimumReuseRate } from "@/lib/matching-criteria";
 
 export const MAX_MATCH_COMBINATIONS = 100_000;
 
@@ -137,7 +138,7 @@ function evaluateTotals(
 ): MatchEvaluation {
   const reuseRate = Number(((reuseQuantity / constraints.assetCount) * 100).toFixed(1));
   const cashPassed = cashRecovery >= constraints.minimumCashRecovery;
-  const reusePassed = reuseRate >= constraints.minimumReuseRate;
+  const reusePassed = meetsMinimumReuseRate(reuseQuantity, constraints.assetCount, constraints.minimumReuseRate);
   const pickupPassed = pickupRounds <= constraints.maximumPickupRounds;
 
   return {

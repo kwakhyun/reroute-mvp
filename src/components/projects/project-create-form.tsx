@@ -1,7 +1,7 @@
 "use client";
 
 import { DownloadSimple, FileCsv, Plus } from "@phosphor-icons/react";
-import { useActionState } from "react";
+import { startTransition, useActionState, type FormEvent } from "react";
 import { createProjectAction } from "@/app/actions/projects";
 import { initialProjectActionState } from "@/lib/project-action-state";
 import { MAX_PROJECT_CASH_RECOVERY } from "@/lib/domain-constraints";
@@ -12,12 +12,21 @@ export function ProjectCreateForm({ organizations }: { organizations: Organizati
   const [state, action, pending] = useActionState(createProjectAction, initialProjectActionState);
   const writable = organizations.filter((organization) => organization.role !== "VIEWER");
 
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (pending) return;
+
+    // Dispatch manually so a validation error does not reset the inputs or selected file.
+    const formData = new FormData(event.currentTarget);
+    startTransition(() => action(formData));
+  }
+
   if (writable.length === 0) {
     return <div className="notice-banner"><span><strong>프로젝트 생성 권한이 없습니다.</strong> 조직 승인자에게 매니저 권한을 요청해 주세요.</span></div>;
   }
 
   return (
-    <form action={action} className="card project-create-form">
+    <form action={action} className="card project-create-form" onSubmit={handleSubmit}>
       <div className="form-section-heading">
         <span>1</span>
         <div><h2>프로젝트 정보</h2><p>처분할 자산과 배분안 확정 기준을 입력합니다.</p></div>
@@ -27,7 +36,7 @@ export function ProjectCreateForm({ organizations }: { organizations: Organizati
         <label><span>프로젝트명</span><input maxLength={80} name="name" placeholder="예: 판교 오피스 이전" required /></label>
         <label><span>위치</span><input maxLength={120} name="location" placeholder="예: 경기 성남시 분당구" required /></label>
         <label><span>자산 묶음 설명 <small>(선택)</small></span><input maxLength={120} name="batchLabel" placeholder="비워 두면 전체 자산 수량이 표시됩니다" /></label>
-        <label><span>최소 매각 금액</span><div className="unit-input"><input defaultValue="0" max={MAX_PROJECT_CASH_RECOVERY} min="0" name="minimumCashRecovery" required step="10" type="number" /><b>만 원</b></div><small>자산 CSV에 입력한 항목별 최소 금액의 합보다 낮으면 합계가 자동으로 적용됩니다.</small></label>
+        <label><span>최소 매각 금액</span><div className="unit-input"><input defaultValue="0" max={MAX_PROJECT_CASH_RECOVERY} min="0" name="minimumCashRecovery" required step="1" type="number" /><b>만 원</b></div><small>자산 CSV에 입력한 항목별 최소 금액의 합보다 낮으면 합계가 자동으로 적용됩니다.</small></label>
         <label><span>최소 재사용률</span><div className="unit-input"><input defaultValue="70" max="100" min="0" name="minimumReuseRate" required step="0.1" type="number" /><b>%</b></div></label>
         <label><span>최대 수거 횟수</span><div className="unit-input"><input defaultValue="3" max="30" min="1" name="maximumPickupRounds" required type="number" /><b>회</b></div></label>
       </div>

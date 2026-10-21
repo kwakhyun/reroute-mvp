@@ -2,6 +2,7 @@ import styles from "@/styles/portfolio.module.css";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { connection } from "next/server";
 import { DemoOpenForm } from "@/components/auth/demo-access";
 import { RerouteMark } from "@/components/brand/reroute-mark";
 
@@ -63,7 +64,10 @@ function DemoNote() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  // The proxy supplies a new CSP nonce for each request, including this public page.
+  await connection();
+
   return (
     <div className={`${styles.root} portfolio-page`}>
       <a className="skip-link" href="#portfolio-content">

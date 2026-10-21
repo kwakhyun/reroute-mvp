@@ -47,6 +47,29 @@ describe("matching engine", () => {
     expect(evaluateCombination([first, second], { ...constraints, assetCount: 144 })).toMatchObject({ pickupRounds: 1 });
   });
 
+  it.each([
+    { quantity: 100_000, reuseQuantity: 99_999, minimumReuseRate: 100, reuseRate: 100, reusePassed: false },
+    { quantity: 100_000, reuseQuantity: 79_999, minimumReuseRate: 80, reuseRate: 80, reusePassed: false },
+    { quantity: 100_000, reuseQuantity: 100_000, minimumReuseRate: 100, reuseRate: 100, reusePassed: true },
+    { quantity: 50, reuseQuantity: 29, minimumReuseRate: 58, reuseRate: 58, reusePassed: true },
+    { quantity: 375, reuseQuantity: 33, minimumReuseRate: 8.8, reuseRate: 8.8, reusePassed: true },
+    { quantity: 3000, reuseQuantity: 33, minimumReuseRate: 1.1, reuseRate: 1.1, reusePassed: true },
+    { quantity: 3000, reuseQuantity: 32, minimumReuseRate: 1.1, reuseRate: 1.1, reusePassed: false },
+  ])("uses actual quantities at the $minimumReuseRate% reuse boundary ($reuseQuantity/$quantity)", ({ quantity, reuseQuantity, minimumReuseRate, reuseRate, reusePassed }) => {
+    const candidate = { ...preferred[0], quantity, reuseQuantity };
+    const limits = { ...constraints, assetCount: quantity, minimumCashRecovery: 0, minimumReuseRate };
+    const expected = { reuseRate, reusePassed, criteriaPassed: reusePassed };
+    expect(evaluateCombination([candidate], limits)).toMatchObject(expected);
+    expect(recommendMatchPlan([candidate], limits, [{ id: candidate.assetGroupId, quantity }])).toMatchObject(expected);
+  });
+
+  it("prefers a truly qualifying plan over a higher-value plan whose display rate rounds up", () => {
+    const candidate = { ...preferred[0], quantity: 100_000, reuseQuantity: 100_000 };
+    const roundedUp = { ...candidate, id: "rounded-up", reuseQuantity: 99_999, cashRecovery: candidate.cashRecovery + 100 };
+    const result = recommendMatchPlan([roundedUp, candidate], { ...constraints, assetCount: 100_000, minimumCashRecovery: 0, minimumReuseRate: 100 }, [{ id: candidate.assetGroupId, quantity: candidate.quantity }]);
+    expect(result.bids[0].id).toBe(candidate.id);
+  });
+
   it("uses the aggregate asset recovery amount as the batch cash floor", () => {
     const groupsWithFloor = expectedGroups.map((group, index) => ({
       ...group,

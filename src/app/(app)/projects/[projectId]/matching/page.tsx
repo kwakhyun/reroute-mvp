@@ -10,6 +10,7 @@ import { ProjectHeader } from "@/components/matching/project-header";
 import { TrustStrip } from "@/components/matching/trust-strip";
 import { getMatchingDashboard } from "@/server/services/dashboard";
 import { projectPageData } from "../project-page-data";
+import { meetsMinimumReuseRate } from "@/lib/matching-criteria";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "추천 배분안" };
@@ -33,6 +34,7 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
           <a className="button button-secondary" href={`/projects/${projectId}/assets`}>자산 목록 확인</a>
         </div>
         <MatchingActions
+          key="matching-actions"
           bidCount={dashboard.bidCount}
           canConfirm={false}
           canRecalculate={canRecalculate && dashboard.bidCount > 0}
@@ -50,6 +52,7 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
   }
 
   const confirmed = plan.status === "CONFIRMED";
+  const reusePassed = meetsMinimumReuseRate(plan.reuseQuantity, project.assetCount, project.minimumReuseRate);
   const canRecalculate = dashboard.membershipRole === "MANAGER" || dashboard.membershipRole === "APPROVER";
   const canConfirm = dashboard.membershipRole === "APPROVER";
 
@@ -72,7 +75,8 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
           minimumCashRecovery={project.minimumCashRecovery}
           minimumReuseRate={project.minimumReuseRate}
           pickupRounds={plan.pickupRounds}
-          reuseRate={plan.reuseRate}
+          reuseQuantity={plan.reuseQuantity}
+          assetCount={project.assetCount}
         />
       </div>
 
@@ -91,6 +95,7 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
 
       <TrustStrip />
       <MatchingActions
+        key="matching-actions"
         bidCount={dashboard.bidCount}
         canConfirm={canConfirm}
         canRecalculate={canRecalculate}
@@ -109,7 +114,7 @@ export default async function MatchingPage({ params }: { params: Promise<{ proje
           netImpact: plan.netImpact,
           reuseRate: plan.reuseRate,
           pickupRounds: plan.pickupRounds,
-          criteriaPassed: plan.criteriaPassed,
+          criteriaPassed: plan.criteriaPassed && reusePassed,
           allocations: dashboard.allocations.map((allocation) => ({
             id: allocation.id,
             assetGroupName: allocation.assetGroupName,

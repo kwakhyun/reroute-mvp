@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { eq, inArray, sql } from "drizzle-orm";
 import { DEMO_PROJECT_ID } from "../src/lib/constants";
 import { hashPassword } from "../src/server/auth/password";
-import { db } from "../src/server/db/connection";
+import { databaseClient, db } from "../src/server/db/connection";
 import { DEMO_ACCOUNTS } from "../src/server/demo-data";
 import {
   analyticsEvents,
@@ -313,5 +313,5 @@ if (isDirectRun) {
   resetDemoDatabase({ full: true }).catch((error) => {
     console.error(error);
     process.exitCode = 1;
-  });
+  }).finally(() => databaseClient.close());
 }

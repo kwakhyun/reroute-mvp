@@ -1,12 +1,14 @@
 import { CheckCircle, XCircle } from "@phosphor-icons/react/dist/ssr";
 import { formatNumber } from "@/lib/format";
+import { meetsMinimumReuseRate } from "@/lib/matching-criteria";
 
 type DecisionCriteriaProps = {
   minimumCashRecovery: number;
   minimumReuseRate: number;
   maximumPickupRounds: number;
   cashRecovery: number;
-  reuseRate: number;
+  reuseQuantity: number;
+  assetCount: number;
   pickupRounds: number;
 };
 
@@ -18,7 +20,7 @@ export function DecisionCriteria(props: DecisionCriteriaProps) {
     },
     {
       label: `재사용률 ${formatNumber(props.minimumReuseRate)}% 이상`,
-      passed: props.reuseRate >= props.minimumReuseRate,
+      passed: meetsMinimumReuseRate(props.reuseQuantity, props.assetCount, props.minimumReuseRate),
     },
     {
       label: `수거 ${props.maximumPickupRounds}회 이하`,

@@ -1,6 +1,6 @@
 import { mkdir } from "node:fs/promises";
 import { migrate } from "drizzle-orm/libsql/migrator";
-import { db } from "../src/server/db/connection";
+import { databaseClient, db } from "../src/server/db/connection";
 
 async function main() {
   await mkdir("data", { recursive: true });
@@ -11,4 +11,4 @@ async function main() {
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
-});
+}).finally(() => databaseClient.close());

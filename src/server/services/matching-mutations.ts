@@ -3,6 +3,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { and, eq, inArray, ne, sql } from "drizzle-orm";
 import { toSeoulDateKey } from "@/lib/date";
+import { meetsMinimumReuseRate } from "@/lib/matching-criteria";
 import { db } from "@/server/db/client";
 import {
   analyticsEvents,
@@ -250,7 +251,7 @@ export async function confirmMatchPlan(
   if (!plan || project.version !== expected.version || project.status === "CONFIRMED") {
     throw new MatchingMutationError("검토한 배분안이 변경되었습니다. 최신 배분안을 확인한 뒤 다시 확정해 주세요.");
   }
-  if (!plan.criteriaPassed) {
+  if (!plan.criteriaPassed || !meetsMinimumReuseRate(plan.reuseQuantity, project.assetCount, project.minimumReuseRate)) {
     throw new MatchingMutationError("확정 기준을 충족한 배분안만 확정할 수 있습니다.");
   }
 

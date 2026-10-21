@@ -8,11 +8,12 @@ type ModalProps = {
   title: string;
   description?: string;
   onClose: () => void;
+  closeDisabled?: boolean;
   children: React.ReactNode;
   size?: "small" | "medium";
 };
 
-export function Modal({ open, title, description, onClose, children, size = "medium" }: ModalProps) {
+export function Modal({ open, title, description, onClose, closeDisabled = false, children, size = "medium" }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const titleId = useId();
@@ -42,9 +43,9 @@ export function Modal({ open, title, description, onClose, children, size = "med
       className={`modal modal-${size}`}
       onCancel={(event) => {
         event.preventDefault();
-        onClose();
+        if (!closeDisabled) onClose();
       }}
-      onClose={onClose}
+      onClose={() => { if (!closeDisabled) onClose(); }}
       ref={ref}
     >
       <div className="modal-heading">
@@ -52,7 +53,7 @@ export function Modal({ open, title, description, onClose, children, size = "med
           <h2 id={titleId}>{title}</h2>
           {description ? <p id={descriptionId}>{description}</p> : null}
         </div>
-        <button aria-label="닫기" className="modal-close" onClick={onClose} type="button">
+        <button aria-label="닫기" className="modal-close" disabled={closeDisabled} onClick={onClose} type="button">
           <X aria-hidden="true" size={21} />
         </button>
       </div>
