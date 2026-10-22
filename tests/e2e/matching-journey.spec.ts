@@ -215,6 +215,49 @@ test("모바일 경로 전환 뒤 첫 제목이 상단 메뉴에 가리지 않�
   })).toBeGreaterThanOrEqual(0);
 });
 
+for (const width of [390, 498, 768, 900]) {
+  test(`모바일 메뉴가 화면 안에 열리고 닫기와 탐색을 지원한다 (${width}px)`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 844 });
+    await demoLogin(page);
+    const menuButton = page.getByRole("button", { name: "메뉴 열기", exact: true });
+    const menu = page.getByRole("dialog", { name: "주요 메뉴", exact: true });
+    await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+
+    await menuButton.click();
+    await expect(menu).toBeVisible();
+    await expect(menu).toBeInViewport({ ratio: 1 });
+    await expect(menu.getByRole("button", { name: "메뉴 닫기" })).toBeFocused();
+    await expect(menu.getByRole("link", { name: "성수 오피스 이전 프로젝트의 자산" })).toBeVisible();
+    await expect(page.locator("main")).toHaveAttribute("inert", "");
+    await page.keyboard.press("Escape");
+    await expect(menu).toBeHidden();
+    await expect(menuButton).toBeFocused();
+    await expect(page.locator("main")).not.toHaveAttribute("inert", "");
+
+    await menuButton.click();
+    await menu.getByRole("button", { name: "메뉴 닫기" }).click();
+    await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+    await expect(menuButton).toBeFocused();
+
+    await menuButton.click();
+    await expect(menu).toBeInViewport({ ratio: 1 });
+    await page.mouse.click(width - 12, 100);
+    await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+
+    await menuButton.click();
+    await menu.getByRole("link", { name: "성수 오피스 이전 프로젝트의 자산" }).click();
+    await expect(page).toHaveURL(`${demoProjectPath}/assets`);
+    await expect(page.getByRole("heading", { name: "자산 목록", exact: true })).toBeVisible();
+    await expect(menuButton).toHaveAttribute("aria-expanded", "false");
+    await expect(page.locator("main")).not.toHaveAttribute("inert", "");
+
+    await page.setViewportSize({ width: 1024, height: 844 });
+    await expect(page.getByRole("complementary", { name: "주요 메뉴" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "입찰", exact: true })).toBeInViewport();
+    await expect(menuButton).toBeHidden();
+  });
+}
+
 test("시드 배분안의 최소 매각 금액 기준과 배정 근거를 읽기 전용으로 검증한다", async ({ page }) => {
   await demoLogin(page);
   await page.goto(`${demoProjectPath}/matching`);
